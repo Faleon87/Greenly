@@ -1,6 +1,6 @@
 ## React
 
-````bash
+```bash
 # create App React Native
 npx create-expo-app Greenly
 
@@ -11,3 +11,4 @@ code .
 #Empezar maquina android
 npx expo start
 
+```
