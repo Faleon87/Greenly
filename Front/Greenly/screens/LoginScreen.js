@@ -14,6 +14,33 @@ export default function LoginScreen() {
   const [error, setError] = React.useState(''); // Nuevo estado para el 
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const login = () => {
+    fetch('http://localhost:3000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setIsLoading(false);
+        if (data.error) {
+          setError(data.error);
+        } else {
+          // Here goes the code that runs when the checkbox is checked and the "Continue" button is pressed
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        setError('An error occurred. Please try again later.');
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -65,28 +92,8 @@ export default function LoginScreen() {
             setError('Please check the checkbox before continuing.');
           } else {
             setError('');
-            fetch('http://localhost:3000/api/auth/login', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                username: username,
-                password: password,
-              }),
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                if (data.error) {
-                  setError(data.error);
-                } else {
-                  // Aquí va el código que se ejecuta cuando el checkbox está marcado y se presiona el botón "Continue"
-                }
-              })
-              .catch((error) => {
-                setError('An error occurred. Please try again later.');
-              });
-            // Aquí va el código que se ejecuta cuando el checkbox está marcado y se presiona el botón "Continue"
+            setIsLoading(true);
+            login();
           }
         }}
       >
@@ -96,9 +103,6 @@ export default function LoginScreen() {
     </View>
   );
 }
-
-
-
 
 const styles = StyleSheet.create({
   error: {
@@ -144,11 +148,10 @@ const styles = StyleSheet.create({
     marginBottom: wp('2%'),
   },
   inputContainer: {
-    height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: wp('8%'),
-    paddingHorizontal: wp('3%'),
+    marginBottom: wp('10%'),
+    paddingHorizontal: wp('4%'),
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     height: 40,
-    borderWidth: 1.5,
+    borderWidth:  1.5,
     borderColor: 'black',
     borderRadius: 6,
   },

@@ -40,19 +40,21 @@ function HomeScreen({ navigation }) {
 }
 
 function LoginScreenWithHeader({ navigation }) {
-  navigation.setOptions({
-    headerTitle: '', // Esto elimina el título
-    headerLeft: () => (
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Image source={backButtonImage}
-        style={styles.backButtonImage}
-        />
-      </TouchableOpacity>
-    ),
-    headerStyle:{
-      backgroundColor: 'white',
-    }
-  });
+  React.useEffect(() => {
+    navigation.setOptions({
+      headerTitle: '', // Esto elimina el título
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image source={backButtonImage}
+          style={styles.backButtonImage}
+          />
+        </TouchableOpacity>
+      ),
+      headerStyle:{
+        backgroundColor: 'white',
+      }
+    });
+  }, [navigation]);
 
   return <LoginScreen />;
 }
@@ -104,7 +106,8 @@ const styles = StyleSheet.create({
   },
   buttonLogin: {
     color: 'white',
-    backgroundColor: '#2C1001',
+    backgroundColor: '#8FD053',
+    color: '#2C1001',
     width: wp('60%'),
     fontSize: hp('3%'),
     borderRadius: 5,
@@ -123,10 +126,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   backButtonImage:{
-    width: wp('8%'),
+    width: wp('10%'),
     height: hp('5%'),
-    marginLeft: wp('2%'), // Ajusta este valor para mover la imagen hacia la derecha
-    marginRight: wp('2%'), // Ajusta este valor para mover la imagen hacia la izquierda
+    marginLeft: wp('2%'),
   },
-  
 });
