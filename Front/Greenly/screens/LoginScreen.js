@@ -1,32 +1,40 @@
-// LoginScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, CheckBox, Image } from 'react-native';
-import { Input } from 'react-native-elements';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Input, CheckBox } from 'react-native-elements';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 // Importa tus imágenes aquí
 import eyeIcon from '../img/view.png';
 import eyeSlashIcon from '../img/hide.png';
+import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
 
 export default function LoginScreen() {
   const [isSelected, setSelection] = React.useState(false);
   const [hidePassword, setHidePassword] = React.useState(true);
+  const [error, setError] = React.useState(''); // Nuevo estado para el 
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Greenly</Text>
-      <Text style={styles.title}>Login</Text>
-      <Text style={styles.subtitle}>Welcome back. Enter your credentials to account</Text>
+      <View style={styles.logoContainer}>
+        <Image source={logoImage} style={styles.logoImage} />
+        <Text style={styles.logo}>Greenly</Text>
+      </View>
+      <Text style={styles.subtitle}>Welcome back. Enter your credentials to access your account</Text>
       <Text style={styles.label}>Email Address or User name</Text>
       <Input
-        style={styles.input}
         placeholder="Enter your email or username"
+        inputContainerStyle={styles.inputContainer}
+        value={username}
+        onChangeText={(text) => setUsername(text)}
       />
-      <Text style={styles.label}>Password</Text>
       <Input
-        style={styles.input}
         placeholder="Enter your password"
         secureTextEntry={hidePassword}
         inputContainerStyle={styles.inputContainer}
+        value={password}
+        onChangeText={(text) => setPassword(text)}
         rightIcon={
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
             <Image
@@ -38,16 +46,53 @@ export default function LoginScreen() {
       />
       <View style={styles.checkboxContainer}>
         <CheckBox
-          value={isSelected}
-          onValueChange={setSelection}
-          style={styles.checkbox}
+          checked={isSelected}
+          onPress={() => {
+            setSelection(!isSelected);
+            setError(''); // Limpiar el error cuando el checkbox se marca
+          }}
+          checkedColor='#03453D'
         />
         <Text style={styles.label}>Keep me signed in</Text>
       </View>
-      <TouchableOpacity style={styles.button}>
+      <Text>
+        {error ? <Text style={styles.error}>{error}</Text> : null} {/* Muestra el error si existe */}
+      </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          if (!isSelected) {
+            setError('Please check the checkbox before continuing.');
+          } else {
+            setError('');
+            fetch('http://localhost:3000/api/auth/login', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username: username,
+                password: password,
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                if (data.error) {
+                  setError(data.error);
+                } else {
+                  // Aquí va el código que se ejecuta cuando el checkbox está marcado y se presiona el botón "Continue"
+                }
+              })
+              .catch((error) => {
+                setError('An error occurred. Please try again later.');
+              });
+            // Aquí va el código que se ejecuta cuando el checkbox está marcado y se presiona el botón "Continue"
+          }
+        }}
+      >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <Text style={styles.signup}>Don't have an Account? Sign up here</Text>
+      <Text style={styles.signup}>Don't have an Account? <Text style={styles.signupBold}>Sign up here</Text></Text>
     </View>
   );
 }
@@ -56,60 +101,84 @@ export default function LoginScreen() {
 
 
 const styles = StyleSheet.create({
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: hp('2%'),
+  },
   container: {
     flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
-    padding: 20,
+    padding: '5%',
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center', // Alinea los elementos al inicio del contenedor
+    marginBottom: '3%',
+  },
+  logoImage: {
+    width: wp('20%'),
+    height: hp('10%'),
+    marginRight: 10, // Ajusta este valor para cambiar el espacio entre la imagen y el texto
   },
   logo: {
-    fontSize: 32,
+    fontSize: hp('4%'),
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: hp('4%'),
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: wp('8%'),
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: hp('2.5%'),
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: wp('8%'),
   },
   label: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: hp('2.5%'),
+    fontWeight: 'bold',
+    marginBottom: wp('2%'),
   },
-  input: {
+  inputContainer: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    marginBottom: wp('8%'),
+    paddingHorizontal: wp('3%'),
   },
   checkboxContainer: {
     flexDirection: 'row',
-    marginBottom: 20,
-  },
-  checkbox: {
-    alignSelf: 'center',
+    alignItems: 'center',
+    marginBottom: wp('8%'),
   },
   button: {
-    backgroundColor: '#02907D',
-    padding: 10,
-    marginBottom: 10,
+    backgroundColor: '#8FD053',
+    padding: wp('3%'),
+    marginBottom: wp('5%'),
+    marginTop: wp('6%'),
   },
   buttonText: {
-    color: 'white',
+    color: '#000',
     textAlign: 'center',
+    fontSize: hp('2.9%'),
   },
   signup: {
-    fontSize: 14,
-    color: '#02907D',
+    fontSize: hp('2.2%'),
+    color: '#000',
     textAlign: 'center',
   },
+  signupBold: {
+    fontWeight: 'bold',
+    fontSize: hp('2.2%'),
+  },
   inputContainer: {
-    height: 40,},
+    height: 40,
+    borderWidth: 1.5,
+    borderColor: 'black',
+    borderRadius: 6,
+  },
 });

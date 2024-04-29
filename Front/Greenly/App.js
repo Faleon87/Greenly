@@ -7,6 +7,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
+import backButtonImage from './img/back.png';
+
 const Stack = createStackNavigator();
 
 function HomeScreen({ navigation }) {
@@ -37,12 +39,30 @@ function HomeScreen({ navigation }) {
   );
 }
 
+function LoginScreenWithHeader({ navigation }) {
+  navigation.setOptions({
+    headerTitle: '', // Esto elimina el título
+    headerLeft: () => (
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Image source={backButtonImage}
+        style={styles.backButtonImage}
+        />
+      </TouchableOpacity>
+    ),
+    headerStyle:{
+      backgroundColor: 'white',
+    }
+  });
+
+  return <LoginScreen />;
+}
+
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Login" component={LoginScreenWithHeader}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -56,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   imageContainer: {
-    flex: 0.5,
+    flex: 0.3,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -69,24 +89,24 @@ const styles = StyleSheet.create({
     height: hp('20%'),
   },
   welcomeText: {
-    fontSize: hp('3%'),
+    fontSize: hp('6%'),
     fontWeight: 'bold',
     color: 'white',
   },
   greenlyText: {
-    fontSize: hp('3%'),
+    fontSize: hp('6%'),
     fontWeight: 'bold',
     color: '#2C1001',
   },
   button: {
     borderRadius: 5,
-    marginTop: hp('2%'),
+    marginTop: hp('8%'),
   },
   buttonLogin: {
     color: 'white',
     backgroundColor: '#2C1001',
-    width: wp('50%'),
-    fontSize: hp('2%'),
+    width: wp('60%'),
+    fontSize: hp('3%'),
     borderRadius: 5,
     paddingVertical: hp('1%'),
     paddingHorizontal: wp('2%'),
@@ -95,11 +115,18 @@ const styles = StyleSheet.create({
   buttonRegister: {
     color: 'white',
     backgroundColor: '#2C1001',
-    width: wp('50%'),
-    fontSize: hp('2%'),
+    width: wp('60%'),
+    fontSize: hp('3%'),
     borderRadius: 5,
     paddingVertical: hp('1%'),
     paddingHorizontal: wp('2%'),
     textAlign: 'center',
   },
+  backButtonImage:{
+    width: wp('8%'),
+    height: hp('5%'),
+    marginLeft: wp('2%'), // Ajusta este valor para mover la imagen hacia la derecha
+    marginRight: wp('2%'), // Ajusta este valor para mover la imagen hacia la izquierda
+  },
+  
 });

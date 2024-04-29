@@ -11,4 +11,4 @@ code .
 #Empezar maquina android
 npx expo start
 
-```
+
