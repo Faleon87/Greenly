@@ -4,8 +4,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import LoginScreen from './screens/LoginScreen'; // Importar LoginScreen
 
 const Stack = createStackNavigator();
 
@@ -16,7 +16,7 @@ function HomeScreen({ navigation }) {
         <Image
           style={styles.secondImage}
           source={require('./img/Logo.png')}
-          resizeMode="contain" // Asegura que la imagen se escala de manera uniforme
+          resizeMode="contain"
         />
       </View>
       <View style={styles.textContainer}>
@@ -53,52 +53,53 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#02907D',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Align items to the start of the container
+    justifyContent: 'center',
   },
   imageContainer: {
-    flex: 1, // Take up 1 part of the available space
+    flex: 0.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
   textContainer: {
-    flex: 1, // Take up 1 part of the available space
+    flex: 0.5,
     alignItems: 'center',
   },
   secondImage: {
-    width: wp('50%'), // 50% of screen width
+    width: wp('50%'),
+    height: hp('20%'),
   },
   welcomeText: {
-    fontSize: wp('10%'), // Adjust font size based on screen width
+    fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: 'white', // Change text color
+    color: 'white',
   },
   greenlyText: {
-    fontSize: wp('10%'), // Adjust font size based on screen width
+    fontSize: hp('3%'),
     fontWeight: 'bold',
-    color: '#2C1001', // Change text color
+    color: '#2C1001',
   },
   button: {
     borderRadius: 5,
-    marginTop: 10,
+    marginTop: hp('2%'),
   },
   buttonLogin: {
     color: 'white',
     backgroundColor: '#2C1001',
-    width: wp('50%'), // 50% of screen width
-    fontSize: wp('5%'), // Adjust font size based on screen width
+    width: wp('50%'),
+    fontSize: hp('2%'),
     borderRadius: 5,
-    paddingVertical: 10, // Add vertical padding
-    paddingHorizontal: 10, // Add horizontal padding
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('2%'),
     textAlign: 'center',
   },
   buttonRegister: {
     color: 'white',
     backgroundColor: '#2C1001',
-    width: wp('50%'), // 50% of screen width
-    fontSize: wp('5%'), // Adjust font size based on screen width
+    width: wp('50%'),
+    fontSize: hp('2%'),
     borderRadius: 5,
-    paddingVertical: 10, // Add vertical padding
-    paddingHorizontal: 10, // Add horizontal padding
+    paddingVertical: hp('1%'),
+    paddingHorizontal: wp('2%'),
     textAlign: 'center',
   },
 });
