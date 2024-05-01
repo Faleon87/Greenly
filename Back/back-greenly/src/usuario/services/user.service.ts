@@ -15,30 +15,22 @@ export class UserService {
 
   // Método para iniciar sesión
   async login(username: string, password: string): Promise<{accessToken: string, refreshToken: string}> {
-    
-    const user = await this.userRepository.findOne({
-      where: [{ username: username }, { email: username }],
-    });
-    if (!user || !user.password || !password || !(await bcrypt.compare(password, user.password))) {
-      throw new HttpException('Invalid username or password', HttpStatus.UNAUTHORIZED);
-    }
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    if (
-      !user.password ||
-      !password ||
-      !(await bcrypt.compare(password, user.password))
-    ) {
-      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
-    }
-    
-    // La contraseña coincide
-  const accessToken = jwt.sign({ userId: user.idUser }, 'access-token-secret', { expiresIn: '1h' });
-  const refreshToken = jwt.sign({ userId: user.idUser }, 'refresh-token-secret', { expiresIn: '7d' });
+  const user = await this.userRepository.findOne({
+    where: [{ username: username }, { email: username }],
+  });
+  if (!user) {
+    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+  }
+  if (!user.password || !password || !(await bcrypt.compare(password, user.password))) {
+    throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+  }
+  
+  // La contraseña coincide
+  const accessToken = jwt.sign({ userId: user.idUser }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+  const refreshToken = jwt.sign({ userId: user.idUser }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
 
   return { accessToken, refreshToken };
-  }
+}
 
   // Método para refrescar el token
   async refreshToken(refreshToken: string): Promise<{accessToken: string}> {

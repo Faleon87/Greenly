@@ -9,7 +9,7 @@ import eyeIcon from '../img/view.png';
 import eyeSlashIcon from '../img/hide.png';
 import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
 
-export default  function LoginScreen() {
+export default function LoginScreen() {
   const [isSelected, setSelection] = React.useState(false);
   const [hidePassword, setHidePassword] = React.useState(true);
   const [error, setError] = React.useState(''); // Nuevo estado para el 
@@ -34,14 +34,17 @@ export default  function LoginScreen() {
           setError(data.message);
         } else {
           // Almacena los tokens
-          await Keychain.setGenericPassword('accessToken', data.accessToken);
-          await Keychain.setGenericPassword('refreshToken', data.refreshToken);
+          console.log(data.accessToken);
+          console.log(data.refreshToken);
+
+
+          await Keychain.setGenericPassword('token', data.accessToken);
+          await Keychain.setGenericPassword('refresh', data.refreshToken);
 
           // Obtiene el token de acceso
 
-          
-          // Aquí puedes redirigir al usuario a la siguiente pantalla
-          console.log(data);
+
+
         }
       })
       .catch((error) => {
@@ -53,7 +56,7 @@ export default  function LoginScreen() {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      let accessToken = await Keychain.getGenericPassword({ service: 'accessToken' });
+      let accessToken = await Keychain.getGenericPassword({ service: 'token' });
       fetch('http://10.0.2.2:3000/refresh', {
         method: 'GET',
         headers: {
@@ -76,7 +79,7 @@ export default  function LoginScreen() {
           console.error(error); // Imprime la excepción en la consola
         });
     };
-  
+
     fetchData();
   }, []);
   return (
