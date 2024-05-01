@@ -2,26 +2,24 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
+  @PrimaryGeneratedColumn()
+  idUser: number;
 
-    @PrimaryGeneratedColumn()
-    idUser: number;
+  @Column()
+  nombre: string;
 
-    @Column()
-    nombre: string;
+  @Column()
+  username: string;
 
-    @Column()
-    username: string;
+  @Column()
+  apellido: string;
 
-    @Column()
-    apellido: string;
+  @Column()
+  email: string;
 
-    @Column()
-    email: string;
+  @Column()
+  password: string;
 
-    @Column()
-    password: string;
-
-    @Column()
-    img: string;
-
+  @Column({ nullable: true })
+  img: string;
 }

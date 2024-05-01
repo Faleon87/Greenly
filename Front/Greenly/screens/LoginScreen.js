@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const login = () => {
-    fetch('http://localhost:3000/api/auth/login', {
+    fetch('http://localhost:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,7 +33,8 @@ export default function LoginScreen() {
         if (data.error) {
           setError(data.error);
         } else {
-          // Here goes the code that runs when the checkbox is checked and the "Continue" button is pressed
+          // Aquí puedes redirigir al usuario a la siguiente pantalla
+          console.log(data);
         }
       })
       .catch((error) => {

@@ -5,8 +5,8 @@ import { AppService } from './app.service';
 import { PlantasService } from './plantas/services/plantas.service';
 import { PlantasController } from './plantas/controllers/plantas.controller';
 import { Plantas } from './plantas/entities/plantas';
-import { UserController } from '../src/usuario/controllers/user.controller';
-import { UserService } from '../src/usuario/services/user.service';
+import { UserController } from './usuario/controllers/user.controller';
+import { UserService } from './usuario/services/user.service';
 import { User } from './usuario/entities/user';
 
 @Module({
@@ -27,7 +27,7 @@ import { User } from './usuario/entities/user';
         },
       },
     }),
-    TypeOrmModule.forFeature([Plantas]),
+    TypeOrmModule.forFeature([Plantas, User]),
   ],
   controllers: [AppController, PlantasController, UserController],
   providers: [AppService, PlantasService, UserService],

@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PlantasService } from './plantas.service';
+import { expect } from 'chai';
 
 describe('PlantasService', () => {
   let service: PlantasService;
