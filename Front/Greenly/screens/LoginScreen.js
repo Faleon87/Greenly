@@ -2,22 +2,22 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import * as Keychain from 'react-native-keychain';
 
 // Importa tus imágenes aquí
 import eyeIcon from '../img/view.png';
 import eyeSlashIcon from '../img/hide.png';
 import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
 
-export default function LoginScreen() {
+export default  function LoginScreen() {
   const [isSelected, setSelection] = React.useState(false);
   const [hidePassword, setHidePassword] = React.useState(true);
   const [error, setError] = React.useState(''); // Nuevo estado para el 
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-
   const login = () => {
-    fetch('http://localhost:3000/user/login', {
+    fetch('http://10.0.2.2:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,21 +28,57 @@ export default function LoginScreen() {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then(async (data) => {
         setIsLoading(false);
-        if (data.error) {
-          setError(data.error);
+        if (data.message) {
+          setError(data.message);
         } else {
+          // Almacena los tokens
+          await Keychain.setGenericPassword('accessToken', data.accessToken);
+          await Keychain.setGenericPassword('refreshToken', data.refreshToken);
+
+          // Obtiene el token de acceso
+
+          
           // Aquí puedes redirigir al usuario a la siguiente pantalla
           console.log(data);
         }
       })
       .catch((error) => {
         setIsLoading(false);
+        console.error(error); // Imprime la excepción en la consola
         setError('An error occurred. Please try again later.');
       });
-  };
+  }
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      let accessToken = await Keychain.getGenericPassword({ service: 'accessToken' });
+      fetch('http://10.0.2.2:3000/refresh', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken.password}`,
+        },
+      })
+        .then((response) => {
+          if (response.status === 401) {
+            // El token de acceso ha expirado, necesitas obtener un nuevo token de acceso utilizando el token de actualización
+          } else {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          // Maneja la respuesta
+          console.log(data);
+        })
+        .catch((error) => {
+          console.error(error); // Imprime la excepción en la consola
+        });
+    };
+  
+    fetchData();
+  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -181,7 +217,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     height: 40,
-    borderWidth:  1.5,
+    borderWidth: 1.5,
     borderColor: 'black',
     borderRadius: 6,
   },

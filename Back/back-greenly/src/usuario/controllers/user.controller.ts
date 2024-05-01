@@ -11,4 +11,9 @@ export class UserController {
   ): Promise<any> {
     return this.userService.login(username, password);
   }
+
+  @Post('refresh')
+async refresh(@Body('refreshToken') refreshToken: string) {
+  return this.userService.refreshToken(refreshToken);
+}
 }
