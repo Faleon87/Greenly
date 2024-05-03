@@ -2,21 +2,25 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import * as Keychain from 'react-native-keychain';
-
+import * as SecureStore from 'expo-secure-store';
 // Importa tus imágenes aquí
 import eyeIcon from '../img/view.png';
 import eyeSlashIcon from '../img/hide.png';
 import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
 
-export default function LoginScreen() {
+export default function LoginScreen({ navigation }) {
   const [isSelected, setSelection] = React.useState(false);
   const [hidePassword, setHidePassword] = React.useState(true);
-  const [error, setError] = React.useState(''); // Nuevo estado para el 
+  const [error, setError] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+
+  const [usernameError, setUsernameError] = React.useState('');
+  const [passwordError, setPasswordError] = React.useState('');
+
   const [isLoading, setIsLoading] = React.useState(false);
-  const login = () => {
+
+  const login = async () => {
     fetch('http://10.0.2.2:3000/user/login', {
       method: 'POST',
       headers: {
@@ -31,20 +35,24 @@ export default function LoginScreen() {
       .then(async (data) => {
         setIsLoading(false);
         if (data.message) {
-          setError(data.message);
+          if (data.message.includes('User')) {
+            setUsernameError(data.message)
+          } else if (data.message.includes('password')) {
+            setPasswordError(data.message)
+          } else {
+            setError(data.message);
+          }
         } else {
-          // Almacena los tokens
-          console.log(data.accessToken);
-          console.log(data.refreshToken);
 
+         
+          // Almacena los tokens en SecureStore
+          await SecureStore.setItemAsync('accessToken', data.accessToken);
+          await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 
-          await Keychain.setGenericPassword('token', data.accessToken);
-          await Keychain.setGenericPassword('refresh', data.refreshToken);
+          console.log('Tokens stored successfully!');
 
-          // Obtiene el token de acceso
-
-
-
+          // Navega a la siguiente pantalla
+          navigation.navigate('Pantalla');
         }
       })
       .catch((error) => {
@@ -54,34 +62,6 @@ export default function LoginScreen() {
       });
   }
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      let accessToken = await Keychain.getGenericPassword({ service: 'token' });
-      fetch('http://10.0.2.2:3000/refresh', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken.password}`,
-        },
-      })
-        .then((response) => {
-          if (response.status === 401) {
-            // El token de acceso ha expirado, necesitas obtener un nuevo token de acceso utilizando el token de actualización
-          } else {
-            return response.json();
-          }
-        })
-        .then((data) => {
-          // Maneja la respuesta
-          console.log(data);
-        })
-        .catch((error) => {
-          console.error(error); // Imprime la excepción en la consola
-        });
-    };
-
-    fetchData();
-  }, []);
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
@@ -94,23 +74,28 @@ export default function LoginScreen() {
         placeholder="Enter your email or username"
         inputContainerStyle={styles.inputContainer}
         value={username}
-        onChangeText={(text) => setUsername(text)}
+        onChangeText={(text) => {
+          setUsername(text);
+          setUsernameError(''); // Limpia el error cuando el usuario empieza a escribir
+        }}
       />
+      {usernameError ? <Text style={styles.error}>{usernameError}</Text> : null}
       <Input
         placeholder="Enter your password"
         secureTextEntry={hidePassword}
         inputContainerStyle={styles.inputContainer}
         value={password}
-        onChangeText={(text) => setPassword(text)}
+        onChangeText={(text) => {
+          setPassword(text);
+          setPasswordError(''); // Limpia el error cuando el usuario empieza a escribir
+        }}
         rightIcon={
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
-            <Image
-              source={hidePassword ? eyeSlashIcon : eyeIcon}
-              style={{ width: 20, height: 20 }}
-            />
+            <Image source={hidePassword ? eyeIcon : eyeSlashIcon} style={styles.icon} />
           </TouchableOpacity>
         }
       />
+      {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
       <View style={styles.checkboxContainer}>
         <CheckBox
           checked={isSelected}
@@ -159,13 +144,13 @@ const styles = StyleSheet.create({
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center', // Alinea los elementos al inicio del contenedor
+    justifyContent: 'center',
     marginBottom: '3%',
   },
   logoImage: {
     width: wp('20%'),
     height: hp('10%'),
-    marginRight: 10, // Ajusta este valor para cambiar el espacio entre la imagen y el texto
+    marginRight: 10,
   },
   logo: {
     fontSize: hp('4%'),
@@ -223,5 +208,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'black',
     borderRadius: 6,
+  },
+  icon: {
+    width: 20,
+    height: 20,
   },
 });

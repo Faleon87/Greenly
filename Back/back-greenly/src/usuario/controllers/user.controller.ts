@@ -1,5 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Headers, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
+import { User } from '../entities/user';
+
 
 @Controller('user')
 export class UserController {
@@ -12,8 +14,5 @@ export class UserController {
     return this.userService.login(username, password);
   }
 
-  @Post('refresh')
-async refresh(@Body('refreshToken') refreshToken: string) {
-  return this.userService.refreshToken(refreshToken);
-}
+  
 }

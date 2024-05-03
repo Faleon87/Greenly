@@ -25,6 +25,9 @@
     },
     "web": {
       "favicon": "./img/Logo.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }

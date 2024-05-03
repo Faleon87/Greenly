@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Pantalla from './screens/Pantalla';
 
 import backButtonImage from './img/back.png';
 
@@ -56,7 +57,7 @@ function LoginScreenWithHeader({ navigation }) {
     });
   }, [navigation]);
 
-  return <LoginScreen />;
+  return <LoginScreen navigation={navigation} />;
 }
 
 export default function App() {
@@ -65,6 +66,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreenWithHeader}/>
+        <Stack.Screen name="Pantalla" component={Pantalla}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
