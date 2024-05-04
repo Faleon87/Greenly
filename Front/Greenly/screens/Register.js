@@ -21,7 +21,36 @@ export default function RegisterScreen({ navigation }) {
     const [profileImage, setProfileImage] = React.useState(defaultProfileImage);
 
     const register = () => {
-        // Implementa la lógica de registro aquí
+        if (!name || !email || !username || !password || !confirmPassword) {
+            Alert.alert('All fields are required');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Alert.alert('Passwords do not match');
+            return;
+        }
+
+        if (password.length < 8 && !/[!@#$%^&*(),.?":{}|<>]/g.test(password)) {
+            Alert.alert('Password must be at least 8 characters long and contain a special character');
+            return;
+        }
+
+        if (!agree) {
+            Alert.alert('You must agree with the account');
+            return;
+        }
+        // Aquí puedes hacer la petición POST a tu API
+        fetch('http://10.0.2.2:3000/user/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                username: username,
+                password: password,
+                profileImage: profileImage.uri,
+            }),
+        });
     }
 
     const selectProfileImage = async () => {

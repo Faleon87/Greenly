@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -24,7 +24,11 @@ export class UserService {
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }if (!user.password ||!password || !(await bcrypt.compare(password, user.password))
+    }
+    if (
+      !user.password ||
+      !password ||
+      !(await bcrypt.compare(password, user.password))
     ) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
@@ -71,5 +75,18 @@ export class UserService {
     } else {
       throw new Error('ADMIN_PASSWORD is not defined');
     }
+  }
+
+  async register(user: any): Promise<User[]> {
+    const newUser = this.userRepository.create(user);
+    try {
+      await this.userRepository.save(newUser);
+    } catch (error) {
+      throw new HttpException(
+        'Error saving user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return newUser;
   }
 }

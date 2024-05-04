@@ -14,5 +14,19 @@ export class UserController {
     return this.userService.login(username, password);
   }
 
+
+  @Post('register')
+  async register(
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Body('username') username: string,
+    @Body('password') password: string,
+    @Body('profileImage') profileImage: string,
+  ): Promise<any> {
+    const user = { name, email, username, password, profileImage };
+    return this.userService.register(user);
+  }
+  
+
   
 }
