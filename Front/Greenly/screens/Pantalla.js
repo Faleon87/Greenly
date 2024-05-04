@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import image1 from '../img/dondeComenzar.png'; // Reemplaza esto con la ruta a tu imagen
-import iconImage from '../img/icon.png'; // Reemplaza esto con la ruta a tu imagen
+import iconImage from '../img/placeholder.png'; // Reemplaza esto con la ruta a tu imagen
 
 export default function Pantalla() {
   const navigation = useNavigation();
@@ -12,6 +12,7 @@ export default function Pantalla() {
         <Text style={styles.text}>Donde Comenzar?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('OtraPantalla')}>
           <Image source={image1} style={styles.image} />
+          <Image source={iconImage} style={styles.icon} />
         </TouchableOpacity>
         {/* Repite el código anterior para las otras dos imágenes */}
     </View>
@@ -39,5 +40,12 @@ const styles = StyleSheet.create({
     padding: wp('2%'), // Añade esto para darle espacio alrededor de la imagen
     borderWidth: 4, // Añade esto para ver el borde de la imagen
     borderColor: 'black', // Añade esto para ver el borde de la imagen
+  },
+  icon: {
+    position: 'absolute',
+    left: 0,
+    top: '50%',
+    width: wp('10%'), // Ajusta estos valores para cambiar el tamaño del icono
+    height: wp('10%'),
   },
 });

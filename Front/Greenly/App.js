@@ -7,6 +7,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Pantalla from './screens/Pantalla';
+import Register from './screens/Register';
 
 import backButtonImage from './img/back.png';
 
@@ -67,6 +68,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreenWithHeader}/>
         <Stack.Screen name="Pantalla" component={Pantalla}/>
+        <Stack.Screen name="Register" component={Register}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

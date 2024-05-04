@@ -21,23 +21,20 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: [{ username: username }, { email: username }],
     });
+
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    if (
-      !user.password ||
-      !password ||
-      !(await bcrypt.compare(password, user.password))
+    }if (!user.password ||!password || !(await bcrypt.compare(password, user.password))
     ) {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
-    
 
     const accessToken = jwt.sign(
       { userId: user.idUser },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '1h' },
     );
+
     const refreshToken = jwt.sign(
       { userId: user.idUser },
       process.env.REFRESH_TOKEN_SECRET,

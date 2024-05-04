@@ -43,8 +43,6 @@ export default function LoginScreen({ navigation }) {
             setError(data.message);
           }
         } else {
-
-         
           // Almacena los tokens en SecureStore
           await SecureStore.setItemAsync('accessToken', data.accessToken);
           await SecureStore.setItemAsync('refreshToken', data.refreshToken);
@@ -69,10 +67,11 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.logo}>Greenly</Text>
       </View>
       <Text style={styles.subtitle}>Welcome back. Enter your credentials to access your account</Text>
-      <Text style={styles.label}>Email Address or User name</Text>
+      <Text style={styles.label}>Email Address or User Name</Text>
       <Input
         placeholder="Enter your email or username"
         inputContainerStyle={styles.inputContainer}
+        inputStyle={{ marginLeft: wp('3%') }}
         value={username}
         onChangeText={(text) => {
           setUsername(text);
@@ -80,10 +79,12 @@ export default function LoginScreen({ navigation }) {
         }}
       />
       {usernameError ? <Text style={styles.error}>{usernameError}</Text> : null}
+      <Text style={styles.label}>Password</Text>
       <Input
         placeholder="Enter your password"
         secureTextEntry={hidePassword}
         inputContainerStyle={styles.inputContainer}
+        inputStyle={{ marginLeft: wp('3%') }}
         value={password}
         onChangeText={(text) => {
           setPassword(text);
@@ -105,7 +106,7 @@ export default function LoginScreen({ navigation }) {
           }}
           checkedColor='#03453D'
         />
-        <Text style={styles.label}>Keep me signed in</Text>
+        <Text style={styles.labelCheckbox}>Keep me signed in</Text>
       </View>
       <Text>
         {error ? <Text style={styles.error}>{error}</Text> : null} {/* Muestra el error si existe */}
@@ -124,7 +125,11 @@ export default function LoginScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <Text style={styles.signup}>Don't have an Account? <Text style={styles.signupBold}>Sign up here</Text></Text>
+      <Text style={styles.signup}>Don't have an Account?
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.signupBold}>Sign up here</Text>
+        </TouchableOpacity>
+      </Text>
     </View>
   );
 }
@@ -134,23 +139,25 @@ const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
     fontSize: hp('2%'),
+    textAlign: 'center',
+    marginTop: wp('-10%'),
   },
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'center',
-    padding: '5%',
+    justifyContent: 'flex-start',
+    padding: wp('5%'),
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: '3%',
+    marginBottom: wp('2%'),
   },
   logoImage: {
     width: wp('20%'),
     height: hp('10%'),
-    marginRight: 10,
+    marginRight: wp('2%'),
   },
   logo: {
     fontSize: hp('4%'),
@@ -168,26 +175,32 @@ const styles = StyleSheet.create({
     marginBottom: wp('8%'),
   },
   label: {
-    fontSize: hp('2.5%'),
+    marginLeft: wp('3%'),
+    fontSize: hp('2%'),
     fontWeight: 'bold',
     marginBottom: wp('2%'),
   },
   inputContainer: {
     borderColor: 'gray',
     borderWidth: 1,
-    marginBottom: wp('10%'),
-    paddingHorizontal: wp('4%'),
+    borderRadius: 10,
+    marginBottom: wp('2%'),
+    paddingHorizontal: wp('10%'),
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: wp('8%'),
+    marginBottom: wp('5%'),
+  },
+  labelCheckbox: {
+    fontSize: hp('2%'),
+    fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#8FD053',
     padding: wp('3%'),
     marginBottom: wp('5%'),
-    marginTop: wp('6%'),
+    marginTop: wp('1%'),
   },
   buttonText: {
     color: '#000',
@@ -204,13 +217,14 @@ const styles = StyleSheet.create({
     fontSize: hp('2.2%'),
   },
   inputContainer: {
-    height: 40,
+    height: hp('6%'),
     borderWidth: 1.5,
     borderColor: 'black',
-    borderRadius: 6,
+    marginBottom: hp('4%'),
+    borderRadius: 10,
   },
   icon: {
-    width: 20,
-    height: 20,
+    width: wp('5%'),
+    height: hp('2.5%'),
   },
 });
