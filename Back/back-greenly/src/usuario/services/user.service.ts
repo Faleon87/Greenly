@@ -6,6 +6,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { User } from '../entities/user';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
+import { CreateUserDto } from '../dtos/create-user-dto';
 @Injectable()
 export class UserService {
   constructor(
@@ -76,17 +77,29 @@ export class UserService {
       throw new Error('ADMIN_PASSWORD is not defined');
     }
   }
+  async register(createUserDto: CreateUserDto): Promise<User> {
 
-  async register(user: any): Promise<User[]> {
-    const newUser = this.userRepository.create(user);
+    console.log('Received createUserDto:', createUserDto); 
+    const { password, ...userDetails } = createUserDto;
+
+    console.log('Password received:', password);
+    const hashedPassword = await this.hashPassword(password);
+
+    const newUser = this.userRepository.create({
+      ...userDetails,
+      password: hashedPassword,
+    });
+
     try {
       await this.userRepository.save(newUser);
     } catch (error) {
+      // Aquí podrías manejar errores específicos, por ejemplo, errores de duplicado
       throw new HttpException(
-        'Error saving user',
+        `Error saving user: ${error.message}`, // Aquí podrías personalizar el mensaje de error
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
     return newUser;
   }
 }

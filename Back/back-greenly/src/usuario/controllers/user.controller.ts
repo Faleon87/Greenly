@@ -1,7 +1,13 @@
-import { Body, Controller, Get, Post, Headers, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Headers,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from '../services/user.service';
-import { User } from '../entities/user';
-
+import { CreateUserDto } from '../dtos/create-user-dto';
 
 @Controller('user')
 export class UserController {
@@ -14,19 +20,9 @@ export class UserController {
     return this.userService.login(username, password);
   }
 
-
   @Post('register')
-  async register(
-    @Body('name') name: string,
-    @Body('email') email: string,
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Body('profileImage') profileImage: string,
-  ): Promise<any> {
-    const user = { name, email, username, password, profileImage };
-    return this.userService.register(user);
+  async register(@Body() createUserDto: CreateUserDto): Promise<any> {
+    // Ahora puedes pasar directamente createUserDto a tu servicio
+    return this.userService.register(createUserDto);
   }
-  
-
-  
 }

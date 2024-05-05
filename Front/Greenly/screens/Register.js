@@ -31,7 +31,7 @@ export default function RegisterScreen({ navigation }) {
             return;
         }
 
-        if (password.length < 8 && !/[!@#$%^&*(),.?":{}|<>]/g.test(password)) {
+        if (password.length < 8 || !/[!@#$%^&*(),.?":{}|<>]/g.test(password)) {
             Alert.alert('Password must be at least 8 characters long and contain a special character');
             return;
         }
@@ -41,16 +41,27 @@ export default function RegisterScreen({ navigation }) {
             return;
         }
         // Aquí puedes hacer la petición POST a tu API
-        fetch('http://10.0.2.2:3000/user/register', {
+        fetch('http://192.168.0.22:3000/user/register', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify({
-                name: name,
+                nombre: name,
                 email: email,
                 username: username,
                 password: password,
-                profileImage: profileImage.uri,
+                img: profileImage.uri,
             }),
-        });
+        }).then((response) => response.json())
+            .then((json) => {
+                console.log(json);
+                Alert.alert('User registered successfully');
+
+            }
+            ).catch((error) => {
+                console.error('Error:', error);
+            });
     }
 
     const selectProfileImage = async () => {
@@ -94,15 +105,6 @@ export default function RegisterScreen({ navigation }) {
 
         if (result && !result.cancelled) {
             setProfileImage({ uri: result.uri });
-            // Aquí puedes guardar la imagen en tu base de datos
-            // Por ejemplo, puedes hacer una petición POST a tu API
-            // fetch('https://tu-api.com/endpoint', {
-            //   method: 'POST',
-            //   body: JSON.stringify({
-            //     imageUri: result.uri,
-            //     // ... otros datos que quieras enviar
-            //   }),
-            // });
         }
     }
 
