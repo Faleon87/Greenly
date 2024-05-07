@@ -10,6 +10,7 @@ import Pantalla from './screens/Pantalla';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
 import IAScreen from "./screens/IA";
+import Admin from "./screens/Admin";
 
 import backButtonImage from './img/back.png';
 
@@ -73,6 +74,7 @@ export default function App() {
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="MapsScreen" component={MapsScreen}/>
         <Stack.Screen name="IAScreen" component={IAScreen}/>
+        <Stack.Screen name="Admin" component={Admin}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

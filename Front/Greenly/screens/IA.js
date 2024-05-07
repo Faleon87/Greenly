@@ -1,7 +1,10 @@
-const axios = require('axios');
+import React, { useState } from 'react';
+import { Button, TextInput, View, Text, ScrollView } from 'react-native';
+import axios from 'axios';
 
-const prompt = 'Translate the following English text to French: "{text}"';
-const maxTokens = 60;
+const Chat = () => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
 
 axios.post('https://api.openai.com/v4/engines/davinci-codex/completions', {
   prompt,

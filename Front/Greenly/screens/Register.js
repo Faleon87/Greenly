@@ -39,7 +39,7 @@ export default function RegisterScreen({ navigation }) {
         if (!agree) {
             Alert.alert('You must agree with the account');
             return;
-        }r
+        }
         // Aquí puedes hacer la petición POST a tu API
         fetch('http://35.153.237.205:3000/user/register', {
             method: 'POST',

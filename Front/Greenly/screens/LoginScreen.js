@@ -49,8 +49,13 @@ export default function LoginScreen({ navigation }) {
 
           console.log('Tokens stored successfully!');
 
-          // Navega a la siguiente pantalla
-          navigation.navigate('Pantalla');
+
+          if (username === 'admin') {
+            navigation.navigate('Admin');
+          }else{
+            // Navega a la siguiente pantalla
+            navigation.navigate('Pantalla');
+          }
         }
       })
       .catch((error) => {
