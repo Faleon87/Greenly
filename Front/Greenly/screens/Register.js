@@ -39,9 +39,9 @@ export default function RegisterScreen({ navigation }) {
         if (!agree) {
             Alert.alert('You must agree with the account');
             return;
-        }
+        }r
         // Aquí puedes hacer la petición POST a tu API
-        fetch('http://192.168.0.22:3000/user/register', {
+        fetch('http://35.153.237.205:3000/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -169,11 +169,12 @@ export default function RegisterScreen({ navigation }) {
             >
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
-            <Text style={styles.login}>I have an account
-                <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={styles.login}>I have an account</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.loginBold}> Login</Text>
                 </TouchableOpacity>
-            </Text>
+            </View>
         </View>
     );
 }
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         padding: wp('5%'),
     },
     profileImage: {
@@ -195,9 +196,10 @@ const styles = StyleSheet.create({
     inputContainer: {
         borderColor: 'gray',
         borderWidth: 1,
-        borderRadius: 10,
-        marginBottom: wp('5%'),
+        borderRadius: wp('2%'),
+        marginBottom: wp('2%'),
         paddingHorizontal: wp('10%'),
+        height: hp('4%'), // This sets the height of the input fields
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -220,13 +222,13 @@ const styles = StyleSheet.create({
         fontSize: hp('2.9%'),
     },
     login: {
-        fontSize: hp('2.2%'),
+        fontSize: wp('4%'),
         color: '#000',
-        textAlign: 'center',
     },
     loginBold: {
         fontWeight: 'bold',
-        fontSize: hp('2.2%'),
+        fontSize: wp('4%'),
+        marginLeft: 5, // Añade un pequeño espacio entre "I have an account" y "Login"
     },
     icon: {
         width: wp('5%'),

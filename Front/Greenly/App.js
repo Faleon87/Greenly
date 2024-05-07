@@ -8,6 +8,7 @@ import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Pantalla from './screens/Pantalla';
 import Register from './screens/Register';
+import MapsScreen from './screens/MapScreen';
 
 import backButtonImage from './img/back.png';
 
@@ -32,7 +33,7 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonLogin}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => { }}>
+        <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('Register')}}>
           <Text style={styles.buttonRegister}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -69,6 +70,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreenWithHeader}/>
         <Stack.Screen name="Pantalla" component={Pantalla}/>
         <Stack.Screen name="Register" component={Register}/>
+        <Stack.Screen name="MapsScreen" component={MapsScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

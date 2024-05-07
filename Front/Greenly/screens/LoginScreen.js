@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const login = async () => {
-    fetch('http://192.168.0.22:3000/user/login', {
+    fetch('http://35.153.237.205:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -125,11 +125,12 @@ export default function LoginScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <Text style={styles.signup}>Don't have an Account?
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={styles.signup}>Don't have an Account?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.signupBold}>Sign up here</Text>
         </TouchableOpacity>
-      </Text>
+      </View>
     </View>
   );
 }
