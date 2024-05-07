@@ -6,6 +6,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import image1 from '../img/dondeComenzar.png';
 import iconImage from '../img/placeholder.png';
 import image2 from '../img/solucionesEcologicas.jpg';
+import image3 from '../img/inteligenciaArtificial.jpg';
 import homeIcon from '../icons/home.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
 
 function Pantalla() {
@@ -22,8 +23,8 @@ function Pantalla() {
         <Image source={image2} style={styles.image} />
       </TouchableOpacity>
       <Text style={styles.text}>Donde Comenzar?</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('MapsScreen')}>
-        <Image source={image2} style={styles.image} />
+      <TouchableOpacity onPress={() => navigation.navigate('IAScreen')}>
+        <Image source={image3} style={styles.image} />
       </TouchableOpacity>
     </ScrollView>
   );

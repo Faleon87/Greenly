@@ -9,6 +9,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Pantalla from './screens/Pantalla';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
+import IAScreen from "./screens/IA";
 
 import backButtonImage from './img/back.png';
 
@@ -71,6 +72,7 @@ export default function App() {
         <Stack.Screen name="Pantalla" component={Pantalla}/>
         <Stack.Screen name="Register" component={Register}/>
         <Stack.Screen name="MapsScreen" component={MapsScreen}/>
+        <Stack.Screen name="IAScreen" component={IAScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
