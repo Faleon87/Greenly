@@ -1,10 +1,7 @@
 import {
   Body,
-  Controller,
-  Get,
+  Controller,  
   Post,
-  Headers,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dtos/create-user-dto';

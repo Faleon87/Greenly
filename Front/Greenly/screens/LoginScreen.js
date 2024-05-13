@@ -4,8 +4,8 @@ import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as SecureStore from 'expo-secure-store';
 // Importa tus imágenes aquí
-import eyeIcon from '../img/view.png';
-import eyeSlashIcon from '../img/hide.png';
+import eyeIcon from '../img/hide.png';
+import eyeSlashIcon from '../img/view.png';
 import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
 
 export default function LoginScreen({ navigation }) {
@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const login = async () => {
-    fetch('http://35.153.237.205:3000/user/login', {
+    fetch('http://192.168.0.22:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export default function LoginScreen({ navigation }) {
 
           if (username === 'admin') {
             navigation.navigate('Admin');
-          }else{
+          } else {
             // Navega a la siguiente pantalla
             navigation.navigate('Pantalla');
           }

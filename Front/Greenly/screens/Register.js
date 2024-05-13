@@ -41,7 +41,7 @@ export default function RegisterScreen({ navigation }) {
             return;
         }
         // Aquí puedes hacer la petición POST a tu API
-        fetch('http://35.153.237.205:3000/user/register', {
+        fetch('http://192.168.0.22:3000/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
