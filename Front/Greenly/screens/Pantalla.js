@@ -1,12 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import image1 from '../img/dondeComenzar.png';
-import iconImage from '../img/placeholder.png';
-import image2 from '../img/solucionesEcologicas.jpg';
+import image1 from '../img/dondeComenzar.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu imagen
+import iconImage from '../img/placeholder.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu icono
+import image2 from '../img/solucionesEcologicas.jpg'; // Asegúrate de reemplazar esto con la ruta correcta a tu imagen
 import homeIcon from '../icons/home.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import plantasIcon from '../icons/leaf.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import chatForm from '../icons/chat.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import calend from '../icons/calendario.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import fertilizante from '../icons/fertilizante.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import cameraIcon from '../icons/camera.png'; // Asegúrate de reemplazar esto con la ruta correcta a tu archivo de icono
+import CameraScreen from './Camera';
+
+
+
+
 
 function Pantalla() {
   const navigation = useNavigation();
@@ -49,7 +59,73 @@ function MyTabs() {
           ),
         }}
       />
-      <Tab.Screen name="Settings" component={Pantalla} />
+      <Tab.Screen name="Plantas" 
+      component={Pantalla}
+      options={{
+        tabBarIcon: ({ focused, size }) => (
+          <Image source={plantasIcon} style={{ width: size, height: size,
+            tintColor: focused ? '#02907D' : '#ffff'
+          }} />
+        ),
+      }}
+      />
+      <Tab.Screen name="Form" 
+      component={Pantalla}
+      options={{
+        tabBarIcon: ({ focused, size }) => (
+          <Image source={chatForm} style={{ width: size, height: size,
+            tintColor: focused ? '#02907D' : '#ffff'
+          }} />
+        ),
+      }}
+      />
+      <Tab.Screen 
+  name="Camera" 
+  component={CameraScreen} // Reemplaza esto con el componente que quieras que se muestre cuando se selecciona la pestaña de la cámara
+  options={{
+    tabBarIcon: ({ focused, size }) => (
+      <Image source={cameraIcon} style={{ width: size, height: size,
+        tintColor: focused ? '#02907D' : '#ffff'
+      }} />
+    ),
+    tabBarButton: (props) => (
+      <TouchableOpacity {...props} style={{
+        position: 'absolute',
+        top: '-100%', // Ajusta esto para mover el botón hacia arriba o hacia abajo
+        left: '50%', // Centra el botón horizontalmente
+        transform: [{ translateX: -wp("7.5%") }], // Desplaza el botón a la izquierda en la mitad de su ancho para centrarlo correctamente
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 35,
+        width: wp("15%"), // Esto hace que el botón sea redondo
+        height: wp("15%"), // Esto hace que el botón sea redondo
+        backgroundColor: '#2C1001',
+        
+      }}>
+      </TouchableOpacity>
+    ),
+  }}
+/>
+       <Tab.Screen name="Calendar" 
+      component={Pantalla}
+      options={{
+        tabBarIcon: ({ focused, size }) => (
+          <Image source={calend} style={{ width: size, height: size,
+            tintColor: focused ? '#02907D' : '#ffff'
+          }} />
+        ),
+      }}
+      />
+      <Tab.Screen name="Fertilizante" 
+      component={Pantalla}
+      options={{
+        tabBarIcon: ({ focused, size }) => (
+          <Image source={fertilizante} style={{ width: size, height: size,
+            tintColor: focused ? '#02907D' : '#ffff'
+          }} />
+        ),
+      }}
+      />
     </Tab.Navigator>
   );
 }

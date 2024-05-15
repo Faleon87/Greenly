@@ -75,7 +75,7 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.label}>Email Address or User Name</Text>
       <Input
         placeholder="Enter your email or username"
-        inputContainerStyle={styles.inputContainer}
+        inputContainerStyle={[styles.inputContainer, usernameError ? styles.errorInput : null]}
         inputStyle={{ marginLeft: wp('3%') }}
         value={username}
         onChangeText={(text) => {
@@ -88,7 +88,7 @@ export default function LoginScreen({ navigation }) {
       <Input
         placeholder="Enter your password"
         secureTextEntry={hidePassword}
-        inputContainerStyle={styles.inputContainer}
+        inputContainerStyle={[styles.inputContainer, passwordError ? styles.errorInput : null]}
         inputStyle={{ marginLeft: wp('3%') }}
         value={password}
         onChangeText={(text) => {
@@ -124,7 +124,8 @@ export default function LoginScreen({ navigation }) {
           } else {
             setError('');
             setIsLoading(true);
-            login();
+           //login();
+           navigation.navigate('Pantalla');
           }
         }}
       >
@@ -147,6 +148,9 @@ const styles = StyleSheet.create({
     fontSize: hp('2%'),
     textAlign: 'center',
     marginTop: wp('-10%'),
+  },
+  errorInput: {
+    borderColor: 'red',
   },
   container: {
     flex: 1,

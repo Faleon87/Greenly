@@ -10,7 +10,6 @@ import Pantalla from './screens/Pantalla';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
 import Admin from "./screens/Admin";
-
 import backButtonImage from './img/back.png';
 
 const Stack = createStackNavigator();
