@@ -91,12 +91,12 @@ export default function LoginScreen({ navigation }) {
         <CheckBox
           checked={isSelected}
           onPress={() => {
-            setSelection(!isSelected);
+            setSelection(!isSelected); // Cambia el estado del checkbox
             setError(''); // Limpiar el error cuando el checkbox se marca
           }}
           checkedColor='#03453D'
         />
-        <Text style={styles.labelCheckbox}>Keep me signed in</Text>
+        <Text style={styles.labelCheckbox}>Keep me signed in</Text> 
       </View>
       <Text>
         {error ? <Text style={styles.error}>{error}</Text> : null} {/* Muestra el error si existe */}
@@ -109,8 +109,7 @@ export default function LoginScreen({ navigation }) {
           } else {
             setError('');
             setIsLoading(true);
-           //login();
-           navigation.navigate('Pantalla');
+            login();
           }
         }}
       >

@@ -10,9 +10,6 @@ export const loginUser = async (username, password) => {
       }),
     });
   
-    if (!response.ok) {
-      throw new Error('Network response was not ok'); // Lanza un error si la respuesta no es correcta
-    }
   
     const data = await response.json(); // Convierte la respuesta en un objeto JSON
   
