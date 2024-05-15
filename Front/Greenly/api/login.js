@@ -1,0 +1,30 @@
+export const loginUser = async (username, password) => {
+    const response = await fetch('http://192.168.0.22:3000/user/login', { // Cambiar la IP por la de tu servidor
+      method: 'POST', // Método HTTP POST
+      headers: { // Cabeceras de la petición
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: username, // Nombre de usuario
+        password: password, // Contraseña
+      }),
+    });
+  
+    if (!response.ok) {
+      throw new Error('Network response was not ok'); // Lanza un error si la respuesta no es correcta
+    }
+  
+    const data = await response.json(); // Convierte la respuesta en un objeto JSON
+  
+    if (data.message) {
+      if (data.message.includes('User')) { // Comprueba si el mensaje contiene la palabra 'User'
+        throw new Error('UserError:' + data.message); // Lanza un error personalizado
+      } else if (data.message.includes('password')) { // Comprueba si el mensaje contiene la palabra 'password'
+        throw new Error('PasswordError:' + data.message); // Lanza un error personalizado
+      } else { 
+        throw new Error(data.message); // Lanza un error con el mensaje recibido
+      }
+    }
+  
+    return data;
+  };

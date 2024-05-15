@@ -7,6 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 import eyeIcon from '../img/hide.png';
 import eyeSlashIcon from '../img/view.png';
 import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
+import { loginUser } from '../api/login';
 
 export default function LoginScreen({ navigation }) {
   const [isSelected, setSelection] = React.useState(false);
@@ -21,50 +22,34 @@ export default function LoginScreen({ navigation }) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const login = async () => {
-    fetch('http://192.168.0.22:3000/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }),
-    })
-      .then((response) => response.json())
-      .then(async (data) => {
-        setIsLoading(false);
-        if (data.message) {
-          if (data.message.includes('User')) {
-            setUsernameError(data.message)
-          } else if (data.message.includes('password')) {
-            setPasswordError(data.message)
-          } else {
-            setError(data.message);
-          }
-        } else {
-          // Almacena los tokens en SecureStore
-          await SecureStore.setItemAsync('accessToken', data.accessToken);
-          await SecureStore.setItemAsync('refreshToken', data.refreshToken);
+    setIsLoading(true);
+    try {
+      const data = await loginUser(username, password);
+      setIsLoading(false);
 
-          console.log('Tokens stored successfully!');
+      // Almacena los tokens en SecureStore
+      await SecureStore.setItemAsync('accessToken', data.accessToken);
+      await SecureStore.setItemAsync('refreshToken', data.refreshToken);
 
+      console.log('Tokens stored successfully!');
 
-          if (username === 'admin') {
-            navigation.navigate('Admin');
-          } else {
-            // Navega a la siguiente pantalla
-            navigation.navigate('Pantalla');
-          }
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error(error); // Imprime la excepción en la consola
-        setError('An error occurred. Please try again later.');
-      });
-  }
-
+      if (username === 'admin') {
+        navigation.navigate('Admin');
+      } else {
+        // Navega a la siguiente pantalla
+        navigation.navigate('Pantalla');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      if (error.message.startsWith('UserError:')) {
+        setUsernameError(error.message.substring(10));
+      } else if (error.message.startsWith('PasswordError:')) {
+        setPasswordError(error.message.substring(14));
+      } else {
+        setError(error.message);
+      }
+    }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
