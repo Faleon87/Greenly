@@ -1,6 +1,14 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+} from '@nestjs/common';
 import { PlantasService } from '../services/plantas.service';
 import { Plantas } from '../entities/plantas';
+import { UpdatePlantasDto } from '../dtos/planta-dto';
 
 @Controller('plantas')
 export class PlantasController {
@@ -11,9 +19,12 @@ export class PlantasController {
     return this.plantasService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<Plantas> {
-    return this.plantasService.findOne(id);
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatedData: UpdatePlantasDto,
+  ): Promise<Plantas> {
+    return this.plantasService.update(id, updatedData);
   }
 
   // Aquí puedes agregar más manejadores de ruta según las necesidades de tu aplicación,

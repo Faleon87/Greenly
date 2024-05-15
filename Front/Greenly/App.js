@@ -11,6 +11,7 @@ import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
 import Admin from "./screens/Admin";
 import backButtonImage from './img/back.png';
+import Plantas from './screens/Plantas';
 
 const Stack = createStackNavigator();
 
@@ -33,7 +34,7 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonLogin}>Login</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('Register')}}>
+        <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Register') }}>
           <Text style={styles.buttonRegister}>Register</Text>
         </TouchableOpacity>
       </View>
@@ -49,11 +50,11 @@ function LoginScreenWithHeader({ navigation }) {
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image source={backButtonImage}
-          style={styles.backButtonImage}
+            style={styles.backButtonImage}
           />
         </TouchableOpacity>
       ),
-      headerStyle:{
+      headerStyle: {
         backgroundColor: 'white',
       }
     });
@@ -66,12 +67,23 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={LoginScreenWithHeader}/>
-        <Stack.Screen name="Pantalla" component={Pantalla}/>
-        <Stack.Screen name="Register" component={Register}/>
-        <Stack.Screen name="MapsScreen" component={MapsScreen}/>
-        <Stack.Screen name="Admin" component={Admin}/>
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, headerShadowVisible: false }} />
+        <Stack.Screen name="Login" component={LoginScreenWithHeader} />
+        <Stack.Screen
+          name="Pantalla"
+          component={Pantalla}
+          options={{
+            headerStyle: {
+              backgroundColor: '#02907D', // Cambia el color de fondo de la barra de navegación
+            },
+            headerTitle: '', // Establece el título de la barra de navegación como una cadena vacía
+            headerShadowVisible: false, // Oculta la sombra de la barra de navegación
+          }}
+        />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="MapsScreen" component={MapsScreen} />
+        <Stack.Screen name="Admin" component={Admin} />
+        <Stack.Screen name="Plantas" component={Plantas} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -132,7 +144,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp('2%'),
     textAlign: 'center',
   },
-  backButtonImage:{
+  backButtonImage: {
     width: wp('10%'),
     height: hp('5%'),
     marginLeft: wp('2%'),

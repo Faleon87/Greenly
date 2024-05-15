@@ -12,7 +12,7 @@ import chatForm from '../icons/chat.png';
 import calend from '../icons/calendario.png';
 import fertilizante from '../icons/fertilizante.png';
 import cameraIcon from '../icons/camera.png';
-import {identifyPlant} from '../api/cameraPlants';
+import { identifyPlant } from '../api/cameraPlants';
 import * as ImagePicker from 'expo-image-picker';
 
 function Pantalla() {
@@ -32,26 +32,26 @@ function Pantalla() {
   );
 }
 
-function App(){
+function App() {
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (status !== 'granted') {
       alert('Necesitamos permisos para acceder a tus fotos.');
       return;
     }
-  
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
-    
-  
+
+
 
     if (result && !result.cancelled) {
-    identifyPlant(result.assets[0].uri);
+      identifyPlant(result.assets[0].uri);
     }
   };
 
@@ -63,9 +63,9 @@ function App(){
 
 const Tab = createBottomTabNavigator();
 
-function MyTabs({selectImage}) {
+function MyTabs({ selectImage }) {
 
-
+  const navigation = useNavigation();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -96,6 +96,11 @@ function MyTabs({selectImage}) {
               width: size, height: size,
               tintColor: focused ? '#02907D' : '#ffff'
             }} />
+          ), tabBarButton: (props) => (
+            <TouchableOpacity
+              {...props}
+              onPress={() => navigation.navigate('Plantas')}
+            />
           ),
         }}
       />
@@ -108,11 +113,12 @@ function MyTabs({selectImage}) {
               tintColor: focused ? '#02907D' : '#ffff'
             }} />
           ),
+
         }}
       />
       <Tab.Screen
         name="Camera"
-       component={Pantalla} 
+        component={Pantalla}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={cameraIcon} style={{

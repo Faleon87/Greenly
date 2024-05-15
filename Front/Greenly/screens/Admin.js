@@ -4,9 +4,11 @@ import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { fetchPlants } from '../api/adminPlantas';
+import { updatePlant } from '../api/updatePlantas';
 
 export default function App() {
   const [data, setData] = useState([]);
+  const [editData, setEditData] = useState(null);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
@@ -29,51 +31,64 @@ export default function App() {
     ), [search, data]);
 
   const handleInputChange = useCallback((text, id, field) => {
-    setData(prevData => prevData.map(item => item.idPlanta === id ? { ...item, [field]: text } : item));
-  }, []);
-
-  const handleUpdate = useCallback((id) => {
-    const item = data.find(item => item.idPlanta === id);
-    updatePlant(id, item)
-      .then(json => console.log(json))
-      .catch(error => console.error(error));
+    setEditData(prevData => {
+      if (prevData && prevData.idPlanta === id) {
+        return { ...prevData, [field]: text };
+      }
+      const item = data.find(item => item.idPlanta === id);
+      return { ...item, [field]: text };
+    });
   }, [data]);
 
-  const renderItem = ({ item }) => (
-    <View key={item.idPlanta} style={styles.itemContainer}>
-      <TextInput
-        label="Nombre de la planta"
-        value={item.nombrePlanta}
-        onChangeText={(text) => handleInputChange(text, item.idPlanta, 'nombrePlanta')}
-        style={styles.itemInput}
-        theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
-      />
-      <TextInput
-        label="Nombre científico"
-        value={item.nombreCientifico}
-        onChangeText={(text) => handleInputChange(text, item.idPlanta, 'nombreCientifico')}
-        style={styles.itemInput}
-        theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
-      />
-      <TextInput
-        label="Identificación de la planta"
-        value={item.identificacion}
-        onChangeText={(text) => handleInputChange(text, item.idPlanta, 'nombreCientifico')}
-        style={styles.itemInput}
-        theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
-      />
-      <TextInput
-        label="Imagen"
-        value={item.img}
-        onChangeText={(text) => handleInputChange(text, item.idPlanta, 'nombreImg')}
-        style={styles.itemInput}
-        theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
-      />
-      <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(item.idPlanta)}>
-        <Text style={styles.updateButtonText}>Actualizar</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const handleUpdate = useCallback((id) => {
+    const item = editData || data.find(item => item.idPlanta === id);
+    updatePlant(id, item)
+      .then(json => {
+        console.log(json);
+        setData(prevData => prevData.map(item => item.idPlanta === id ? { ...item, ...editData } : item));
+        setEditData(null);
+      })
+      .catch(error => console.error(error));
+  }, [data, editData]);
+
+  const renderItem = ({ item }) => {
+    const editItem = editData && editData.idPlanta === item.idPlanta ? editData : item;
+    return (
+      <View key={editItem.idPlanta} style={styles.itemContainer}>
+        <TextInput
+          label="Nombre de la planta"
+          value={editItem.nombrePlanta}
+          onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'nombrePlanta')}
+          style={styles.itemInput}
+          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+        />
+        <TextInput
+          label="Nombre científico"
+          value={editItem.nombreCientifico}
+          onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'nombreCientifico')}
+          style={styles.itemInput}
+          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+        />
+        <TextInput
+          label="Identificación de la planta"
+          value={editItem.identificacion}
+          onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'identificacion')}
+          style={styles.itemInput}
+          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+        />
+        <TextInput
+          label="Imagen"
+          value={editItem.img}
+          onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'img')}
+          style={styles.itemInput}
+          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+        />
+        <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(editItem.idPlanta)}>
+          <Text style={styles.updateButtonText}>Actualizar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -86,7 +101,7 @@ export default function App() {
       />
       <Text style={styles.totalPlantsText}>Total de plantas: {data.length}</Text>
       {isLoading ? (
-        <Text style={styles.loadingText}>Cargando...</Text> // Mostrar texto de carga cuando los datos se están obteniendo
+        <Text style={styles.loadingText}>Cargando...</Text>
       ) : filteredData.length > 0 ? (
         <FlatList
           data={filteredData}
