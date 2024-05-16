@@ -52,6 +52,9 @@ export default function App() {
   }, [data, editData]);
 
   const renderItem = ({ item }) => {
+
+    const theme = { colors: { primary: '#4CAF50', text: 'black' } };
+
     const editItem = editData && editData.idPlanta === item.idPlanta ? editData : item;
     return (
       <View key={editItem.idPlanta} style={styles.itemContainer}>
@@ -60,28 +63,28 @@ export default function App() {
           value={editItem.nombrePlanta}
           onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'nombrePlanta')}
           style={styles.itemInput}
-          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+          theme={theme}
         />
         <TextInput
           label="Nombre científico"
           value={editItem.nombreCientifico}
           onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'nombreCientifico')}
           style={styles.itemInput}
-          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+          theme={theme}
         />
         <TextInput
           label="Identificación de la planta"
           value={editItem.identificacion}
           onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'identificacion')}
           style={styles.itemInput}
-          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+          theme={theme}
         />
         <TextInput
           label="Imagen"
           value={editItem.img}
           onChangeText={(text) => handleInputChange(text, editItem.idPlanta, 'img')}
           style={styles.itemInput}
-          theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
+          theme={theme}
         />
         <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(editItem.idPlanta)}>
           <Text style={styles.updateButtonText}>Actualizar</Text>
@@ -97,7 +100,6 @@ export default function App() {
         value={search}
         onChangeText={setSearch}
         style={styles.searchInput}
-        theme={{ colors: { primary: '#4CAF50', text: 'black' } }}
       />
       <Text style={styles.totalPlantsText}>Total de plantas: {data.length}</Text>
       {isLoading ? (
