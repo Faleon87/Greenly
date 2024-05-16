@@ -109,7 +109,8 @@ export default function LoginScreen({ navigation }) {
           } else {
             setError('');
             setIsLoading(true);
-            login();
+            //login();
+            navigation.navigate('Pantalla');
           }
         }}
       >

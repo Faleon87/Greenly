@@ -6,13 +6,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import Pantalla from './screens/Pantalla';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
 import Admin from "./screens/Admin";
 import backButtonImage from './img/back.png';
+import MyTabs from './screens/MyTabs'; // Asegúrate de que la ruta al archivo MyTabs.js sea correcta
 import Plantas from './screens/Plantas';
-
 const Stack = createStackNavigator();
 
 function HomeScreen({ navigation }) {
@@ -71,7 +70,7 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreenWithHeader} />
         <Stack.Screen
           name="Pantalla"
-          component={Pantalla}
+          component={MyTabs} // Aquí es donde reemplazas Pantalla con MyTabs
           options={{
             headerStyle: {
               backgroundColor: '#02907D', // Cambia el color de fondo de la barra de navegación
@@ -88,7 +87,6 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

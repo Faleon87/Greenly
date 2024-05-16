@@ -29,24 +29,12 @@ export async function identifyPlant(imageUri) {
       },
     });
 
-    let data = await response.text();
+    let data = await response.json();
+    console.log(data);
     let plantName = data.suggestions[0].plant_name; // Nombre científico de la planta
-
-    let trefleResponse = await fetch(`https://api.trefle.io/v1/plants/search?token=orpA3rmln5tthbEZJLb7MXOG1H603-ep27pYS8pE6kw&q=${plantName}`);
-    let trefleData = await trefleResponse.json();
-
-    let commonName = trefleData.data[0].common_name;
-
-    console.log(commonName); // Nombre común de la planta
-
-    Alert.alert(
-      'Planta identificada',
-      `Nombre común: ${commonName}\nNombre científico: ${plantName}`,
-    );
-
-
-    // Resto de tu código...
+    Alert.alert('Planta identificada', 'La planta identificada es por su nombre cientifico: ' + plantName);
   } catch (error) {
     console.error(error);
+    Alert.alert('Error', 'Ha ocurrido un error al identificar la planta.');
   }
 }
