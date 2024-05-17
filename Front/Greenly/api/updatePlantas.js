@@ -1,3 +1,5 @@
+import { Alert } from "react-native";
+
 export const updatePlant = async (id, updatedData) => {
     try {
         const response = await fetch(`http://192.168.0.22:3000/plantas/${id}`, {
@@ -13,6 +15,7 @@ export const updatePlant = async (id, updatedData) => {
         }
 
         const data = await response.json();
+        Alert.alert('Planta actualizada', 'La planta ha sido actualizada correctamente.');
         return data;
     } catch (error) {
         console.error('Error:', error);

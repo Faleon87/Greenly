@@ -1,6 +1,6 @@
-async function getPlantas() {
+export async function getPlantas() {
     try {
-        const response = await fetch('https://api.example.com/plantas');
+        const response = await fetch('http://192.168.0.22:3000/plantas');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

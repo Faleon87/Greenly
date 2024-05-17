@@ -1,5 +1,5 @@
 export const loginUser = async (username, password) => {
-    const response = await fetch('http://192.168.0.22:3000/user/login', { // Cambiar la IP por la de tu servidor
+      const response = await fetch('http://192.168.0.22:3000/user/login', { // Cambiar la IP por la de tu servidor
       method: 'POST', // Método HTTP POST
       headers: { // Cabeceras de la petición
         'Content-Type': 'application/json',
@@ -9,8 +9,6 @@ export const loginUser = async (username, password) => {
         password: password, // Contraseña
       }),
     });
-  
-  
     const data = await response.json(); // Convierte la respuesta en un objeto JSON
   
     if (data.message) {
@@ -22,6 +20,7 @@ export const loginUser = async (username, password) => {
         throw new Error(data.message); // Lanza un error con el mensaje recibido
       }
     }
+   
   
     return data;
   };

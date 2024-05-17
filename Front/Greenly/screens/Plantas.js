@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, TextInput, FlatList, Image, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import { getPlantas } from '../api/getPlantas';
-import { LargeList } from 'react-native-large-list'
+import  {getPlantas}  from '../api/getPlantas';
+import { debounce } from 'lodash'; // Make sure to install this package
+
 
 
 const Plantas = () => {
