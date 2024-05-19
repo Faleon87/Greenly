@@ -2,34 +2,71 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { View, TextInput, FlatList, Image, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
-import  {getPlantas}  from '../api/getPlantas';
-import { debounce } from 'lodash'; // Make sure to install this package
-
+import { getPlantas } from '../api/getPlantas';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const Plantas = () => {
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [plantas, setPlantas] = useState([]);
   const [page, setPage] = useState(1);
 
   useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [search]);
+
+  useEffect(() => {
     const fetchPlantas = async () => {
       const data = await getPlantas(page);
-      setPlantas(oldPlantas => [...oldPlantas, ...data]);
+      setPlantas(oldPlantas => {
+        const plantasMap = new Map();
+        [...oldPlantas, ...data].forEach(planta => {
+          plantasMap.set(planta.idPlanta, planta);
+        });
+        return Array.from(plantasMap.values());
+      });
     };
 
     fetchPlantas();
   }, [page]);
 
+ 
+
   const loadMorePlantas = () => {
     setPage(oldPage => oldPage + 1);
   };
 
-  const debouncedSearch = debounce(setSearch, 300);
-
   const filteredPlantas = useMemo(() => {
-    return plantas.filter(planta => planta.nombre.includes(search));
-  }, [plantas, search]);
+    const normalizedSearch = debouncedSearch
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  
+    return plantas.filter(planta => {
+      const normalizedNombrePlanta = planta.nombrePlanta
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+  
+      const normalizedNombreCientifico = planta.nombreCientifico
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+  
+      return normalizedNombrePlanta.includes(normalizedSearch) || normalizedNombreCientifico.includes(normalizedSearch);
+    });
+  }, [plantas, debouncedSearch]);
+
+
+
+  
 
   return (
     <View style={styles.container}>
@@ -38,27 +75,36 @@ const Plantas = () => {
         <TextInput
           style={styles.searchInput}
           value={search}
-          onChangeText={text => debouncedSearch(text)}
+          onChangeText={text => setSearch(text)}
           placeholder="Buscar plantas..."
           placeholderTextColor="#888"
         />
       </View>
+      {filteredPlantas.length > 0 ?(
       <FlatList
         data={filteredPlantas}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.idPlanta.toString()}
         renderItem={({ item }) => (
           <View style={styles.item}>
-            <Image source={{ uri: item.imagen }} style={styles.image} />
-            <Text>{item.nombre}</Text>
+            <Image source={{ uri: item.img }} style={styles.image} />
+            <LinearGradient
+              colors={['transparent', 'black']}
+              style={styles.gradient} />
+            <Text style={styles.itemText}>{item.nombrePlanta}</Text>
           </View>
         )}
+        numColumns={2} // Add this line
         onEndReached={loadMorePlantas}
         onEndReachedThreshold={0.5}
         initialNumToRender={10}
         maxToRenderPerBatch={10}
         windowSize={10}
         removeClippedSubviews={true}
+        showsVerticalScrollIndicator={false}
       />
+      ) : (
+        <Text style={styles.noResults}>Lo siento, no se encuenta disponible</Text>
+      )}
     </View>
   );
 };
@@ -68,14 +114,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#f5f5f5',
+    marginBottom: 40,
+  },
+  noResults: {
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#888',
   },
   searchSection: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: 40,
+    height: wp('10%'),
+    width: wp('95%'),
     borderRadius: 20,
+    marginRight: 40,
     marginBottom: 10,
   },
   searchIcon: {
@@ -92,14 +146,43 @@ const styles = StyleSheet.create({
     color: '#424242',
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
+    flex: 1,
+    flexDirection: 'column',
+    margin: 5,
+    borderRadius: 10,
+    height: wp('55%'),
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 1, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
   },
   image: {
-    width: wp('20%'),
-    height: wp('20%'),
-    marginRight: 10,
+    width: wp('100%'),
+    height: wp('100%'),
+    justifyContent: 'center',
+    alignSelf: 'center',
+  },
+  itemText: {
+    position: 'absolute',
+    bottom: 0,
+    color: '#fff',
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(0, 0, 0, 0.7)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '50%',
   },
 });
 
