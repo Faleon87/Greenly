@@ -23,16 +23,28 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./img/Logo.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE", "INTERNET"]
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ],
+      "jsEngine": "hermes",
+      "package": "com.vigu.Greenly"
     },
     "web": {
       "favicon": "./img/Logo.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c5467638-511f-433c-8bee-54a646947a68"
+      }
+    }
   }
 }

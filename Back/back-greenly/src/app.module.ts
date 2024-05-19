@@ -8,6 +8,11 @@ import { Plantas } from './plantas/entities/plantas';
 import { UserController } from './usuario/controllers/user.controller';
 import { UserService } from './usuario/services/user.service';
 import { User } from './usuario/entities/user';
+import { FotoPreguntas } from './chat/entities/foto-preguntas';
+import { Pregunta } from './chat/entities/pregunta';
+import { Likes } from './chat/entities/likes';
+import{ Respuestas} from './chat/entities/respuestas';
+import{ BenefPerd} from './beneficios_per/entities/benef_perd';
 
 @Module({
   imports: [
@@ -18,7 +23,7 @@ import { User } from './usuario/entities/user';
       username: 'viju', // Cambia esto por tu nombre de usuario
       password: 'Viju2003$', // Cambia esto por tu contraseña
       database: 'postgres', // Cambia esto por tu nombre de base de datos
-      entities: [Plantas, User],
+      entities: [Plantas, User, FotoPreguntas, Pregunta, Likes, Respuestas, BenefPerd],
       synchronize: true,
       ssl: true,
       extra: {

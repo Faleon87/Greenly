@@ -1,8 +1,8 @@
-import React from 'react';
+import React  from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // Importa tus imágenes aquí
 import eyeIcon from '../img/hide.png';
 import eyeSlashIcon from '../img/view.png';
@@ -21,17 +21,25 @@ export default function LoginScreen({ navigation }) {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+ 
+  
+
+
+
   const login = async () => {
     setIsLoading(true);
     try {
       const data = await loginUser(username, password);
       setIsLoading(false);
+   
+     
+       // Guarda el nombre de usuario en AsyncStorage
+    await AsyncStorage.setItem('nombre', data.username);
+    await AsyncStorage.setItem('img', data.img);
+    
+    await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
 
-      // Almacena los tokens en SecureStore
-      await SecureStore.setItemAsync('accessToken', data.accessToken);
-      await SecureStore.setItemAsync('refreshToken', data.refreshToken);
-
-      console.log('Tokens stored successfully!');
+     
 
       if (username === 'admin') {
         navigation.navigate('Admin');

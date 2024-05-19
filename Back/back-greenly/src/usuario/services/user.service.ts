@@ -18,7 +18,7 @@ export class UserService {
   async login(
     username: string,
     password: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<User> {
     const user = await this.userRepository.findOne({
       where: [{ username: username }, { email: username }],
     });
@@ -37,15 +37,10 @@ export class UserService {
     const accessToken = jwt.sign(
       { userId: user.idUser },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '1h' },
+      { expiresIn: '7d' },
     );
 
-    const refreshToken = jwt.sign(
-      { userId: user.idUser },
-      process.env.REFRESH_TOKEN_SECRET,
-    );
-
-    return { accessToken, refreshToken };
+    return user;
   }
 
   async hashPassword(password: string): Promise<string> {

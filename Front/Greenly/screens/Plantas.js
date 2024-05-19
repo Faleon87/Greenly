@@ -4,13 +4,16 @@ import { Ionicons } from '@expo/vector-icons'; // Make sure to install this pack
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getPlantas } from '../api/getPlantas';
 import { LinearGradient } from 'expo-linear-gradient';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const Plantas = () => {
+const Plantas = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [plantas, setPlantas] = useState([]);
   const [page, setPage] = useState(1);
+
+
 
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -37,7 +40,7 @@ const Plantas = () => {
     fetchPlantas();
   }, [page]);
 
- 
+
 
   const loadMorePlantas = () => {
     setPage(oldPage => oldPage + 1);
@@ -48,25 +51,25 @@ const Plantas = () => {
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
-  
+
     return plantas.filter(planta => {
       const normalizedNombrePlanta = planta.nombrePlanta
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-  
+
       const normalizedNombreCientifico = planta.nombreCientifico
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-  
+
       return normalizedNombrePlanta.includes(normalizedSearch) || normalizedNombreCientifico.includes(normalizedSearch);
     });
   }, [plantas, debouncedSearch]);
 
 
 
-  
+
 
   return (
     <View style={styles.container}>
@@ -80,28 +83,30 @@ const Plantas = () => {
           placeholderTextColor="#888"
         />
       </View>
-      {filteredPlantas.length > 0 ?(
-      <FlatList
-        data={filteredPlantas}
-        keyExtractor={item => item.idPlanta.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Image source={{ uri: item.img }} style={styles.image} />
-            <LinearGradient
-              colors={['transparent', 'black']}
-              style={styles.gradient} />
-            <Text style={styles.itemText}>{item.nombrePlanta}</Text>
-          </View>
-        )}
-        numColumns={2} // Add this line
-        onEndReached={loadMorePlantas}
-        onEndReachedThreshold={0.5}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        removeClippedSubviews={true}
-        showsVerticalScrollIndicator={false}
-      />
+      {filteredPlantas.length > 0 ? (
+        <FlatList
+          data={filteredPlantas}
+          keyExtractor={item => item.idPlanta.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity  onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta })}>
+              <View style={styles.item}>
+                <Image source={{ uri: item.img }} style={styles.image} resizeMode='cover' />
+                <LinearGradient
+                  colors={['transparent', 'rgba(0,0,0,1)']}
+                  style={styles.gradient} />
+                <Text style={styles.itemText}>{item.nombrePlanta}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          numColumns={2} // Add this line
+          onEndReached={loadMorePlantas}
+          onEndReachedThreshold={0.5}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          removeClippedSubviews={true}
+          showsVerticalScrollIndicator={false}
+        />
       ) : (
         <Text style={styles.noResults}>Lo siento, no se encuenta disponible</Text>
       )}
@@ -151,6 +156,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     height: wp('55%'),
+    width: wp('45%'),
     overflow: 'hidden',
     backgroundColor: '#fff',
     elevation: 1,
@@ -160,8 +166,8 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
   },
   image: {
-    width: wp('100%'),
-    height: wp('100%'),
+    width: wp('100%'), // fixed width
+    height: 200, // fixed height
     justifyContent: 'center',
     alignSelf: 'center',
   },
@@ -172,10 +178,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.7)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    fontWeight: 'bold'
   },
   gradient: {
     position: 'absolute',

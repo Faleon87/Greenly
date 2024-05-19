@@ -1,9 +1,13 @@
 import {
   Body,
   Controller,  
+  Get,  
   Post,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
+
 import { CreateUserDto } from '../dtos/create-user-dto';
 
 @Controller('user')
@@ -22,4 +26,7 @@ export class UserController {
     // Ahora puedes pasar directamente createUserDto a tu servicio
     return this.userService.register(createUserDto);
   }
+
+  
+ 
 }

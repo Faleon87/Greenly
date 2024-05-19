@@ -12,6 +12,9 @@ import Admin from "./screens/Admin";
 import backButtonImage from './img/back.png';
 import MyTabs from './screens/MyTabs'; // Asegúrate de que la ruta al archivo MyTabs.js sea correcta
 import Plantas from './screens/Plantas';
+import Form from './screens/Form';
+import DetallePlanta from './screens/DetallePlanta';
+
 const Stack = createStackNavigator();
 
 function HomeScreen({ navigation }) {
@@ -83,6 +86,8 @@ export default function App() {
         <Stack.Screen name="MapsScreen" component={MapsScreen} />
         <Stack.Screen name="Admin" component={Admin} />
         <Stack.Screen name="Plantas" component={Plantas} />
+        <Stack.Screen name="DetallePlanta" component={DetallePlanta} />
+        <Stack.Screen name="Form" component={Form} />
       </Stack.Navigator>
     </NavigationContainer>
   );
