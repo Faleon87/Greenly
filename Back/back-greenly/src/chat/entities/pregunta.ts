@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../usuario/entities/user";
 
 @Entity('pregunta')
@@ -10,8 +10,9 @@ export class Pregunta {
     @Column('text')
     pregunta: string;
 
-    @ManyToMany(() => User)
+    @ManyToOne(() => User, user => user.preguntas)
     idUsuario: User;
+    
 
     @Column('text')
     descripcion: string;

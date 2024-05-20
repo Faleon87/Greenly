@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Pregunta } from '../../chat/entities/pregunta';
 
 @Entity()
 export class User {
@@ -22,4 +23,7 @@ export class User {
 
   @Column({ nullable: true })
   img: string;
+
+  @OneToMany(() => Pregunta, pregunta => pregunta.idUsuario)
+  preguntas: Pregunta[];
 }

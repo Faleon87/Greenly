@@ -18,15 +18,15 @@ export class ChatController {
           @Body('image') image: string,
           @Body('idUser') idUser: number,
         ) {
-          const preguntaDto = { question, description, idUser , plant};
+        const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant };
           const fotoPreguntaDto = { image, idUser };
           const likesDto = { idUser };
       
           const preguntaResult = await this.preguntaService.create(preguntaDto);
-          const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
-          const likesResult = await this.likesService.create(likesDto);
+          //const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
+          //const likesResult = await this.likesService.create(likesDto);
       
-          return { preguntaResult, fotoPreguntasResult, likesResult };
+          return { preguntaResult };
         }
     
 
