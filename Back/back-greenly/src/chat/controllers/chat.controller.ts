@@ -19,11 +19,11 @@ export class ChatController {
           @Body('idUser') idUser: number,
         ) {
         const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant };
-          const fotoPreguntaDto = { image, idUser };
+          const fotoPreguntaDto = {  nombreFoto: image, idUsuario: idUser };
           const likesDto = { idUser };
       
           const preguntaResult = await this.preguntaService.create(preguntaDto);
-          //const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
+          const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
           //const likesResult = await this.likesService.create(likesDto);
       
           return { preguntaResult };
