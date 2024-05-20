@@ -12,6 +12,7 @@ import fertilizante from '../icons/fertilizante.png';
 import cameraIcon from '../icons/camera.png';
 import Pantalla from '../screens/Pantalla';
 import Plantas from '../screens/Plantas';
+import Form from '../screens/Form';
 import { identifyPlant } from '../api/cameraPlants';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -35,7 +36,7 @@ export function MyTabs() {
       aspect: [4, 3],
       quality: 1,
     });
-    if (result && !result.cancelled) {
+    if (result && !result.canceled) {
       if(result.assets[0] && result.assets[0].uri){
         identifyPlant(result.assets[0].uri);
       }
@@ -83,7 +84,7 @@ const Tab = createBottomTabNavigator();
           ),
         }}
       />
-      <Tab.Screen name="Form" component={Pantalla}
+      <Tab.Screen name="Form" component={Form}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={chatForm} style={{

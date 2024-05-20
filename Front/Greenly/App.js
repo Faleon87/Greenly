@@ -13,7 +13,9 @@ import backButtonImage from './img/back.png';
 import MyTabs from './screens/MyTabs'; // Asegúrate de que la ruta al archivo MyTabs.js sea correcta
 import Plantas from './screens/Plantas';
 import Form from './screens/Form';
+import FormForo from './screens/FormForo';
 import DetallePlanta from './screens/DetallePlanta';
+
 
 const Stack = createStackNavigator();
 
@@ -88,6 +90,7 @@ export default function App() {
         <Stack.Screen name="Plantas" component={Plantas} />
         <Stack.Screen name="DetallePlanta" component={DetallePlanta} />
         <Stack.Screen name="Form" component={Form} />
+        <Stack.Screen name="FormForo" component={FormForo} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );

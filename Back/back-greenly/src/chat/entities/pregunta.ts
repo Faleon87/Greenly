@@ -13,6 +13,12 @@ export class Pregunta {
     @ManyToMany(() => User)
     idUsuario: User;
 
+    @Column('text')
+    descripcion: string;
+
+    @Column('text')
+    nombreCultivo: string;
+
     @CreateDateColumn()
     fechaHora: Date;
 

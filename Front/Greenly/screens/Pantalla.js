@@ -31,7 +31,7 @@ function Pantalla() {
       <ScrollView>
         <View style={styles.header}>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.welcome}>Bienvenido,</Text>
+            <Text style={styles.welcome}>Bienvenido ,</Text>
             <Text style={styles.username}>{username}</Text>
           </View>
           <Image source={img ? { uri: img } : null} style={styles.profileImage} />
