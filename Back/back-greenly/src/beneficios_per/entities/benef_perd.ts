@@ -11,4 +11,5 @@ export class BenefPerd {
 
   @Column('boolean')
   boolean: boolean;
+  
 }

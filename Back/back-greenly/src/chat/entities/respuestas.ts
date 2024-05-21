@@ -10,7 +10,7 @@ export class Respuestas {
     @Column('text')
     respuesta: string;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User , user => user.idUser)
     idUsuario: User;
 
     @CreateDateColumn()

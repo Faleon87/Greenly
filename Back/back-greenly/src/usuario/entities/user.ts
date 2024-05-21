@@ -1,5 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Pregunta } from '../../chat/entities/pregunta';
+import { FotoPreguntas } from '../../chat/entities/foto-preguntas';
+import { Likes } from 'src/chat/entities/likes';
+import { Respuestas } from 'src/chat/entities/respuestas';
 
 @Entity()
 export class User {
@@ -26,4 +29,14 @@ export class User {
 
   @OneToMany(() => Pregunta, pregunta => pregunta.idUsuario)
   preguntas: Pregunta[];
+
+  @OneToMany(() => FotoPreguntas, fotoPregunta => fotoPregunta.idUsuario)
+  fotosPreguntas: FotoPreguntas[];
+
+  @OneToMany(() => Likes, likes => likes.idUsuario)
+  likes: Likes[];
+
+  @OneToMany(() => Respuestas, respuestas => respuestas.idUsuario)
+  respuestas: Respuestas[];
+
 }

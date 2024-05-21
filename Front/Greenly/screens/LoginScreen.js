@@ -35,7 +35,12 @@ export default function LoginScreen({ navigation }) {
      
        // Guarda el nombre de usuario en AsyncStorage
     await AsyncStorage.setItem('nombre', data.username);
-    await AsyncStorage.setItem('img', data.img);
+
+    if (data.img !== null && data.img !== undefined) {
+      await AsyncStorage.setItem('img', data.img);
+    } else {
+      await AsyncStorage.setItem('img', 'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-human-png-icon.png');
+    }
     
     await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
 
@@ -54,6 +59,7 @@ export default function LoginScreen({ navigation }) {
       } else if (error.message.startsWith('PasswordError:')) {
         setPasswordError(error.message.substring(14));
       } else {
+        console.log(error.message);
         setError(error.message);
       }
     }

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity,  ManyToOne,  PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../usuario/entities/user";
 
 @Entity('pregunta')
@@ -10,7 +10,7 @@ export class Pregunta {
     @Column('text')
     pregunta: string;
 
-    @ManyToOne(() => User, user => user.preguntas)
+    @ManyToOne(() => User, user => user.idUser)
     idUsuario: User;
     
 
@@ -24,5 +24,6 @@ export class Pregunta {
     fechaHora: Date;
 
     
+
 
 }

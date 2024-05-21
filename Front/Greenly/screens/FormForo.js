@@ -35,9 +35,13 @@ const App = () => {
   }
 
   const handleSave = async () => {
+    if (!question || !description || !selectedPlant || !image) {
+      Alert.alert('Error', 'Todos los campos son obligatorios');
+      return;
+    }
 
     const idUser = await getIdUser();
-      await saveData(idUser, question, description, selectedPlant, image);
+      await saveData(navigation,idUser, question, description, selectedPlant, image);
       // Maneja el éxito (por ejemplo, muestra un mensaje o redirige al usuario)
   };
 

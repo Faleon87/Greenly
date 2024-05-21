@@ -36,7 +36,7 @@ import { LikesService } from './chat/services/likes.service';
         },
       },
     }),
-    TypeOrmModule.forFeature([Plantas, User]),
+    TypeOrmModule.forFeature([Plantas, User , FotoPreguntas, Pregunta, Likes, Respuestas, BenefPerd]),
   ],
   controllers: [AppController, PlantasController, UserController, ChatController],
   providers: [AppService, PlantasService, UserService, PreguntaServiceService, FotoPreguntasService, LikesService],

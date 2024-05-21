@@ -1,8 +1,6 @@
+import { Alert } from "react-native";
 
-
-export const saveData = async (idUser, question, description, plant, image) => {
-    
-  
+export const saveData = async (navigator, idUser, question, description, plant, image) => {
     const response = await fetch('http://192.168.0.22:3000/chat', {
         method: 'POST',
         headers: {
@@ -16,8 +14,15 @@ export const saveData = async (idUser, question, description, plant, image) => {
             idUser: idUser
         })
     });
+    const data = await response.json();
+    console.log(data + 'data');
+
+    Alert.alert('Pregunta enviada', 'La pregunta se ha enviado correctamente');
+    navigator.pop();
 
     if (!response.ok) {
         throw new Error('Something went wrong!');
     }
+
+    return data;
 };

@@ -24,11 +24,28 @@ export class PreguntaServiceService {
           throw new Error(`User with ID ${createPregunta.idUsuario} not found`);
         }
       
+        // Create a new Pregunta
+
         const pregunta = new Pregunta();
+        pregunta.fechaHora = new Date();
         pregunta.pregunta = createPregunta.pregunta;
         pregunta.descripcion = createPregunta.descripcion;
         pregunta.nombreCultivo = createPregunta.nombreCultivo;
-        pregunta.idUsuario = user; // Assign the User to idUsuario
+        pregunta.idUsuario = user; 
         return this.preguntaRepository.save(pregunta);
       }
+
+      async findByUserId(idUsuario: number): Promise<Pregunta[]> {
+        const user = await this.userRepository.findOne({ where: { idUser: idUsuario } });
+    
+        if (!user) {
+            throw new Error(`User with ID ${idUsuario} not found`);
+        }
+    
+        return this.preguntaRepository.find({
+            where: { idUsuario: user }
+        });
+    }
 }
+
+

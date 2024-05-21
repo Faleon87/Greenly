@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { BenefPerd } from '../../beneficios_per/entities/benef_perd';
 
 @Entity()
 export class Plantas {
@@ -40,4 +41,7 @@ export class Plantas {
 
   @Column()
   riegoEstimado : string;
+
+  @OneToMany(() => BenefPerd, benefPerd => benefPerd.idPlanta)
+  benefPerd: BenefPerd[];
 }

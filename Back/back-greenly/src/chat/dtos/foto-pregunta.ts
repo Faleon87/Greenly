@@ -1,5 +1,6 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { User } from "../../usuario/entities/user";
+import { ManyToOne } from "typeorm";
 
 export class FotoPregunta {
     @IsString()
@@ -7,6 +8,7 @@ export class FotoPregunta {
     nombreFoto: string;
   
     @IsNotEmpty()
-    idUsuario: User;
+    @ManyToOne(() => User, user => user.idUser)
+    idUsuario: number;
     
 }
