@@ -37,4 +37,11 @@ export class LikesService {
         });
 
     }
+
+    async findAll(): Promise<Likes[]> {
+        return this.likesRepository.find({
+            relations: ['idUsuario']
+        });
+    }
+    
 }

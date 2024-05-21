@@ -10,6 +10,6 @@ export class Likes {
     @Column({default: 0})
     likes: number;
 
-    @ManyToOne(() => User , user => user.idUser)
+    @ManyToOne(() => User , user => user.likes)
     idUsuario: User;
 }

@@ -10,7 +10,7 @@ export class Pregunta {
     @Column('text')
     pregunta: string;
 
-    @ManyToOne(() => User, user => user.idUser)
+    @ManyToOne(() => User, user => user.preguntas)
     idUsuario: User;
     
 

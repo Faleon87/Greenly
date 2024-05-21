@@ -45,6 +45,11 @@ export class FotoPreguntasService {
         });
 
     }
+    async findAll(): Promise<FotoPreguntas[]> {
+        return this.fotoPreguntasRepository.find({
+          relations: ['idUsuario']
+        });
+      }
 
 
 }

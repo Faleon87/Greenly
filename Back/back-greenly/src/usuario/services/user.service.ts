@@ -97,4 +97,10 @@ export class UserService {
 
     return newUser;
   }
+
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find({
+        select: ["nombre", "img", "idUser"]
+    });
+}
 }

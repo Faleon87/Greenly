@@ -2,12 +2,15 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PreguntaServiceService } from '../services/pregunta-service.service';
 import { FotoPreguntasService } from '../services/foto-preguntas.service';
 import { LikesService } from '../services/likes.service';
+import { UserService } from '../../usuario/services/user.service';
 
 @Controller('chat')
 export class ChatController {
     constructor(private readonly preguntaService: PreguntaServiceService,
         private readonly fotoPreguntasService: FotoPreguntasService,
-        private readonly likesService: LikesService,) { }
+        private readonly likesService: LikesService,
+        private readonly userService: UserService
+      ) { }
 
 
         @Post()
@@ -29,16 +32,13 @@ export class ChatController {
           return { preguntaResult, fotoPreguntasResult, likesResult};
         }
 
-        @Get(':id')
-        async getChatData(@Param('id') idUser: number) {
+        @Get('renderchat')
+        async getAllData() {
+            const preguntaResult = await this.preguntaService.findAll();
+            const fotoPreguntasResult = await this.fotoPreguntasService.findAll();
+            const likesResult = await this.likesService.findAll();
 
-            const preguntaResult = await this.preguntaService.findByUserId(Number(idUser));
-            const fotoPreguntasResult = await this.fotoPreguntasService.findByUserId(Number(idUser));
-            const likesResult = await this.likesService.findByUserId(Number(idUser));
-
-            
-        
-            return { preguntaResult, fotoPreguntasResult, likesResult };
+            return { preguntaResult, fotoPreguntasResult, likesResult, };
         }
 
     

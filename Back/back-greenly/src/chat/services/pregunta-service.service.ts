@@ -35,17 +35,11 @@ export class PreguntaServiceService {
         return this.preguntaRepository.save(pregunta);
       }
 
-      async findByUserId(idUsuario: number): Promise<Pregunta[]> {
-        const user = await this.userRepository.findOne({ where: { idUser: idUsuario } });
-    
-        if (!user) {
-            throw new Error(`User with ID ${idUsuario} not found`);
-        }
-    
+      async findAll(): Promise<Pregunta[]> {
         return this.preguntaRepository.find({
-            where: { idUsuario: user }
+          relations: ['idUsuario']
         });
-    }
+      }
 }
 
 

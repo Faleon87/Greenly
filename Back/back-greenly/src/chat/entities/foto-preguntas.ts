@@ -11,7 +11,7 @@ export class FotoPreguntas {
     nombreFoto: string;
    
   
-    @ManyToOne(() => User , user => user.idUser)
+    @ManyToOne(() => User , user => user.fotosPreguntas)
     idUsuario: User;
 
     

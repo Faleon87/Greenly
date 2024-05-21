@@ -1,14 +1,11 @@
 
 
-export const Chat = async (idUser) => {
+export const Chat = async () => {
     
-   
-    
-    const response = await fetch(`http://192.168.0.22:3000/chat/${idUser}`);
+    const response = await fetch(`http://192.168.0.22:3000/chat/renderchat`);
     
    const data = await response.json();
 
-   console.log(data);
 
     if (!response.ok) {
         throw new Error('Something went wrong!');

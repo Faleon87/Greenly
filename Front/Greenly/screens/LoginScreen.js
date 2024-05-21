@@ -43,9 +43,7 @@ export default function LoginScreen({ navigation }) {
     }
     
     await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
-
-     
-
+  
       if (username === 'admin') {
         navigation.navigate('Admin');
       } else {
