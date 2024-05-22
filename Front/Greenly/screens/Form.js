@@ -6,46 +6,71 @@ import { Chat } from '../api/Chat';
 import { FlatList } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
 import { widthPercentageToDP as wd } from 'react-native-responsive-screen';
+import { updateLikes } from '../api/updateLikes';
 
 const App = () => {
   const navigation = useNavigation();
   const [questions, setQuestions] = useState([]);
+  const [userLikes, setUserLikes] = useState({}); 
 
   useEffect(() => {
     const fetchQuestions = async () => {
       const questionsFromApi = await Chat();
       console.log(questionsFromApi);
-
+  
       const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
         const likeObject = questionsFromApi.likesResult[index];
         const questionDetails = questionsFromApi.preguntaResult[index];
         return {
           ...question,
-          likes: likeObject ? likeObject.likes : 0,
-          questionDetails: questionDetails ? questionDetails : null,
+          likes: likeObject ? likeObject.likes : 0, // Aquí es donde accedes al número de likes
+          idLikes: likeObject ? likeObject.idLikes : null, // Aquí es donde accedes al idLikes
+          questionDetails: questionDetails ? questionDetails : null, // Aquí es donde accedes a los detalles de la pregunta
         };
       });
+  
 
       setQuestions(questionsWithLikes);
     };
-
+  
+    // Llama a fetchQuestions inmediatamente
     fetchQuestions();
+  
+    // Configura un intervalo para llamar a fetchQuestions cada cierto tiempo
+    // Aquí lo estoy configurando para que se ejecute cada 5 minutos
+    const intervalId = setInterval(fetchQuestions,  300000);
+  
+    // Limpia el intervalo cuando el componente se desmonta
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleLike = async (id) => {
     // Encuentra la pregunta que el usuario le dio like
-    const questionIndex = questions.findIndex((question) => question.id === id);
-    const question = questions[questionIndex];
+    const questionIndex = questions.findIndex((question) => question.idLikes === id);
 
-    // Incrementa el número de likes
-    const updatedQuestion = { ...question, likes: question.likes + 1 };
+    // Encuentra la pregunta en sí
+
+    const question = questions[questionIndex];
+  
+    // Incrementa o disminuye el número de likes dependiendo del estado actual
+    const updatedLikes = userLikes[id] ? question.likes - 1 : question.likes + 1;
+    const updatedQuestion = { ...question, likes: updatedLikes };
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex] = updatedQuestion;
-
+  
     setQuestions(updatedQuestions);
+  
+    setUserLikes({ ...userLikes, [id]: !userLikes[id] });
+
+    
+  
+
+    
+    
+
 
     // Aquí deberías hacer una llamada a la API para actualizar el número de likes en la base de datos
-    // Por ejemplo: await updateLikes(id, updatedQuestion.likes);
+    await updateLikes(id, updatedQuestion.likes);
   };
 
   return (
@@ -60,10 +85,23 @@ const App = () => {
               <View style={styles.cardContent}>
                 <View style={styles.questionContainer}>
                   {item.questionDetails && (
-                    <Paragraph style={styles.pregunta}>Pregunta:{item.questionDetails.pregunta}</Paragraph>
+                    <Paragraph
+                      style={styles.pregunta}
+                      numberOfLines={4}
+                      ellipsizeMode='tail'
+                    >
+                    {item.questionDetails.pregunta}
+                    </Paragraph>
                   )}
                   {item.questionDetails && (
-                    <Paragraph style={styles.pregunta}>Descripcion:{item.questionDetails.descripcion}</Paragraph>
+                    <Paragraph
+                      style={styles.pregunta}
+                      numberOfLines={4}
+                      ellipsizeMode='tail'
+                    > 
+                      <Text style={styles.descripcion}>Descripción:</Text>
+                      {item.questionDetails.descripcion}
+                    </Paragraph>
                   )}
                 </View>
                 <View style={styles.userInfo}>
@@ -71,24 +109,22 @@ const App = () => {
                     style={styles.userImage}
                     source={{ uri: item.idUsuario.img }}
                   />
-                  
+
                   <View style={styles.userDetails}>
                     <Paragraph>{item.idUsuario.username}</Paragraph>
-                    <Icon style={styles.likeicon} name="heart" size={30} color="#02907D" />
-                    <Paragraph style={styles.likes}>{item.likes} likes</Paragraph>
+                    <TouchableOpacity
+                      onPress={() => handleLike(item.idLikes)}
+                    >
+                      <Icon style={styles.likeicon} name="heart" size={30} color={userLikes[item.idLikes] ? "red" : "grey"} /> 
+                    </TouchableOpacity>
+                    <Paragraph style={styles.likes}>{item.likes}likes</Paragraph>
                   </View>
                   <View style={styles.respond}>
                     <TouchableOpacity
                       onPress={() => navigation.navigate('Respuestas', { id: item.idPregunta })}
                     >
                       <Icon name="comment" size={30} color="#02907D" />
-                    </TouchableOpacity>
-                    
-                    <TouchableOpacity
-                      onPress={() => handleLike(item.id)}
-                    >
-                      
-                    </TouchableOpacity>
+                    </TouchableOpacity>                    
                   </View>
                 </View>
                 <View style={styles.date}>
@@ -116,7 +152,12 @@ const App = () => {
 const styles = StyleSheet.create({
   likeicon: {
     marginLeft: 15,
-  }, 
+  },
+  descripcion: {
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#333333',
+  },
   date: {
     marginTop: 10,
   },
@@ -128,11 +169,12 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   pregunta: {
-    marginBottom: 20,
+    marginBottom: 10,
+
     textAlign: 'center',
     color: '#333333',
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
   questionContainer: {
     width: '100%',
@@ -144,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   likes: {
-    marginLeft: 30,
+    marginLeft: 10,
   },
   fotoPr: {
     width: wd('90%'),
