@@ -14,5 +14,4 @@ export class FotoPreguntas {
     @ManyToOne(() => User , user => user.fotosPreguntas)
     idUsuario: User;
 
-    
 }

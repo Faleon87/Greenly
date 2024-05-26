@@ -25,23 +25,19 @@ export class LikesService {
         return this.likesRepository.save(like);
     }
 
-    async findByUserId(idUsuario: number): Promise<Likes[]> {
-        const user = await this.userRepository.findOne({ where: { idUser: idUsuario } });
-
-        if (!user) {
-            throw new Error(`User with ID ${idUsuario} not found`);
-        }
-
-        return this.likesRepository.find({
-            where: { idUsuario: user }
-        });
-
-    }
 
     async findAll(): Promise<Likes[]> {
         return this.likesRepository.find({
             relations: ['idUsuario']
         });
     }
+
+    async updateLikes(id: number, likes: number): Promise<Likes> {
+        const likesEntity = await this.likesRepository.findOne({
+            where: {idLikes: id },
+            });
+        likesEntity.likes = likes;
+        return this.likesRepository.save(likesEntity);
+      }
     
 }

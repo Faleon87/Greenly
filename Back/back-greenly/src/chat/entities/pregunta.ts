@@ -23,7 +23,5 @@ export class Pregunta {
     @CreateDateColumn()
     fechaHora: Date;
 
-    
-
 
 }
