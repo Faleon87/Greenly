@@ -9,6 +9,7 @@ import ImagePickerExample  from '../screens/ImagePicker';
 import { saveData } from '../api/question'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 const App = () => {
   const navigation = useNavigation();
   const [question, setQuestion] = useState('');
@@ -17,6 +18,8 @@ const App = () => {
   const [plantas, setPlantas] = useState([]);
   const [selectedPlant, setSelectedPlant] = useState('Nombre cultivo');
   const [image, setImage] = useState(null);
+
+
 
   const fetchPlantas = useCallback(async () => {
     const plantasFromApi = await getPlantas();
@@ -30,7 +33,7 @@ const App = () => {
         return value;
       }
     } catch(e) {
-      // error reading value
+      console.log(e);
     }
   }
 

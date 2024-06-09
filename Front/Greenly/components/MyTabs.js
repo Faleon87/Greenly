@@ -15,7 +15,8 @@ import Plantas from '../screens/Plantas';
 import Form from '../screens/Form';
 import { identifyPlant } from '../api/cameraPlants';
 import * as ImagePicker from 'expo-image-picker';
-
+import Calendar from '../screens/ScreenCalendar';
+import Fertilizantes from '../screens/Fertilizantes';
  // Asegúrate de que la ruta al archivo Pantalla.js sea correcta
 
 
@@ -131,7 +132,7 @@ const Tab = createBottomTabNavigator();
         }}
       />
       <Tab.Screen name="Calendar"
-      component={Pantalla}
+      component={Calendar}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={calend} style={{
@@ -147,7 +148,7 @@ const Tab = createBottomTabNavigator();
         }}
       />
       <Tab.Screen name="Fertilizante"
-      component={Pantalla}
+      component={Fertilizantes}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={fertilizante} style={{

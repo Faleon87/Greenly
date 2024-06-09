@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
     elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
-    shadowOpacity: 0.2,
     shadowRadius: 1.41,
   },
   image: {
@@ -186,6 +185,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: '50%',
+    borderRadius: 10,
   },
 });
 
