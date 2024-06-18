@@ -1,5 +1,5 @@
-import React  from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,35 +20,50 @@ export default function LoginScreen({ navigation }) {
   const [passwordError, setPasswordError] = React.useState('');
 
   const [isLoading, setIsLoading] = React.useState(false);
-
- 
-  
-
-
-
   const login = async () => {
     setIsLoading(true);
     try {
       const data = await loginUser(username, password);
       setIsLoading(false);
-   
-     
-       // Guarda el nombre de usuario en AsyncStorage
-    await AsyncStorage.setItem('nombre', data.username);
 
-    if (data.img !== null && data.img !== undefined) {
-      await AsyncStorage.setItem('img', data.img);
-    } else {
-      await AsyncStorage.setItem('img', 'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-human-png-icon.png');
-    }
-    
-    await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
-  
+
+      // Guarda el nombre de usuario en AsyncStorage
+      await AsyncStorage.setItem('nombre', data.username);
+
+      if (data.img !== null && data.img !== undefined) {
+        await AsyncStorage.setItem('img', data.img);
+      } else {
+        await AsyncStorage.setItem('img', 'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-human-png-icon.png');
+      }
+
+      await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
+
       if (username === 'admin') {
         navigation.navigate('Admin');
       } else {
-        // Navega a la siguiente pantalla
-        navigation.navigate('Pantalla');
+        // Si el inicio de sesión es exitoso, muestra la alerta
+        Alert.alert(
+          "Tutorial",
+          "¿Deseas iniciar el tutorial?",
+          [
+            {
+              text: "No",
+              onPress: async () => {
+                await AsyncStorage.setItem('respuesta', 'No');
+                navigation.navigate('Pantalla');
+              },
+              style: "cancel"
+            },
+            {
+              text: "Sí",
+              onPress: async () => {
+                await AsyncStorage.setItem('respuesta', 'Sí');
+                navigation.navigate('Pantalla');
+              }
+            }
+          ],
+          { cancelable: false }
+        );
       }
     } catch (error) {
       setIsLoading(false);
@@ -108,7 +123,7 @@ export default function LoginScreen({ navigation }) {
           }}
           checkedColor='#03453D'
         />
-        <Text style={styles.labelCheckbox}>Keep me signed in</Text> 
+        <Text style={styles.labelCheckbox}>Keep me signed in</Text>
       </View>
       <Text>
         {error ? <Text style={styles.error}>{error}</Text> : null} {/* Muestra el error si existe */}
@@ -122,7 +137,7 @@ export default function LoginScreen({ navigation }) {
             setError('');
             setIsLoading(true);
             login();
-           
+
           }
         }}
       >
@@ -197,7 +212,8 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: wp('5%'),
+    width: wp('90%'),
+    height: hp('10%'),
   },
   labelCheckbox: {
     fontSize: hp('2%'),

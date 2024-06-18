@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -12,7 +12,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   // Método para iniciar sesión
   async login(
@@ -74,7 +74,7 @@ export class UserService {
   }
   async register(createUserDto: CreateUserDto): Promise<User> {
 
-    console.log('Received createUserDto:', createUserDto); 
+    console.log('Received createUserDto:', createUserDto);
     const { password, ...userDetails } = createUserDto;
 
     console.log('Password received:', password);
@@ -100,7 +100,15 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     return this.userRepository.find({
-        select: ["nombre", "img", "idUser"]
+      select: ["nombre", "img", "idUser"]
     });
-}
+  }
+
+  async getProfile(idUser: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { idUser } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${idUser} not found`);
+    }
+    return user;
+  }
 }

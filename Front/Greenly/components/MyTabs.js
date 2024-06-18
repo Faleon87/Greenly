@@ -1,6 +1,6 @@
 // MyTabs.js
 import React from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import { Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
@@ -24,24 +24,59 @@ export function MyTabs() {
   const navigation = useNavigation();
 
   const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status !== 'granted') {
-      alert('Necesitamos permisos para acceder a tus fotos.');
+    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+  
+    if (libraryStatus !== 'granted' || cameraStatus !== 'granted') {
+      alert('Necesitamos permisos para acceder a la cámara y a la galería');
       return;
     }
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  
+    // Aquí puedes preguntar al usuario si quiere usar la cámara o la biblioteca de medios
+    const useCamera = await askUserCameraOrLibrary();
+  
+    let result;
+    if (useCamera) {
+      result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    } else {
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+    }
+  
     if (result && !result.canceled) {
       if(result.assets[0] && result.assets[0].uri){
         identifyPlant(result.assets[0].uri);
       }
     }
+  };
+  
+  // Esta función es un placeholder. Deberías implementar la lógica para preguntar al usuario.
+  const askUserCameraOrLibrary = async () => {
+    return new Promise((resolve) => {
+      Alert.alert(
+        'Seleccionar imagen',
+        '¿Quieres usar la cámara o la biblioteca de imágenes?',
+        [
+          {
+            text: 'Cámara',
+            onPress: () => resolve(true),
+          },
+          {
+            text: 'Biblioteca',
+            onPress: () => resolve(false),
+          },
+        ],
+        { cancelable: false },
+      );
+    });
   };
 
 const Tab = createBottomTabNavigator();

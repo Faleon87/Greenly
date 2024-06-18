@@ -15,6 +15,8 @@ import Plantas from './screens/Plantas';
 import FormForo from './screens/FormForo';
 import DetallePlanta from './screens/DetallePlanta';
 import Fertilizante from './screens/Fertilizantes';
+import EditProfileScreen from './screens/User';
+
 
 
 const Stack = createStackNavigator();
@@ -73,7 +75,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, headerShadowVisible: false }} />
         <Stack.Screen name="Login" component={LoginScreenWithHeader} />
-        <Stack.Screen
+            <Stack.Screen
           name="Pantalla"
           component={MyTabs} // Aquí es donde reemplazas Pantalla con MyTabs
           options={{
@@ -91,6 +93,8 @@ export default function App() {
         <Stack.Screen name="DetallePlanta" component={DetallePlanta} />
         <Stack.Screen name="FormForo" component={FormForo} /> 
         <Stack.Screen name="Fertilizante" component={Fertilizante} />
+        <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+    
       </Stack.Navigator>
     </NavigationContainer>
   );

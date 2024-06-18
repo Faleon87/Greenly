@@ -5,6 +5,7 @@ import {
   Post,
   UseGuards,
   Request,
+  Param,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 
@@ -27,6 +28,9 @@ export class UserController {
     return this.userService.register(createUserDto);
   }
 
-  
- 
+  @Get('profile/:id')
+  async getProfile(@Param('id') idUser: number): Promise<any> {
+    return this.userService.getProfile(idUser);
+  }
+
 }

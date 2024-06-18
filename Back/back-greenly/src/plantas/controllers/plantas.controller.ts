@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -39,6 +40,11 @@ export class PlantasController {
     }));
   }
   
+  
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.plantasService.getPlantWithState(id);
+  }
   
 
 

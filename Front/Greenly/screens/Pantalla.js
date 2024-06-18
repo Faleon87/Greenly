@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import image1 from '../img/dondeComenzar.png';
 import iconImage from '../img/placeholder.png';
-import image2 from '../img/solucionesEcologicas.jpg';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { fetchWeather } from '../api/weather';
 import sunnyImage from '../img/sunny.png';
@@ -13,18 +12,24 @@ import rainyImage from '../img/rainy.png';
 import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
+import { useNavigation } from '@react-navigation/native';
 
-function Pantalla() {
+
+function Pantalla({route}) {
   const [username, setUsername] = useState('');
   const [img, setImg] = useState('');
   const [weather, setWeather] = useState();
+  const navigation = useNavigation();
+
+  
+
 
   const weatherIconName = {
-    'sunny': sunnyImage,
+    'Sunny': sunnyImage,
     'Partly cloudy': cloudyImage,
-    'rain': rainyImage,
-    'snow': snowyImage,
-    'mist': mistyImage,
+    'Rain': rainyImage,
+    'Snow': snowyImage,
+    'Mist': mistyImage,
     // add more mappings as needed
   };
 
@@ -48,9 +53,16 @@ function Pantalla() {
       }
     };
 
+    const fetchRespuesta = async () => {
+      const storedRespuesta = await AsyncStorage.getItem('respuesta');
+      console.log(storedRespuesta);
+    };
+
     getWeather();
     fetchImg();
     fetchUsername();
+    fetchRespuesta();
+    
   }, []);
 
   if (!weather) {
@@ -61,6 +73,8 @@ function Pantalla() {
     );
   }
 
+  
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -70,7 +84,7 @@ function Pantalla() {
             <Text style={styles.username}>{username}</Text>
           </View>
           <Image source={img ? { uri: img } : null} style={styles.profileImage} />
-          <Icon name="cog" size={30} color="#000" style={styles.settingsIcon} />
+          <Icon name="cog" size={30} color="#000" style={styles.settingsIcon} onPress={()=> navigation.navigate('EditProfileScreen') }   />
         </View>
         <Animatable.View
           animation="fadeInUpBig"
@@ -89,9 +103,9 @@ function Pantalla() {
           <Image source={image1} style={styles.image} />
           <Image source={iconImage} style={styles.icon} />
         </TouchableOpacity>
-        <Text style={styles.text}>Soluciones ecologicas?</Text>
+        <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
         <TouchableOpacity onPress={() => navigation.navigate('')}>
-          <Image source={image2} style={styles.image} />
+        
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -106,6 +120,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#02907D',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  marketingText: {
+    fontSize: 20,
+    color: '#000',
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   cityText: {
     fontSize: 20,
@@ -168,7 +190,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    elevation: 50,
   },
   weatherImage: {
     width: wp('20%'),

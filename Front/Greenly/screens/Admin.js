@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import { fetchPlants } from '../api/adminPlantas';
 import { updatePlant } from '../api/updatePlantas';
 
