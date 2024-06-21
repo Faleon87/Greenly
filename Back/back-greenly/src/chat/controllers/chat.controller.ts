@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { PreguntaServiceService } from '../services/pregunta-service.service';
 import { FotoPreguntasService } from '../services/foto-preguntas.service';
 import { LikesService } from '../services/likes.service';

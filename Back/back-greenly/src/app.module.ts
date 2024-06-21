@@ -11,8 +11,8 @@ import { User } from './usuario/entities/user';
 import { FotoPreguntas } from './chat/entities/foto-preguntas';
 import { Pregunta } from './chat/entities/pregunta';
 import { Likes } from './chat/entities/likes';
-import{ Respuestas} from './chat/entities/respuestas';
-import{ BenefPerd} from './beneficios_per/entities/benef_perd';
+import { Respuestas } from './chat/entities/respuestas';
+import { BenefPerd } from './beneficios_per/entities/benef_perd';
 import { ChatController } from './chat/controllers/chat.controller';
 import { PreguntaServiceService } from './chat/services/pregunta-service.service';
 import { FotoPreguntasService } from './chat/services/foto-preguntas.service';
@@ -27,8 +27,16 @@ import { LikesService } from './chat/services/likes.service';
       username: 'viju', // Cambia esto por tu nombre de usuario
       password: 'Viju2003$', // Cambia esto por tu contraseña
       database: 'postgres', // Cambia esto por tu nombre de base de datos
-      entities: [Plantas, User, FotoPreguntas, Pregunta, Likes, Respuestas, BenefPerd],
-      synchronize: true,
+      entities: [
+        Plantas,
+        User,
+        FotoPreguntas,
+        Pregunta,
+        Likes,
+        Respuestas,
+        BenefPerd,
+      ],
+      synchronize: false,
       ssl: true,
       extra: {
         ssl: {
@@ -36,9 +44,29 @@ import { LikesService } from './chat/services/likes.service';
         },
       },
     }),
-    TypeOrmModule.forFeature([Plantas, User , FotoPreguntas, Pregunta, Likes, Respuestas, BenefPerd]),
+    TypeOrmModule.forFeature([
+      Plantas,
+      User,
+      FotoPreguntas,
+      Pregunta,
+      Likes,
+      Respuestas,
+      BenefPerd,
+    ]),
   ],
-  controllers: [AppController, PlantasController, UserController, ChatController],
-  providers: [AppService, PlantasService, UserService, PreguntaServiceService, FotoPreguntasService, LikesService],
+  controllers: [
+    AppController,
+    PlantasController,
+    UserController,
+    ChatController,
+  ],
+  providers: [
+    AppService,
+    PlantasService,
+    UserService,
+    PreguntaServiceService,
+    FotoPreguntasService,
+    LikesService,
+  ],
 })
 export class AppModule {}
