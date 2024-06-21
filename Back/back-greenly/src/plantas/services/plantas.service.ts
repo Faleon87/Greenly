@@ -45,6 +45,9 @@ export class PlantasService {
   async getPlantWithState(id: number) {
     const planta = await this.findOne(id);
     const benefPerd = await this.findBeneficiosPerjudiciales(id);
+
+    console.log('benefPerd', benefPerd);
+    console.log('planta', planta);
   
     if (!benefPerd.length) {
       console.log('No se encontraron beneficios o perjuicios para la planta con id ' + id);

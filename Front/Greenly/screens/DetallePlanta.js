@@ -3,12 +3,12 @@ import { TouchableOpacity, View, Text, StyleSheet, Alert, Animated, ImageBackgro
 import { DetallesPlanta } from '../api/DetallesPlanta'; // adjust the path as needed
 
 
-
 const DetallePlanta = ({ route, navigation }) => {
   const { idPlanta } = route.params;
   const scrollY = useRef(new Animated.Value(0)).current; // Add this line
   const [plantasReferenciadas, setPlantasReferenciadas] = useState([]);
-
+  const plantasBeneficiosas = plantasReferenciadas.filter(planta => planta.estado === 'beneficiosa');
+const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado === 'perjudicial');
 
   const [planta, setPlanta] = useState('');
   useLayoutEffect(() => {
@@ -108,32 +108,36 @@ const DetallePlanta = ({ route, navigation }) => {
           <Text style={styles.description}>{cleanText(planta.plantaOriginal.rotaciones)}</Text>
         </View>
         <Text style={styles.fieldTitle}>Clima y Temperatura:</Text>
-        <Text style={styles.description}>{cleanText(planta.plantaOriginal.climaTemperatura)}</Text>
+        <Text style={styles.description}>{cleanText(planta.plantaOriginal.climaTemperatura)}</Text>         
         <Text style={styles.fieldTitle}>Riego:</Text>
         <Text style={styles.description}>{cleanText(planta.plantaOriginal.riego)}</Text>
         <Text style={styles.fieldTitle}>Riego Estimado:</Text>
-        <Text style={styles.description}>{cleanText(planta.plantaOriginal.riegoEstimado)}</Text>
-        <View>
-          {plantasReferenciadas.some(planta => planta.estado === 'beneficiosa') &&
-            <Text style={styles.fieldTitle}>Beneficiosas:</Text>
-          }
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {plantasReferenciadas.map((planta) => (
-              <TouchableOpacity key={planta.idPlanta} onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
-                {planta.estado === 'beneficiosa' ? (
-                  <View>
-                    <Image source={{ uri: planta.img }} style={styles.benef} />
-                  </View>
-                ) : (
-                  <View style={{ borderTopWidth: 1, borderTopColor: 'red' }}>
-                    <Text style={styles.fieldTitle}>Estado:</Text>
-                    <Text style={styles.description}>Esta planta es perjudicial.</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <Text style={styles.description}>{cleanText(planta.plantaOriginal.riegoEstimado)}</Text>                                                                                                                                                                   
+        {plantasReferenciadas.length > 0  && <Text style={styles.asociaciones}>Asociaciones:</Text>}                                
+        {plantasReferenciadas.length > 4  && <Text style={styles.scrollIndicator}>Desliza a la derecha para ver más plantas </Text>}
+        {plantasBeneficiosas.length > 0 && <Text style={styles.fieldTitle}>Beneficiosas:</Text>}
+        <ScrollView horizontal>
+          {plantasBeneficiosas.map((planta) => (
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
+              <View style={styles.card1}>
+                <Image source={{ uri: planta.img }} style={styles.benef} />
+                <Text style={styles.text}>{planta.nombrePlanta}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+
+        {plantasPerjudiciales.length > 0 && <Text style={styles.fieldTitle}>Perjudiciales:</Text>}
+        <ScrollView horizontal>
+          {plantasPerjudiciales.map((planta) => (
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
+              <View style={styles.card2}>
+                <Image source={{ uri: planta.img }} style={styles.benef} />
+                <Text style={styles.text}>{planta.nombrePlanta}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
     </Animated.ScrollView >
   );
@@ -144,14 +148,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  card1: {
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
+  card2: {
+    borderRadius: 10,
+    marginBottom: 10,
+    padding: 10,
+    alignItems: 'center',
+  },
   fieldTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#2C1001',
   },
+  text: {
+    fontSize: 16,
+    color: '#2C1001',
+  },
+  asociaciones: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'green',
+    marginBottom: 10,
+  },
   image: {
     width: '100%',
     height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  iconrow: {
+    textAlign: 'center',
   },
   benef: {
     width: 70,
@@ -182,6 +213,12 @@ const styles = StyleSheet.create({
   imageOverlay: {
     backgroundColor: 'rgba(0,0,0,0.5)',
     height: '100%',
+  },
+  scrollIndicator: {
+    fontSize: 16,
+    color: '#888',
+    marginBottom: 10,
+    fontStyle: 'italic',
   },
 });
 
