@@ -52,6 +52,7 @@ const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado
       }
     };
 
+    
     getPlanta();
   }, [idPlanta]);
 
