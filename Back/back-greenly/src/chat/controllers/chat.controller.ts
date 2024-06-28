@@ -24,11 +24,9 @@ export class ChatController {
     const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant };
     const fotoPreguntaDto = { nombreFoto: image, idUsuario: idUser };
     const likesDto = { idUsuario: idUser, likes: 0 }; // Add the missing properties 'likes' and 'idUsuario' to the 'likesDto' object
-
-    const preguntaResult = await this.preguntaService.create(preguntaDto);
+    const preguntaResult = await this.preguntaService.create(preguntaDto); 
     const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
     const likesResult = await this.likesService.create(likesDto);
-
     return { preguntaResult, fotoPreguntasResult, likesResult };
   }
 
@@ -37,7 +35,6 @@ export class ChatController {
     const preguntaResult = (await this.preguntaService.findAll()).sort((a, b) => a.idPregunta - b.idPregunta);
     const fotoPreguntasResult = (await this.fotoPreguntasService.findAll()).sort((a, b) => a.idFotoPregunta - b.idFotoPregunta);
     const likesResult = (await this.likesService.findAll()).sort((a, b) => a.idLikes - b.idLikes);
-
     return { preguntaResult, fotoPreguntasResult, likesResult };
   }
 
@@ -45,7 +42,5 @@ export class ChatController {
   async updateLikes(@Param('id') id: number, @Body('likes') likes: number) {
     return this.likesService.updateLikes(id, likes);
   }
-
-
-
+  
 }

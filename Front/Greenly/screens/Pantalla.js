@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, Image, TouchableOpacity, ScrollView, View, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import image1 from '../img/dondeComenzar.png';
-import iconImage from '../img/placeholder.png';
+import image1 from '../img/tiendaOnline.jpeg';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import { fetchWeather } from '../api/weather';
 import sunnyImage from '../img/sunny.png';
 import cloudyImage from '../img/cloudy.png';
@@ -13,6 +13,7 @@ import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
+
 
 
 function Pantalla({route}) {
@@ -77,6 +78,15 @@ function Pantalla({route}) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={() => navigation.navigate('Form')}>
+      <Icon2 name="send" size={30} color="white" style={{
+        textShadowColor: 'black',
+        left: 160,
+        textShadowOffset: {width: -2, height: 2},
+        textShadowRadius: 3
+      }} />
+      </TouchableOpacity>
+
       <ScrollView>
         <View style={styles.header}>
           <View style={styles.welcomeContainer}>
@@ -98,14 +108,9 @@ function Pantalla({route}) {
             <Text style={styles.humidityText}>Humidity: {weather.current.humidity}%</Text>
           </View>
         </Animatable.View>
-        <Text style={styles.text}>Donde Comenzar?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('')}>
-          <Image source={image1} style={styles.image} />
-          <Image source={iconImage} style={styles.icon} />
-        </TouchableOpacity>
         <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
+        <Image source={image1} style={styles.image} />
         <TouchableOpacity onPress={() => navigation.navigate('')}>
-        
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -134,6 +139,10 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     marginBottom: 2,
+  },
+  iconForm: {
+    left: 160,
+    color: 'white',
   },
   header: {
     flexDirection: 'row',
@@ -168,22 +177,16 @@ const styles = StyleSheet.create({
     color: "#2C1001",
   },
   image: {
-    width: wp('95%'),
-    height: wp('35%'),
+    width: wp('80%'),
+    height: wp('75%'),
     borderRadius: wp('2%'),
-    marginBottom: hp('2%'),
+    marginBottom: hp('4%'),
     padding: wp('2%'),
     borderWidth: 4,
     borderColor: 'black',
     alignSelf: 'center',
   },
-  icon: {
-    position: 'absolute',
-    left: 70,
-    top: 70,
-    width: wp('10%'),
-    height: wp('10%'),
-  },
+
   weatherCard: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -214,6 +217,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontStyle: 'italic',
     color: '#000',
+  },
+  marketingText: {
+    fontSize: 25,
+    color: '#000',
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+    textAlign: 'center',
   },
 
 });

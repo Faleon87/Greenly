@@ -6,13 +6,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import homeIcon from '../icons/home.png';
 import plantasIcon from '../icons/leaf.png';
-import chatForm from '../icons/chat.png';
+import plagasIcon from '../icons/plagas.png';
 import calend from '../icons/calendario.png';
 import fertilizante from '../icons/fertilizante.png';
 import cameraIcon from '../icons/camera.png';
 import Pantalla from '../screens/Pantalla';
 import Plantas from '../screens/Plantas';
-import Form from '../screens/Form';
+import Plagas from '../screens/Plagas';
 import { identifyPlant } from '../api/cameraPlants';
 import * as ImagePicker from 'expo-image-picker';
 import Calendar from '../screens/ScreenCalendar';
@@ -120,10 +120,10 @@ const Tab = createBottomTabNavigator();
           ),
         }}
       />
-      <Tab.Screen name="Form" component={Form}
+      <Tab.Screen name="Plagas" component={Plagas}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <Image source={chatForm} style={{
+            <Image source={plagasIcon} style={{
               width: size, height: size,
               tintColor: focused ? '#02907D' : '#ffff'
             }} />
@@ -166,11 +166,11 @@ const Tab = createBottomTabNavigator();
           ),
         }}
       />
-      <Tab.Screen name="Calendar"
-      component={Calendar}
+      <Tab.Screen name="Fertilizante"
+      component={Fertilizantes}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <Image source={calend} style={{
+            <Image source={fertilizante} style={{
               width: size, height: size,
               tintColor: focused ? '#02907D' : '#ffff'
             }} />
@@ -182,11 +182,11 @@ const Tab = createBottomTabNavigator();
           ),
         }}
       />
-      <Tab.Screen name="Fertilizante"
-      component={Fertilizantes}
+       <Tab.Screen name="Calendar"
+      component={Calendar}
         options={{
           tabBarIcon: ({ focused, size }) => (
-            <Image source={fertilizante} style={{
+            <Image source={calend} style={{
               width: size, height: size,
               tintColor: focused ? '#02907D' : '#ffff'
             }} />

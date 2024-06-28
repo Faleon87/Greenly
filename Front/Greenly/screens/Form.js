@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect , useLayoutEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,6 +17,14 @@ const App = () => {
 
   // Agrega un estado para los nombres de los cultivos
   const [cultivoNames, setCultivoNames] = useState([]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: '',
+      headerStyle: { backgroundColor: '#02907D' },
+      headerTintColor: 'black',
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const fetchQuestions = async () => {

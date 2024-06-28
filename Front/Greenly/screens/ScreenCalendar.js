@@ -100,7 +100,7 @@ const App = () => {
           <Picker
             selectedValue={plantaActual}
             onValueChange={(itemValue, itemIndex) => setPlantaActual(itemValue)}
-            style={{ width: '100%', height: 100 }} // Ajustar el alto si es necesario
+            style={styles.plantas} // Ajustar el alto si es necesario
           >
             {plantas.map(planta => (
               <Picker.Item key={planta.id} label={planta.nombre} value={planta.id} />
@@ -118,14 +118,11 @@ const App = () => {
           <Picker
               selectedValue={accionSeleccionada}
               onValueChange={(itemValue, itemIndex) => setAccionSeleccionada(itemValue)}
-              style={{ width: '100%', height: 100 }} // Ajustar el alto si es necesario
+              style={styles.accion} // Ajustar el alto si es necesario
             >
               <Picker.Item label="Sembrar" value="sembrar" />
               <Picker.Item label="Cosechar" value="cosechar" />
             </Picker>
-
-
-
           {isPickerVisible && (
             <DateTimePicker
               value={fechaSeleccionada}
@@ -133,23 +130,22 @@ const App = () => {
               display="default"
               onChange={(event, selectedDate) => {
                 if (selectedDate) {
-                  setFechaSeleccionada(selectedDate);
+                  setFechaSeleccionada(selectedDate); // Establece la fecha seleccionada
                   setIsPickerVisible(false); // Oculta el DateTimePicker después de seleccionar una fecha
-
                 }
               }}
             />
           )}
-          <Button title="Guardar" onPress={guardarPlanta} />
+          <Button title="Guardar" onPress={guardarPlanta} /> 
         </View>
       </Modal>
       <FlatList data={plantasPorMes[mesInput]} keyExtractor={(item, index) => index.toString()} renderItem={({ item }) => (
         <View>
           <Text>{item.nombre}</Text>
-          <Image source={{ uri: item.imagenUrl }} style={{ width: 100, height: 100 }} />
+          <Image source={{ uri: item.imagenUrl }} style={{ width: 100, height: 100 }} /> 
         </View>
       )} />
-      <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}> 
         <Text style={styles.buttonText}>+</Text>
       </TouchableOpacity>
     </View >
@@ -158,36 +154,41 @@ const App = () => {
 
 const styles = StyleSheet.create({
   floatingButton: {
-    backgroundColor: 'blue',
+    backgroundColor: '',
     width: 60,
     height: 60,
     borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
+    justifyContent: 'center', 
+    alignItems: 'center', // Alinea el contenido al centro
+    position: 'absolute', // Posición absoluta para que el botón flotante no afecte el diseño de otros elementos
+    bottom: 20, // Ajusta la posición del botón flotante
+    right: 20, // Ajusta la posición del botón flotante
   },
   buttonText: {
-    color: 'white',
-    fontSize: 24,
+    color: 'white', // Texto blanco para hacerlo más visible
+    fontSize: 24, // Tamaño de la fuente más grande
+  },
+  accion: {
+    width: '100%',
+    height: 50, // Ajusta el alto según tus necesidades
+    backgroundColor: 'lightgrey',
+    margin: 10, // Añade margen para que no esté pegado al borde
   },
   modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4
+    margin: 20, // Margen para que no esté pegado al borde
+    backgroundColor: "white", // Fondo blanco para hacerlo más visible
+    borderRadius: 20, // Bordes redondeados para hacerlo más amigable
+    padding: 35, // Añadir relleno para que no se vea tan pegado al borde
+    alignItems: "center", // Alinea el contenido al centro
+    shadowColor: "#000", // Color de la sombra
+    shadowOffset: { 
+      width: 0, // Ajustar la sombra hacia la derecha
+      height: 4 // Ajustar la sombra hacia abajo
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
-    // Añadir un ligero fondo oscuro para resaltar el modal
-    backgroundColor: '#F7F7F7'
+    shadowOpacity: 0.3, // Sombra más suave
+    shadowRadius: 5, // Tamaño de la sombra
+    elevation: 10, // Efecto de elevación para Android
+    backgroundColor: '#F7F7F7' // Fondo gris claro para hacerlo más visible
   },
   closeButton: {
     position: 'absolute',
@@ -210,6 +211,20 @@ const styles = StyleSheet.create({
   plantasGuardadas: {
     fontSize: 20,
   },
+  datePickerButton: {
+    backgroundColor: 'lightgrey',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  plantas: {
+    backgroundColor: 'lightgrey',
+    width: '100%',
+    height: 50, // Ajusta el alto según tus necesidades
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  }
 });
 
 export default App;
