@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, DeleteDateColumn } from 'typeorm';
 import { BenefPerd } from '../../beneficios_per/entities/benef_perd';
 
 @Entity()
@@ -42,6 +42,11 @@ export class Plantas {
   @Column()
   riegoEstimado : string;
 
+
   @OneToMany(() => BenefPerd, benefPerd => benefPerd.idPlanta)
   benefPerd: BenefPerd[];
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
+
 }

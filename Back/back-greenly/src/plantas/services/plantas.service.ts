@@ -18,7 +18,7 @@ export class PlantasService {
   }
 
   async update(id: number, updatePlantasDto: UpdatePlantasDto,): Promise<Plantas> {
-    let planta;
+    let planta: Plantas;
     try {
       planta = await this.plantasRepository.findOneOrFail({
         where: { idPlanta: id },

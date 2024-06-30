@@ -8,7 +8,7 @@ const DetallePlanta = ({ route, navigation }) => {
   const scrollY = useRef(new Animated.Value(0)).current; // Add this line
   const [plantasReferenciadas, setPlantasReferenciadas] = useState([]);
   const plantasBeneficiosas = plantasReferenciadas.filter(planta => planta.estado === 'beneficiosa');
-const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado === 'perjudicial');
+  const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado === 'perjudicial');
 
   const [planta, setPlanta] = useState('');
   useLayoutEffect(() => {
@@ -52,7 +52,7 @@ const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado
       }
     };
 
-    
+
     getPlanta();
   }, [idPlanta]);
 
@@ -109,13 +109,13 @@ const plantasPerjudiciales = plantasReferenciadas.filter(planta => planta.estado
           <Text style={styles.description}>{cleanText(planta.plantaOriginal.rotaciones)}</Text>
         </View>
         <Text style={styles.fieldTitle}>Clima y Temperatura:</Text>
-        <Text style={styles.description}>{cleanText(planta.plantaOriginal.climaTemperatura)}</Text>         
+        <Text style={styles.description}>{cleanText(planta.plantaOriginal.climaTemperatura)}</Text>
         <Text style={styles.fieldTitle}>Riego:</Text>
         <Text style={styles.description}>{cleanText(planta.plantaOriginal.riego)}</Text>
         <Text style={styles.fieldTitle}>Riego Estimado:</Text>
-        <Text style={styles.description}>{cleanText(planta.plantaOriginal.riegoEstimado)}</Text>                                                                                                                                                                   
-        {plantasReferenciadas.length > 0  && <Text style={styles.asociaciones}>Asociaciones:</Text>}                                
-        {plantasReferenciadas.length > 4  && <Text style={styles.scrollIndicator}>Desliza a la derecha para ver más plantas </Text>}
+        <Text style={styles.description}>{cleanText(planta.plantaOriginal.riegoEstimado)}</Text>
+        {plantasReferenciadas.length > 0 && <Text style={styles.asociaciones}>Asociaciones:</Text>}
+        {plantasReferenciadas.length > 4 && <Text style={styles.scrollIndicator}>Desliza a la derecha para ver más plantas </Text>}
         {plantasBeneficiosas.length > 0 && <Text style={styles.fieldTitle}>Beneficiosas:</Text>}
         <ScrollView horizontal>
           {plantasBeneficiosas.map((planta) => (

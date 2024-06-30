@@ -17,6 +17,11 @@ import { ChatController } from './chat/controllers/chat.controller';
 import { PreguntaServiceService } from './chat/services/pregunta-service.service';
 import { FotoPreguntasService } from './chat/services/foto-preguntas.service';
 import { LikesService } from './chat/services/likes.service';
+import { PlagasController } from './plagas/controller/plagas.controller';
+import { PlagasService } from './plagas/services/plagas.service';
+import { Plagas } from './plagas/entities/plagas';
+import { PlagasDto } from './plagas/dtos/plagas-dto';
+import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
 
 @Module({
   imports: [
@@ -35,8 +40,9 @@ import { LikesService } from './chat/services/likes.service';
         Likes,
         Respuestas,
         BenefPerd,
+        Plagas,
       ],
-      synchronize: false,
+      synchronize: true,
       ssl: true,
       extra: {
         ssl: {
@@ -52,6 +58,7 @@ import { LikesService } from './chat/services/likes.service';
       Likes,
       Respuestas,
       BenefPerd,
+      Plagas,
     ]),
   ],
   controllers: [
@@ -59,6 +66,7 @@ import { LikesService } from './chat/services/likes.service';
     PlantasController,
     UserController,
     ChatController,
+    PlagasController,
   ],
   providers: [
     AppService,
@@ -67,6 +75,8 @@ import { LikesService } from './chat/services/likes.service';
     PreguntaServiceService,
     FotoPreguntasService,
     LikesService,
+    PlagasService,
+    PlagasDtoDetail,
   ],
 })
 export class AppModule {}

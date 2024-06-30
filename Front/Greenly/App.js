@@ -18,6 +18,7 @@ import DetallePlanta from './screens/DetallePlanta';
 import Fertilizante from './screens/Fertilizantes';
 import EditProfileScreen from './screens/User';
 import Form from './screens/Form';
+import DetallePlagas from './screens/DetallePlagas';
 
 
 const Stack = createStackNavigator();
@@ -96,6 +97,7 @@ export default function App() {
         <Stack.Screen name="FormForo" component={FormForo} /> 
         <Stack.Screen name="Fertilizante" component={Fertilizante} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+        <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
     
       </Stack.Navigator>
     </NavigationContainer>

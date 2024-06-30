@@ -1,5 +1,3 @@
-import { Alert } from "react-native";
-
 export const DetallesPlanta = async (idPlanta) => {
     try {
       const response = await fetch(`http://192.168.0.22:3000/plantas/${idPlanta}`);

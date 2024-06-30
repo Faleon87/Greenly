@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     height: wp('55%'),
-    width: wp('45%'),
+    width: wp('45%'), // Asegúrate de que este ancho permita dos elementos por fila teniendo en cuenta el margen
     overflow: 'hidden',
     backgroundColor: '#fff',
     elevation: 1,

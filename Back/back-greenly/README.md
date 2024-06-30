@@ -72,15 +72,17 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 Nest is [MIT licensed](LICENSE).
 
-## Controller, Services, Entities
+## Controller, Services, Entities y DTO's
+
+<h4>"Comandos para crear los Controller, Services, Entities y DTO's" </h4>
 
 ```bash
-nest g co controllers/products
+nest g co controllers/products --flat
 
-nest g s services/products
+nest g s services/products --flat
 
-nest g class entities/product
+nest g class entities/product --flat
 
-nest g class dtos/productDto
+nest g class dtos/productDto --flat
 ```
 
