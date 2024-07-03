@@ -6,7 +6,12 @@
     "start": "npx expo start",
     "android": "npx expo start --android",
     "ios": "npx expo start --ios",
-    "web": " npx expo start --web"
+    "web": " npx expo start --web",
+    "build" : "nest build",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "nest start --prod",
+    "start:prod:debug": "nest start --prod --debug"
   },
   "private": true,
   "dependencies": {

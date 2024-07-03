@@ -7,6 +7,8 @@ import { User } from '../entities/user';
 import * as jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 import { CreateUserDto } from '../dtos/create-user-dto';
+import { UpdateUserDto } from '../dtos/update-dto';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -111,4 +113,25 @@ export class UserService {
     }
     return user;
   }
+
+  async update(idUser: number, updatedData: UpdateUserDto): Promise<User> {
+
+
+    console.log('Received updatedData:', updatedData);
+
+    // Intenta cargar el usuario existente por id y mezclar los cambios.
+    const userToUpdate = await this.userRepository.preload({
+      idUser: idUser,
+      ...updatedData,
+    });
+  
+    // Si no se encuentra el usuario, lanza una excepción.
+    if (!userToUpdate) {
+      throw new NotFoundException(`User with ID ${idUser} not found`);
+    }
+  
+    // Guarda el usuario actualizado en la base de datos.
+    return this.userRepository.save(userToUpdate);
+  }
+
 }

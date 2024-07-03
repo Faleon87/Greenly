@@ -13,6 +13,7 @@ import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
+import { Settings } from 'react-native';
 
 
 
@@ -126,6 +127,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  settingsIcon: {
+    left: 10,
+    color: 'black',
+  },
   marketingText: {
     fontSize: 20,
     color: '#000',
@@ -156,12 +161,13 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: hp('3%'),
+    right : 13,
     color: "white",
   },
   username: {
     fontSize: hp('3%'),
     color: "#2C1001",
-    marginLeft: 10,
+    right: 10,
     fontWeight: 'bold',
   },
   profileImage: {

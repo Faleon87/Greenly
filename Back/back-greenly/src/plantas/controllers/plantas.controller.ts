@@ -46,8 +46,4 @@ export class PlantasController {
     return this.plantasService.getPlantWithState(id);
   }
   
-
-
-  // Aquí puedes agregar más manejadores de ruta según las necesidades de tu aplicación,
-  // como manejadores para crear, actualizar y eliminar plantas.
 }

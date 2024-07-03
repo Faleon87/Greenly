@@ -1,20 +1,26 @@
 import React, { useLayoutEffect, useState, useEffect } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserData } from '../api/getUserData'; // Asegúrate de que la ruta sea correcta
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
+import { updateUser } from '../api/updateUser';
+
 
 const EditProfileScreen = ({ navigation }) => {
   const [nombre, setNombre] = useState('');
   const [username, setUsername] = useState('');
   const [apellido, setApellido] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const [idUser, setIdUser] = useState('');
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const fetchIdUser = async () => {
     const storedIdUser = await AsyncStorage.getItem('idUser');
     const idUser = JSON.parse(storedIdUser);
+    setIdUser(idUser);
     fetchUserData(idUser);
   };
 
@@ -43,12 +49,12 @@ const EditProfileScreen = ({ navigation }) => {
     });
   }, [navigation]);
 
-  const handleSave = () => {
-    // Aquí puedes manejar la lógica de actualización del perfil
-    // Por ejemplo, podrías enviar los datos actualizados a una API
-
-    
-
+  const guardarUsuario = async () => {
+    try {
+      await updateUser(idUser, nombre, username, apellido, email, password);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -71,7 +77,7 @@ const EditProfileScreen = ({ navigation }) => {
           style={styles.input}
         />
       </View>
-       <Text>Apellido</Text>
+      <Text>Apellido</Text>
       <View style={styles.inputContainer}>
         <TextInput
           value={apellido}
@@ -92,9 +98,8 @@ const EditProfileScreen = ({ navigation }) => {
       <Text>Contraseña</Text>
       <View style={styles.inputContainer}>
         <TextInput
-  
-
           placeholder="Contraseña"
+          onChangeText={setPassword}
           secureTextEntry={!isPasswordVisible}
           style={styles.input}
         />
@@ -102,10 +107,12 @@ const EditProfileScreen = ({ navigation }) => {
           style={styles.eyeIcon}
           onPress={() => setIsPasswordVisible(!isPasswordVisible)}
         >
-          <Ionicons name={isPasswordVisible ? 'eye' : 'eye-off'} size={24} color="black" /> 
+          <Ionicons name={isPasswordVisible ? 'eye' : 'eye-off'} size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.guardar} title="Guardar" onPress={handleSave}>Guardar</Text>
+      <TouchableOpacity style={styles.guardar} onPress={() => guardarUsuario()}>
+        <Text style={styles.textoBoton}>Guardar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -115,6 +122,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#f5f5f5',
+  },
+  textoBoton: {
+    color: 'black',
+    fontSize: 18,
+    textAlign: 'center',
+
   },
   inputContainer: {
     flexDirection: 'row',

@@ -20,8 +20,13 @@ import { LikesService } from './chat/services/likes.service';
 import { PlagasController } from './plagas/controller/plagas.controller';
 import { PlagasService } from './plagas/services/plagas.service';
 import { Plagas } from './plagas/entities/plagas';
-import { PlagasDto } from './plagas/dtos/plagas-dto';
 import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
+import { Fertilizantes } from './fertilizantes/entities/fertilizantes';
+import { FertilizantesController } from './fertilizantes/controllers/fertilizantes.controller';
+import { FertilizantesService } from './fertilizantes/services/fertilizantes.service';
+import { CalendarController } from './calendario/controllers/calendar.controller';
+import { CalendarService } from './calendario/services/calendar.service';
+import { Calendar } from './calendario/entities/calendar';
 
 @Module({
   imports: [
@@ -41,6 +46,8 @@ import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
         Respuestas,
         BenefPerd,
         Plagas,
+        Fertilizantes,
+        Calendar,
       ],
       synchronize: true,
       ssl: true,
@@ -59,6 +66,8 @@ import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
       Respuestas,
       BenefPerd,
       Plagas,
+      Fertilizantes,
+      Calendar,
     ]),
   ],
   controllers: [
@@ -67,6 +76,8 @@ import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
     UserController,
     ChatController,
     PlagasController,
+    FertilizantesController,
+    CalendarController,
   ],
   providers: [
     AppService,
@@ -77,6 +88,8 @@ import { PlagasDtoDetail } from './plagas/dtos/plagas-dto-detail';
     LikesService,
     PlagasService,
     PlagasDtoDetail,
+    FertilizantesService,
+    CalendarService,
   ],
 })
 export class AppModule {}

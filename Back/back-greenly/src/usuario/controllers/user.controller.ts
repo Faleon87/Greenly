@@ -3,13 +3,13 @@ import {
   Controller,  
   Get,  
   Post,
-  UseGuards,
-  Request,
   Param,
+  Patch,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
-
+import { User } from '../entities/user';
 import { CreateUserDto } from '../dtos/create-user-dto';
+import { UpdateUserDto} from '../dtos/update-dto';
 
 @Controller('user')
 export class UserController {
@@ -31,6 +31,14 @@ export class UserController {
   @Get('profile/:id')
   async getProfile(@Param('id') idUser: number): Promise<any> {
     return this.userService.getProfile(idUser);
+  }
+
+  @Patch('update/:id')
+  async update(
+    @Param('id') idUser: number,
+    @Body() updatedData: UpdateUserDto,
+  ): Promise<User> {
+    return this.userService.update(idUser, updatedData);
   }
 
 }

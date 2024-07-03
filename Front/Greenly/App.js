@@ -19,6 +19,7 @@ import Fertilizante from './screens/Fertilizantes';
 import EditProfileScreen from './screens/User';
 import Form from './screens/Form';
 import DetallePlagas from './screens/DetallePlagas';
+import DetalleFertilizantes from './screens/DetalleFertilizantes';
 
 
 const Stack = createStackNavigator();
@@ -98,6 +99,7 @@ export default function App() {
         <Stack.Screen name="Fertilizante" component={Fertilizante} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
         <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
+        <Stack.Screen name="DetalleFertilizantes" component={DetalleFertilizantes} />
     
       </Stack.Navigator>
     </NavigationContainer>
