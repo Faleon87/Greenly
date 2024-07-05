@@ -8,8 +8,6 @@ export const updateUser = async (idUser, nombre, username, apellido, email, pass
  
     Alert.alert('Datos a actualizar', 'Nombre: ' + nombre + '\nUsername: ' + username + '\nApellido: ' + apellido + '\nEmail: ' + email + '\nContraseña: ' + password + '\nID: ' + idUser);
 
-   
-
     // Preparar los datos para actualizar
     const updatedData = {
         nombre,

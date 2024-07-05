@@ -119,6 +119,11 @@ export class UserService {
 
     console.log('Received updatedData:', updatedData);
 
+    // Si se recibe una contraseña, se encripta antes de guardarla.
+    if (updatedData.password) {
+      updatedData.password = await this.hashPassword(updatedData.password);
+    }
+
     // Intenta cargar el usuario existente por id y mezclar los cambios.
     const userToUpdate = await this.userRepository.preload({
       idUser: idUser,

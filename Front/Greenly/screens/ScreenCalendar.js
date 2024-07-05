@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useNavigation } from 'react'; // Asegúrate de importar useState y useEffect desde 'react'
+import React, { useState, useEffect } from 'react'; // Asegúrate de importar useState y useEffect desde 'react'
 import { View, Text, Button, FlatList, Image, Modal, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native'; // Ajusta la ruta según sea necesario
 import { Calendar } from 'react-native-calendars'; // Ajusta la ruta según sea necesario
 import { getPlantas } from '../api/getPlantas'; // Ajusta la ruta según sea necesario
@@ -8,32 +8,58 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'; // Ajusta la ruta según sea necesario
 import { guardarDatosCalendar } from '../api/guardarDatosCalendar'; // Ajusta la ruta según sea necesario
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { plantafecha } from '../api/plantafecha'; // Ajusta la ruta según sea necesario
+import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
+
 
 const App = () => {
 
+  const navigation = useNavigation();
+
   const [idUser, setIdUser] = useState(''); // ID de usuario
-  const [plantasPorMes, setPlantasPorMes] = useState({}); // Plantas por mes
+  const [datosPlanta, setDatosPlanta] = useState([]); // Datos de la planta seleccionada
   const [modalVisible, setModalVisible] = useState(false); // Estado para mostrar u ocultar el modal
-  const [mesInput, setMesInput] = useState(''); // Mes seleccionado
   const [plantas, setPlantas] = useState([]); // Plantas disponibles para seleccionar
   const [plantaActual, setPlantaActual] = useState(); // Planta seleccionada en el modal
   const [isPickerVisible, setIsPickerVisible] = useState(false); // Estado para mostrar u ocultar el DateTimePicker
   const [fechaSeleccionada, setFechaSeleccionada] = useState(new Date()); // Fecha seleccionada por defecto
-  const [plantaSeleccionada, setPlantaSeleccionada] = useState([]); // Planta seleccionada por fecha
   const [plantasGuardadas, setPlantasGuardadas] = useState({}); // Plantas guardadas por fecha
   const [accionSeleccionada, setAccionSeleccionada] = useState('sembrar'); // Valor por defecto para el Picker
   const [markedDates, setMarkedDates] = useState({}); // Fechas marcadas en el calendario
   const [searchDate, setSearchDate] = useState(''); // Fecha de búsqueda en formato YYYY-MM-DD
   const [currentDate, setCurrentDate] = useState(''); // Fecha actual para el calendario
 
+
+
   useEffect(() => {
-    const fetchIdUser = async () => {
+    // Lógica para cargar plantas cuando modalVisible es true
+    if (modalVisible) {
+      getPlantas()
+        .then(data => {
+          const plantasConIdYNombre = data.map(planta => ({
+            id: planta.idPlanta,
+            nombre: planta.nombrePlanta
+          }));
+          setPlantas(plantasConIdYNombre);
+          if (plantasConIdYNombre.length > 0) {
+            setPlantaActual(plantasConIdYNombre[0].id);
+          }
+        })
+        .catch(console.error);
+    }
+  
+    // Lógica para fetchIdUserAndData que se ejecuta independientemente de modalVisible
+    const fetchIdUserAndData = async () => {
       const storedIdUser = await AsyncStorage.getItem('idUser');
       setIdUser(storedIdUser);
+  
+      const result = await plantafecha(fechaFormateada, storedIdUser);
+      setDatosPlanta(result);
     };
-
-    fetchIdUser();
-  }, []);
+  
+    fetchIdUserAndData();
+  }, [modalVisible, fechaFormateada]); // Añade 'fecha' a las dependencias si su valor puede cambiar y necesitas recargar los datos
 
   const handleSearch = () => {
     // Verifica si la fecha ingresada es válida
@@ -41,22 +67,31 @@ const App = () => {
       Alert.alert('Formato de fecha inválido', 'Por favor, ingresa la fecha en formato YYYY-MM-DD');
       return;
     }
-    // Establece la fecha actual en el calendario
+    // Establece la fecha 
     setCurrentDate(searchDate);
+
     // Marcar la fecha en el calendario
-    setMarkedDates({
+    const newMarkedDates = {
       [searchDate]: {
         selected: true,
         marked: true,
-        selectedColor: 'red',
-        dotColor: 'red', // Color del punto marcador
-        disableTouchEvent: false, // Si el toque está deshabilitado para la fecha
+        disableTouchEvent: false,
       },
-    });
+    };
 
     //Mostrar datos de la planta seleccionada
     seleccionarPlantaPorFecha(searchDate);
+
+    // Actualiza el estado con la nueva fecha marcada
+    setMarkedDates(newMarkedDates);
+
+    // Establece la fecha seleccionada
+    setFechaSeleccionada(new Date(searchDate));
   };
+
+
+
+
 
 
 
@@ -66,13 +101,17 @@ const App = () => {
       [day.dateString]: {
         selected: true,
         marked: false,
-        selectedColor: 'red',
-        dotColor: 'red', // Color del punto marcador
-        disableTouchEvent: false, // Si el toque está deshabilitado para la fecha
+        disableTouchEvent: false,
       },
     };
     // Actualiza el estado con la nueva fecha marcada
     setMarkedDates(newMarkedDates);
+
+    // Establece la fecha seleccionada
+    setFechaSeleccionada(new Date(day.dateString));
+
+    // Mostrar datos de la planta seleccionada
+    seleccionarPlantaPorFecha(day.dateString);
   };
 
   // Formatear la fecha seleccionada para guardarla en el estado
@@ -92,70 +131,79 @@ const App = () => {
     Alert.alert('Planta guardada', `Se ha guardado la planta ${plantas.find(planta => planta.id === plantaActual).nombre} para el día ${fechaFormateada}`);
 
     //Guardar datos en la base de datos
-    guardarDatosCalendar( idUser,fechaFormateada, accionSeleccionada, plantaActual) 
+    guardarDatosCalendar(idUser, fechaFormateada, accionSeleccionada, plantaActual)
+
+    // Actualizar datos de la planta seleccionada
+    seleccionarPlantaPorFecha(fechaFormateada);
+
+    
+
+
+
+    
   };
 
 
-  useEffect(() => {
-    if (modalVisible) {
-      getPlantas()
-        .then(data => {
-          const plantasConIdYNombre = data.map(planta => ({
-            id: planta.idPlanta,
-            nombre: planta.nombrePlanta
-          }));
-          setPlantas(plantasConIdYNombre);
-          console.log(plantasConIdYNombre);
-          if (plantasConIdYNombre.length > 0) {
-            setPlantaActual(plantasConIdYNombre[0].id); // Establece la planta actual como la primera planta por defecto
-          }
-        })
-        .catch(console.error);
-    }
-  }, [modalVisible]);
+  
 
 
   const seleccionarPlantaPorFecha = (fecha) => {
+
+  
     // Filtra la planta por la fecha seleccionada
     const planta = plantasGuardadas[fecha] ? [{ fecha, planta: plantasGuardadas[fecha] }] : [];
-    setPlantaSeleccionada(planta);
+
+    // Actualiza el estado con la planta seleccionada
+    setDatosPlanta(planta);
+
+  
+    // Actualizar datos de la planta seleccionada
+    plantafecha(fecha, idUser)
+      .then(data => {
+        setDatosPlanta(data);
+      })
+      .catch(console.error);
+
   };
 
   return (
     <View style={{ flex: 1 }}>
-      <TextInput
-        placeholder="YYYY-MM-DD"
-        value={searchDate}
-        onChangeText={setSearchDate}
-        style={styles.searchInput}
-      />
-      <TouchableOpacity style={styles.buttonStyle} onPress={handleSearch}>
-        <Text style={styles.buttonText}>Buscar Fecha</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+        <TextInput
+          placeholder="YYYY-MM-DD"
+          value={searchDate}
+          onChangeText={setSearchDate}
+          style={styles.searchInput}
+        />
+        <TouchableOpacity style={styles.buttonStyle} onPress={handleSearch}>
+          <Text style={styles.buttonText}>Buscar Fecha</Text>
+        </TouchableOpacity>
+      </View>
       <Calendar
         // Estilos personalizados para el calendario
+        firstDay={1}
+        locale={'es'}
         current={currentDate}
         key={currentDate}
         style={styles.calendar}
         // Personalización de día seleccionado
         markedDates={markedDates}
+        theme={{
+          todayTextColor: 'red',
+          selectedDayBackgroundColor: 'red',
+          selectedDayTextColor: 'white',
+          textDayFontWeight: 'bold',
+          textMonthFontWeight: 'bold',
+          textDayHeaderFontWeight: 'bold',
+          textDayFontSize: 16,
+          textMonthFontSize: 16,
+          textDayHeaderFontSize: 16,
+        }} // Cambia el color del texto del día actual
         // Más props de personalización aquí...
         onDayPress={(day) => {
           seleccionarFechaYMarcar(day);
-          Alert.alert('Seleccionaste el día:', day.dateString);
           seleccionarPlantaPorFecha(day.dateString);
         }}
-      />
-      <Text style={styles.plantasGuardadas}>Sembrar</Text>
-      <FlatList
-        data={plantaSeleccionada}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View>
-            <Text>{item.planta}</Text>
-            <Text>{item.fecha}</Text>
-          </View>  
-        )}
       />
       <Modal
         animationType="slide"
@@ -212,55 +260,101 @@ const App = () => {
           <Button title="Guardar" onPress={guardarPlanta} />
         </View>
       </Modal>
-      <FlatList data={plantasPorMes[mesInput]} keyExtractor={(item, index) => index.toString()} renderItem={({ item }) => (
-        <View>
-          <Text>{item.nombre}</Text>
-          <Image source={{ uri: item.imagenUrl }} style={{ width: 100, height: 100 }} />
-        </View>
-      )} />
+      <View style={styles.content}>
+        {datosPlanta.filter(item => item.tipoAcción === 'sembrar').length > 0 && (
+          <>
+            <Text style={styles.plantasGuardadas}>Sembrar</Text>
+            <FlatList
+              data={datosPlanta.filter(item => item.tipoAcción === 'sembrar')}
+              keyExtractor={(item) => item.idUser}
+              horizontal={true}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+                  <View style={styles.sembrar}>
+                    <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                    <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                    <Text style={styles.fecha}>{item.fecha}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </>
+        )}
+      </View>
+      <View style={styles.content}>
+        {datosPlanta.filter(item => item.tipoAcción === 'cosechar').length > 0 && (
+          <>
+            <Text style={styles.plantasGuardadas}>Cosechar</Text>
+            <FlatList
+              data={datosPlanta.filter(item => item.tipoAcción === 'cosechar')}
+              keyExtractor={(item) => item.idUser}
+              horizontal={true}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+                  <View style={styles.cosechar}>
+                    <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                    <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                    <Text style={styles.fecha}>{item.fecha}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </>
+        )}
+      </View>
+
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon style={styles.addcalendar} name="edit-calendar" size={30} />
       </TouchableOpacity>
     </View >
+
   );
 };
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row', // Alinea los elementos horizontalmente
+    justifyContent: 'space-between', // Distribuye el espacio entre los elementos de manera uniforme
+    padding: 10, // Espaciado interno para separar los elementos de los bordes
+    backgroundColor: '#f5f5f5', // Un color de fondo suave
+  },
+  content: {
+    flex: 1, // Ocupa todo el espacio disponible
+    padding: 10, // Espaciado interno para separar los elementos de los bordes
+  },
   addcalendar: {
     margin: 10,
     color: 'black',
   },
   calendar: {
-    margin: 10,
+    width: wp('100%'),
   },
   searchInput: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#333',
-    padding: 10,
-    margin: 12,
-    textAlign: 'left',
-    borderRadius: 5,
+    flex: 1, // Ocupa todo el espacio disponible
+    marginRight: 10, // Espaciado a la derecha para separarlo del botón
+    borderColor: '#ccc', // Borde de color claro
+    borderWidth: 1, // Grosor del borde
+    borderRadius: 5, // Bordes redondeados
+    padding: 8, // Espaciado interno
+  },
+  nombrePlanta: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   buttonText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
     textAlign: 'center',
   },
   buttonStyle: {
-    backgroundColor: '#8FD053',
-    width: '60%',
-    textAlign: 'center',
-    left: '20%',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+    backgroundColor: 'green', // Color de fondo azul
+    borderRadius: 5, // Bordes redondeados
+    padding: 10, // Espaciado interno
   },
   floatingButton: {
     backgroundColor: 'lightblue',
-    width: 60,
-    height: 60,
+    width: wp('15%'),
+    height: hp('7%'),
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center', // Alinea el contenido al centro
@@ -269,20 +363,19 @@ const styles = StyleSheet.create({
     right: 20, // Ajusta la posición del botón flotante
   },
   accion: {
-    width: '100%',
+    width: wp('40%'),
     height: 50, // Ajusta el alto según tus necesidades
-    backgroundColor: 'lightgrey',
-    margin: 10, // Añade margen para que no esté pegado al borde
+
   },
-  modalView: {
+ modalView: {
     margin: 20, // Margen para que no esté pegado al borde
     borderRadius: 20, // Bordes redondeados para hacerlo más amigable
     padding: 35, // Añadir relleno para que no se vea tan pegado al borde
     alignItems: "center", // Alinea el contenido al centro
     shadowColor: "#000", // Color de la sombra
     shadowOffset: {
-      width: 0, // Ajustar la sombra hacia la derecha
-      height: 4 // Ajustar la sombra hacia abajo
+      width: wp('0'), // Ajustar la sombra hacia la derecha
+      height: hp('4%') // Ajustar la sombra hacia abajo
     },
     shadowOpacity: 0.3, // Sombra más suave
     shadowRadius: 5, // Tamaño de la sombra
@@ -294,10 +387,9 @@ const styles = StyleSheet.create({
     color: 'red',
     left: 10,
     top: 15,
-    width: 30,
-    height: 30,
+    width: wp('7%'),
+    height: hp('3%'),
     borderRadius: 15, // Bordes redondeados para hacerlo más amigable
-
   },
   closeButtonText: {
     color: 'red', // Color más suave que el rojo puro
@@ -311,22 +403,36 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10,
   },
-  datePickerButton: {
-    backgroundColor: 'lightgrey',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+  imagenPlanta: {
+    width: wp('20%'), // Aumentar el ancho
+    height: hp('10%'), // Aumentar el alto
+    borderRadius: 15, // Bordes más redondeados
+    shadowColor: "#000", // Agregar sombra
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  sembrar: {
+    borderRadius: 10, // Bordes redondeados para los elementos
+    alignItems: 'center', // Centra los elementos (imagen, fecha, nombre) verticalmente
+  },
+  cosechar: {
+    borderRadius: 10, // Bordes redondeados para los elementos
+    alignItems: 'center', // Centra los elementos (imagen, fecha, nombre) verticalmente
   },
   plantas: {
-    backgroundColor: 'lightgrey',
-    width: '100%',
-    height: 50, // Ajusta el alto según tus necesidades
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
-  }
+    width: wp('40%'),
+    height: hp('5%'), // Ajusta el alto según tus necesidades
+  
+
+
+  },
+  
 });
 
 export default App;
