@@ -168,6 +168,7 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
+    <ScrollView>
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
         <TextInput
           placeholder="YYYY-MM-DD"
@@ -302,8 +303,8 @@ const App = () => {
           </>
         )}
       </View>
-
-      <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
+    </ScrollView>
+    <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon style={styles.addcalendar} name="edit-calendar" size={30} />
       </TouchableOpacity>
     </View >
@@ -358,9 +359,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center', // Alinea el contenido al centro
-    position: 'absolute', // Posición absoluta para que el botón flotante no afecte el diseño de otros elementos
-    bottom: 20, // Ajusta la posición del botón flotante
-    right: 20, // Ajusta la posición del botón flotante
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+   
   },
   accion: {
     width: wp('40%'),
