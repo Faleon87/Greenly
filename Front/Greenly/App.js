@@ -8,7 +8,6 @@ import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
-import Admin from "./screens/Admin";
 import backButtonImage from './img/back.png';
 import MyTabs from './components/MyTabs'; // Asegúrate de que la ruta al archivo MyTabs.js sea correcta
 import MyTabsAdmin from './components/MyTabsAdmin';
@@ -20,6 +19,7 @@ import EditProfileScreen from './screens/User';
 import Form from './screens/Form';
 import DetallePlagas from './screens/DetallePlagas';
 import DetalleFertilizantes from './screens/DetalleFertilizantes';
+import TabTienda from './components/TabTienda';
 
 
 const Stack = createStackNavigator();
@@ -100,7 +100,7 @@ export default function App() {
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
         <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
         <Stack.Screen name="DetalleFertilizantes" component={DetalleFertilizantes} />
-    
+        <Stack.Screen name= "Tienda" component={TabTienda} />
       </Stack.Navigator>
     </NavigationContainer>
   );

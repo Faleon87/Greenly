@@ -13,7 +13,7 @@ import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
-import { Settings } from 'react-native';
+
 
 
 
@@ -22,9 +22,6 @@ function Pantalla({route}) {
   const [img, setImg] = useState('');
   const [weather, setWeather] = useState();
   const navigation = useNavigation();
-
-  
-
 
   const weatherIconName = {
     'Sunny': sunnyImage,
@@ -110,8 +107,8 @@ function Pantalla({route}) {
           </View>
         </Animatable.View>
         <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Tienda')}>
         <Image source={image1} style={styles.image} />
-        <TouchableOpacity onPress={() => navigation.navigate('')}>
         </TouchableOpacity>
       </ScrollView>
     </View>

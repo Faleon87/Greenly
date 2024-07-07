@@ -27,6 +27,20 @@ import { FertilizantesService } from './fertilizantes/services/fertilizantes.ser
 import { CalendarController } from './calendario/controllers/calendar.controller';
 import { CalendarService } from './calendario/services/calendar.service';
 import { Calendar } from './calendario/entities/calendar';
+import { ProductosController } from './productos/controller/productos.controller';
+import { ProductosService } from './productos/servicies/productos.service';
+import { HerramientasController } from './herramientas/controller/herramientas.controller';
+import { HerramientasService } from './herramientas/servicies/herramientas.service';
+import { SemillasController } from './semillas/controller/semillas.controller';
+import { SemillasService } from './semillas/servicies/semillas.service';
+import { AbonosController } from './abonos/controller/abonos.controller';
+import { AbonosService } from './abonos/servicies/abonos.service';
+import { CarritoController } from './carrito/controller/carrito.controller';
+import { CarritoService } from './carrito/servicies/carrito.service';
+import { Abonos } from './abonos/entities/abonos';
+import { Herramientas } from './herramientas/entities/herramientas';
+import { Semillas } from './semillas/entities/semillas';
+import { Productos } from './productos/entities/productos';
 
 @Module({
   imports: [
@@ -48,6 +62,10 @@ import { Calendar } from './calendario/entities/calendar';
         Plagas,
         Fertilizantes,
         Calendar,
+        Herramientas,
+        Semillas,
+        Abonos,
+        Productos,
       ],
       synchronize: true,
       ssl: true,
@@ -68,6 +86,10 @@ import { Calendar } from './calendario/entities/calendar';
       Plagas,
       Fertilizantes,
       Calendar,
+      Productos,
+      Herramientas,
+      Semillas,
+      Abonos,
     ]),
   ],
   controllers: [
@@ -78,6 +100,11 @@ import { Calendar } from './calendario/entities/calendar';
     PlagasController,
     FertilizantesController,
     CalendarController,
+    ProductosController,
+    HerramientasController,
+    SemillasController,
+    AbonosController,
+    CarritoController,
   ],
   providers: [
     AppService,
@@ -90,6 +117,11 @@ import { Calendar } from './calendario/entities/calendar';
     PlagasDtoDetail,
     FertilizantesService,
     CalendarService,
+    ProductosService,
+    HerramientasService,
+    SemillasService,
+    AbonosService,
+    CarritoService,
   ],
 })
 export class AppModule {}
