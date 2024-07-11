@@ -30,7 +30,8 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
-        "INTERNET"
+        "INTERNET",
+        "NOTIFICATIONS"
       ],
       "jsEngine": "hermes",
       "package": "com.vigu.Greenly"

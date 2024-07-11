@@ -41,29 +41,7 @@ export default function LoginScreen({ navigation }) {
       if (username === 'admin') {
         navigation.navigate('Admin');
       } else {
-        // Si el inicio de sesión es exitoso, muestra la alerta
-        Alert.alert(
-          "Tutorial",
-          "¿Deseas iniciar el tutorial?",
-          [
-            {
-              text: "No",
-              onPress: async () => {
-                await AsyncStorage.setItem('respuesta', 'No');
-                navigation.navigate('Pantalla');
-              },
-              style: "cancel"
-            },
-            {
-              text: "Sí",
-              onPress: async () => {
-                await AsyncStorage.setItem('respuesta', 'Sí');
-                navigation.navigate('Pantalla');
-              }
-            }
-          ],
-          { cancelable: false }
-        );
+        navigation.navigate('Pantalla');
       }
     } catch (error) {
       setIsLoading(false);

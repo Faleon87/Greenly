@@ -1,7 +1,8 @@
 import { Herramientas } from "src/herramientas/entities/herramientas";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Semillas } from "src/semillas/entities/semillas";
 import { Abonos } from "src/abonos/entities/abonos";
+import { Carrito } from "src/carrito/entities/carrito";
 
 @Entity('productos')
 export class Productos {
@@ -38,6 +39,15 @@ export class Productos {
     @OneToOne(() => Abonos, abonos => abonos.productos)
 
     abonos: Abonos;
+
+    @OneToMany (() => Carrito, carrito => carrito.idProducto)
+    carrito: Carrito[];
+
+
+    
+
+
+    
 
 
 

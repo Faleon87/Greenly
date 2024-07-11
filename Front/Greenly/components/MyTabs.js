@@ -1,7 +1,6 @@
 // MyTabs.js
 import React from 'react';
 import { Image, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import homeIcon from '../icons/home.png';
@@ -21,7 +20,7 @@ import Fertilizantes from '../screens/Fertilizantes';
 
 
 export function MyTabs() {
-  const navigation = useNavigation();
+
 
   const selectImage = async () => {
     const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();

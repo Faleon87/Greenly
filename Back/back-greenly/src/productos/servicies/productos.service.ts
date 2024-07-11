@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Productos, } from '../entities/productos';
-import { Repository } from 'typeorm';
+import { DistinctOptions, Repository } from 'typeorm';
+import { DtoproductoDtoget } from '../dto/dtoproducto-dtoget';
 
 @Injectable()
 export class ProductosService {
@@ -11,24 +12,13 @@ export class ProductosService {
         private productosRepository: Repository<Productos>
     ) { }
 
-    async findAll(page: number = 1, pageSize: number = 10): Promise<Productos[]> {
-        const productos = await this.productosRepository.createQueryBuilder('productos')
-            .leftJoinAndSelect('productos.herramientas', 'herramientas')
-            .leftJoinAndSelect('productos.semillas', 'semillas')
-            .leftJoinAndSelect('productos.abonos', 'abonos')
-            .skip((page - 1) * pageSize)
-            .take(pageSize)
-            .getMany();
-
-        return productos.map(producto => {
-            const { herramientas, semillas, abonos, ...rest } = producto;
-            return {
-                ...rest,
-                ...(herramientas && { herramientas }),
-                ...(semillas && { semillas }),
-                ...(abonos && { abonos }),
-            };
+    async findAll(page: number = 1, pageSize: number = 10): Promise<DtoproductoDtoget[]> {
+        const productos = await this.productosRepository.find({
+            select: ['idProducto', 'nombre', 'precio', 'stock', 'imagen', 'Categoria'],
+            take: pageSize,
+            skip: (page - 1) * pageSize
         });
+        return productos;
     }
 
 

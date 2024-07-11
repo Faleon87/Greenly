@@ -3,8 +3,10 @@ import { Pregunta } from '../../chat/entities/pregunta';
 import { FotoPreguntas } from '../../chat/entities/foto-preguntas';
 import { Likes } from 'src/chat/entities/likes';
 import { Respuestas } from 'src/chat/entities/respuestas';
+import { Carrito } from 'src/carrito/entities/carrito';
+import { Tarjeta } from 'src/tarjeta/entities/tarjeta';
 
-@Entity()
+@Entity('user')
 export class User {
   @PrimaryGeneratedColumn()
   idUser: number;
@@ -38,5 +40,10 @@ export class User {
 
   @OneToMany(() => Respuestas, respuestas => respuestas.idUsuario)
   respuestas: Respuestas[];
+   
+  @OneToMany(() => Carrito, carrito => carrito.idUser)
+  carrito: Carrito[];
 
+  @OneToMany(() => Tarjeta, tarjeta => tarjeta.idUser)
+  tarjeta: Tarjeta[];
 }

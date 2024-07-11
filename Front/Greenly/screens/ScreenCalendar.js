@@ -135,12 +135,6 @@ const App = () => {
 
     // Actualizar datos de la planta seleccionada
     seleccionarPlantaPorFecha(fechaFormateada);
-
-    
-
-
-
-    
   };
 
 
@@ -149,7 +143,6 @@ const App = () => {
 
   const seleccionarPlantaPorFecha = (fecha) => {
 
-  
     // Filtra la planta por la fecha seleccionada
     const planta = plantasGuardadas[fecha] ? [{ fecha, planta: plantasGuardadas[fecha] }] : [];
 

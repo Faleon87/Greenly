@@ -41,6 +41,10 @@ import { Abonos } from './abonos/entities/abonos';
 import { Herramientas } from './herramientas/entities/herramientas';
 import { Semillas } from './semillas/entities/semillas';
 import { Productos } from './productos/entities/productos';
+import { Carrito } from './carrito/entities/carrito';
+import { TarjetaController } from './tarjeta/controller/tarjeta.controller';
+import { TarjetaService } from './tarjeta/servicies/tarjeta.service';
+import { Tarjeta } from './tarjeta/entities/tarjeta';
 
 @Module({
   imports: [
@@ -66,6 +70,8 @@ import { Productos } from './productos/entities/productos';
         Semillas,
         Abonos,
         Productos,
+        Carrito,
+        Tarjeta,
       ],
       synchronize: true,
       ssl: true,
@@ -90,6 +96,9 @@ import { Productos } from './productos/entities/productos';
       Herramientas,
       Semillas,
       Abonos,
+      Carrito,
+      Tarjeta
+      
     ]),
   ],
   controllers: [
@@ -105,6 +114,7 @@ import { Productos } from './productos/entities/productos';
     SemillasController,
     AbonosController,
     CarritoController,
+    TarjetaController,
   ],
   providers: [
     AppService,
@@ -122,6 +132,7 @@ import { Productos } from './productos/entities/productos';
     SemillasService,
     AbonosService,
     CarritoService,
+    TarjetaService,
   ],
 })
 export class AppModule {}

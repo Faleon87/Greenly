@@ -1,57 +1,92 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import { obtenerProductos } from '../api/obtenerProductos';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Animatable from 'react-native-animatable';
+import { guardarDatosCarrito } from '../api/insertCarrito';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Tienda() {
+
   const [productos, setProductos] = useState([]);
   const [filtro, setFiltro] = useState('');
+  const [idUser, setIdUser] = useState(null);
 
- 
+
   useEffect(() => {
     const cargarProductos = async () => {
       const productosDesdeAPI = await obtenerProductos();
       setProductos(productosDesdeAPI);
     };
     cargarProductos();
+
+    // Paso 3 y 4: Cargar y almacenar el idUser desde AsyncStorage
+    const cargarIdUser = async () => {
+      const storedIdUser = await AsyncStorage.getItem('idUser');
+      setIdUser(storedIdUser); // Almacenar el idUser en el estado
+    };
+    cargarIdUser();
   }, []);
+
+ 
 
 
 
   const FiltroBoton = ({ categoria }) => (
     <TouchableOpacity
       style={styles.botonFiltro}
-      onPress={() => setFiltro(categoria)}
+      onPress={() => setFiltro(categoria)
+      }
     >
       <Text style={styles.textoBoton}>{categoria || 'Todos'}</Text>
     </TouchableOpacity>
   );
 
-  const ProductoItem = ({ item }) => (
-    <View style={styles.producto}>
-      <Image source={{ uri: item.imagen }} style={styles.imagen} />
-      <View style={styles.detalles}>
-        <Text style={styles.nombre}>{item.nombre}</Text>
-        <Text style={styles.precio}>{`Precio: €${item.precio}`}</Text>
-        <Text style={item.stock > 0 ? styles.stockDisponible : styles.stockNoDisponible}>
-          {item.stock > 0 ? `Stock: ${item.stock}` : 'No está disponible'}
-        </Text>
+  const ProductoItem = ({ item }) => {
+    const iconoCarrito = useRef(null);
+
+
+
+    const animateIcon = () => {
+      iconoCarrito.current?.bounce(800);
+
+      // Insertar el producto en el carrito
+      guardarDatosCarrito(idUser,item.idProducto);
+
+      // Esperar unos segundos antes de mostrar la alerta
+      setTimeout(() => {
+        Alert.alert('Producto añadido al carrito', 'Has comprado ' + item.nombre + ' por €' + item.precio, [{ text: 'OK' }], { cancelable: false });
+      }, 1000); // Espera 2000 milisegundos (2 segundos) antes de mostrar la alerta
+    };
+
+    return (
+      <View style={styles.producto}>
+        <Image source={{ uri: item.imagen }} style={styles.imagen} />
+        <View style={styles.detalles}>
+          <Text style={styles.nombre}>{item.nombre}</Text>
+          <Text style={styles.precio}>{`Precio: €${item.precio}`}</Text>
+          <Text style={item.stock > 0 ? styles.stockDisponible : styles.stockNoDisponible}>
+            {item.stock > 0 ? `Stock: ${item.stock}` : 'No está disponible'}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.iconoCarrito}
+          onPress={() => {
+            if (item.stock > 0) {
+              animateIcon();
+            } else {
+              Alert.alert("Lo siento", "Este artículo no está disponible en estos momentos");
+            }
+          }}
+        >
+          <Animatable.View ref={iconoCarrito}>
+            <MaterialIcons name="add-shopping-cart" size={24} color="black" />
+          </Animatable.View>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={styles.iconoCarrito}
-        onPress={() => {
-          if (item.stock > 0) {
-            Alert.alert("¡Producto añadido!", `${item.nombre} ha sido añadido al carrito`);
-          } else {
-            Alert.alert("Lo siento", "Este artículo no está disponible en estos momentos");
-          }
-        }}
-      >
-        <MaterialIcons name="add-shopping-cart" size={24} color="black" />
-      </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>

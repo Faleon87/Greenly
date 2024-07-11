@@ -20,6 +20,7 @@ import Form from './screens/Form';
 import DetallePlagas from './screens/DetallePlagas';
 import DetalleFertilizantes from './screens/DetalleFertilizantes';
 import TabTienda from './components/TabTienda';
+import PagarConTarjeta from './screens/PagarTarjeta';
 
 
 const Stack = createStackNavigator();
@@ -101,6 +102,7 @@ export default function App() {
         <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
         <Stack.Screen name="DetalleFertilizantes" component={DetalleFertilizantes} />
         <Stack.Screen name= "Tienda" component={TabTienda} />
+        <Stack.Screen name= "PagarConTarjeta" component={PagarConTarjeta} />
       </Stack.Navigator>
     </NavigationContainer>
   );
