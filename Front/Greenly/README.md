@@ -1,7 +1,7 @@
-## React
+## React Native 
 
 ```bash
-# create App React Native
+# Create App React Native
 npx create-expo-app Greenly
 
 # Acceder proyect
