@@ -22,6 +22,7 @@ import DetalleFertilizantes from './screens/DetalleFertilizantes';
 import TabTienda from './components/TabTienda';
 import PagarConTarjeta from './screens/PagarTarjeta';
 import AddPlant from './screens/AddPlant';
+import AddFertilizante from './screens/AddFertilizante';
 
 
 const Stack = createStackNavigator();
@@ -109,6 +110,7 @@ export default function App() {
         <Stack.Screen name= "Tienda" component={TabTienda} />
         <Stack.Screen name= "PagarConTarjeta" component={PagarConTarjeta} />
         <Stack.Screen name= "AddPlant" component={AddPlant} />
+        <Stack.Screen name="AddFertilizante" component={AddFertilizante} />
 
       </Stack.Navigator>
     </NavigationContainer>

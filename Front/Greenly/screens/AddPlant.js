@@ -51,7 +51,7 @@ export default function AddPlant({ navigation }) {
 
         setTimeout(() => {
           navigation.goBack(); // Regresa a la pantalla anterior
-        }, 1000); 
+        }, 2000); 
       })
       .catch(error => {
         console.error('Error al añadir la planta:', error);

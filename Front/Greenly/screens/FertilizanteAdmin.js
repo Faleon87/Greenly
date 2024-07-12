@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, FAB } from 'react-native-paper';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { cardFertilizantes } from '../api/cardFertilizantes';
 import { updateFertilizante } from '../api/updateFertilizante';
+import { useNavigation } from '@react-navigation/native';
 
 const FertilizanteAdmin = () => {
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,6 +138,11 @@ const FertilizanteAdmin = () => {
       ) : (
         <Text style={styles.noResultsText}>Lo siento, pero eso no existe.</Text>
       )}
+      <FAB
+        style={styles.fab}
+        icon="plus"
+        onPress={() => navigation.navigate('NuevaPantalla')}
+      />
     </View>
   );
 };
@@ -208,6 +215,14 @@ const styles = StyleSheet.create({
     color: '#000',
     marginTop: 10,
     fontFamily: 'sans-serif',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    radius: 30,
+    bottom: 0,
+    backgroundColor: '#4CAF50',
   },
 });
 
