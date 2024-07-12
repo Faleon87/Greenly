@@ -178,7 +178,7 @@ const App = () => {
         firstDay={1}
         locale={'es'}
         current={currentDate}
-        key={currentDate}
+        key={idUser}
         style={styles.calendar}
         // Personalización de día seleccionado
         markedDates={markedDates}
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1, // Ocupa todo el espacio disponible
     marginRight: 10, // Espaciado a la derecha para separarlo del botón
-    borderColor: '#ccc', // Borde de color claro
+    borderColor: 'black', // Borde de color claro
     borderWidth: 1, // Grosor del borde
     borderRadius: 5, // Bordes redondeados
     padding: 8, // Espaciado interno
@@ -423,9 +423,6 @@ const styles = StyleSheet.create({
   plantas: {
     width: wp('40%'),
     height: hp('5%'), // Ajusta el alto según tus necesidades
-  
-
-
   },
   
 });

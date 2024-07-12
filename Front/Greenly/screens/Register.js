@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'; import { launchImageLibrary } from 'react-native-image-picker';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
-// Importa tus imágenes aquí
 import eyeIcon from '../img/hide.png';
 import eyeSlashIcon from '../img/view.png';
-const defaultProfileImage = require('../img/profile.png');// Asegúrate de reemplazar esto con la ruta a tu imagen
+const defaultProfileImage = require('../img/profile.png');
 
 export default function RegisterScreen({ navigation }) {
     const [hidePassword, setHidePassword] = React.useState(true);
@@ -40,7 +39,7 @@ export default function RegisterScreen({ navigation }) {
             Alert.alert('You must agree with the account');
             return;
         }
-        // Aquí puedes hacer la petición POST a tu API
+
         fetch('http://192.168.0.22:3000/user/register', {
             method: 'POST',
             headers: {
@@ -57,9 +56,8 @@ export default function RegisterScreen({ navigation }) {
             .then((json) => {
                 console.log(json);
                 Alert.alert('User registered successfully');
-
-            }
-            ).catch((error) => {
+            })
+            .catch((error) => {
                 console.error('Error:', error);
             });
     }
@@ -93,8 +91,6 @@ export default function RegisterScreen({ navigation }) {
 
                     console.log(result);
 
-
-
                     if (result && !result.cancelled) {
                         setProfileImage({ uri: result.assets[0].uri });
                     }
@@ -109,28 +105,32 @@ export default function RegisterScreen({ navigation }) {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <TouchableOpacity onPress={selectProfileImage}>
                 <Image source={profileImage} style={styles.profileImage} resizeMode='cover' />
             </TouchableOpacity>
+            <Text style={styles.label}>Name</Text>
             <Input
                 placeholder="Name"
                 inputContainerStyle={styles.inputContainer}
                 value={name}
                 onChangeText={setName}
             />
+            <Text style={styles.label}>Email</Text>
             <Input
                 placeholder="Email"
                 inputContainerStyle={styles.inputContainer}
                 value={email}
                 onChangeText={setEmail}
             />
+            <Text style={styles.label}>Username</Text>
             <Input
                 placeholder="Username"
                 inputContainerStyle={styles.inputContainer}
                 value={username}
                 onChangeText={setUsername}
             />
+            <Text style={styles.label}>Password</Text>
             <Input
                 placeholder="Password"
                 secureTextEntry={hidePassword}
@@ -143,6 +143,7 @@ export default function RegisterScreen({ navigation }) {
                     </TouchableOpacity>
                 }
             />
+            <Text style={styles.label}>Confirm Password</Text>
             <Input
                 placeholder="Confirm Password"
                 secureTextEntry={hidePassword}
@@ -175,31 +176,37 @@ export default function RegisterScreen({ navigation }) {
                     <Text style={styles.loginBold}> Login</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: 'white',
         justifyContent: 'center',
         padding: wp('5%'),
     },
     profileImage: {
-        width: wp('20%'),
-        height: hp('10%'),
+        width: wp('30%'),
+        height: wp('30%'),
         alignSelf: 'center',
+        marginBottom: wp('5%'),
+        borderRadius: wp('15%'),
+    },
+    label: {
+        marginLeft: wp('3%'),
+        fontSize: hp('2%'),
+        fontWeight: 'bold',
         marginBottom: wp('2%'),
-        borderRadius: wp('10%'), // Añade esta línea
     },
     inputContainer: {
-        borderColor: 'gray',
+        borderColor: 'black',
         borderWidth: 1,
-        borderRadius: wp('2%'),
-        marginBottom: wp('2%'),
-        paddingHorizontal: wp('10%'),
-        height: hp('4%'), // This sets the height of the input fields
+        borderRadius: 10,
+        height: hp('6%'),
+        marginBottom: wp('5%'),
+        paddingHorizontal: wp('3%'),
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -215,11 +222,12 @@ const styles = StyleSheet.create({
         padding: wp('3%'),
         marginBottom: wp('5%'),
         marginTop: wp('1%'),
+        borderRadius: 10,
     },
     buttonText: {
         color: '#000',
         textAlign: 'center',
-        fontSize: hp('2.9%'),
+        fontSize: hp('2.5%'),
     },
     login: {
         fontSize: wp('4%'),
@@ -228,7 +236,7 @@ const styles = StyleSheet.create({
     loginBold: {
         fontWeight: 'bold',
         fontSize: wp('4%'),
-        marginLeft: 5, // Añade un pequeño espacio entre "I have an account" y "Login"
+        marginLeft: 5,
     },
     icon: {
         width: wp('5%'),

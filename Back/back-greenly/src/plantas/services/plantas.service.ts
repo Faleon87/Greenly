@@ -75,4 +75,22 @@ export class PlantasService {
      return planta;
   }
 
+  async create(createPlantDto: any): Promise<Plantas> {
+    const planta = new Plantas();
+    planta.nombrePlanta = createPlantDto.nombrePlanta;
+    planta.nombreCientifico = createPlantDto.nombreCientifico;
+    planta.identificacion = createPlantDto.identificacion;
+    planta.img = createPlantDto.img;
+    planta.siembra = createPlantDto.siembra;
+    planta.temporadaSiembra = createPlantDto.temporadaSiembra;
+    planta.ProfundSiembra = createPlantDto.profundSiembra;
+    planta.distanciaPlantas = createPlantDto.distanciaPlantas;
+    planta.rotaciones = createPlantDto.rotaciones;
+    planta.climaTemperatura = createPlantDto.climaTemperatura;
+    planta.riego = createPlantDto.riego;
+    planta.riegoEstimado = createPlantDto.riegoEstimado;
+
+    return this.plantasRepository.save(planta);
+  }
+
 }

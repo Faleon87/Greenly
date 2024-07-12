@@ -84,7 +84,7 @@ const DetallePlanta = ({ route, navigation }) => {
         <View style={styles.imageOverlay} />
       </ImageBackground>
       <View style={styles.textContainer}>
-        <Text style={styles.fieldTitle}>Identificacion:</Text>
+        <Text style={styles.fieldTitle}>Identificación:</Text>
         <Text style={styles.description}>{cleanText(planta.plantaOriginal.identificacion)}</Text>
         <View style={{ borderTopWidth: 1, borderTopColor: 'green' }}>
           <Text style={styles.fieldTitle}>Nombre Comun:</Text>
@@ -119,7 +119,7 @@ const DetallePlanta = ({ route, navigation }) => {
         {plantasBeneficiosas.length > 0 && <Text style={styles.fieldTitle}>Beneficiosas:</Text>}
         <ScrollView horizontal>
           {plantasBeneficiosas.map((planta) => (
-            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
+            <TouchableOpacity key={planta.idPlanta} onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
               <View style={styles.card1}>
                 <Image source={{ uri: planta.img }} style={styles.benef} />
                 <Text style={styles.text}>{planta.nombrePlanta}</Text>
@@ -131,7 +131,7 @@ const DetallePlanta = ({ route, navigation }) => {
         {plantasPerjudiciales.length > 0 && <Text style={styles.fieldTitle}>Perjudiciales:</Text>}
         <ScrollView horizontal>
           {plantasPerjudiciales.map((planta) => (
-            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
+            <TouchableOpacity key={planta.idPlanta} onPress={() => navigation.navigate('DetallePlanta', { idPlanta: planta.idPlanta })}>
               <View style={styles.card2}>
                 <Image source={{ uri: planta.img }} style={styles.benef} />
                 <Text style={styles.text}>{planta.nombrePlanta}</Text>

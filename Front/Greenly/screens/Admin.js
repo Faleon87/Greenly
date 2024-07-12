@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, Text, FlatList } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native';
-import { widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { fetchPlants } from '../api/adminPlantas';
 import { updatePlant } from '../api/updatePlantas';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function App() {
   const [data, setData] = useState([]);
@@ -12,20 +13,24 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    setIsLoading(true);
-    fetchPlants()
-      .then(json => {
-        setData(json);
-        setIsLoading(false);
-      })
-      .catch(error => {
-        console.error(error);
-        setIsLoading(false);
-      });
-  }, []);
+  const navigation = useNavigation();
 
-  const filteredData = useMemo(() => 
+  useFocusEffect(
+    useCallback(() => {
+      setIsLoading(true);
+      fetchPlants()
+        .then(json => {
+          setData(json);
+          setIsLoading(false);
+        })
+        .catch(error => {
+          console.error(error);
+          setIsLoading(false);
+        });
+    }, [])
+  );
+
+  const filteredData = useMemo(() =>
     data.filter(item =>
       item.nombrePlanta.toLowerCase().includes(search.toLowerCase())
     ), [search, data]);
@@ -51,8 +56,11 @@ export default function App() {
       .catch(error => console.error(error));
   }, [data, editData]);
 
-  const renderItem = ({ item }) => {
+  const handleAddNewPlant = () => {
+    navigation.navigate('AddPlant');
+  };
 
+  const renderItem = useCallback(({ item }) => {
     const theme = { colors: { primary: '#4CAF50', text: 'black' } };
 
     const editItem = editData && editData.idPlanta === item.idPlanta ? editData : item;
@@ -91,7 +99,7 @@ export default function App() {
         </TouchableOpacity>
       </View>
     );
-  };
+  }, [editData, handleInputChange, handleUpdate]);
 
   return (
     <View style={styles.container}>
@@ -109,10 +117,16 @@ export default function App() {
           data={filteredData}
           renderItem={renderItem}
           keyExtractor={item => item.idPlanta.toString()}
+          getItemLayout={(data, index) => (
+            { length: wp('90%'), offset: wp('90%') * index, index }
+          )}
         />
       ) : (
         <Text style={styles.noResultsText}>Lo siento, pero eso no existe.</Text>
       )}
+      <TouchableOpacity style={styles.floatingButton} onPress={handleAddNewPlant}>
+        <Text style={styles.floatingButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -177,6 +191,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#D32F2F',
     marginTop: 10,
+    fontFamily: 'sans-serif',
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: '#4CAF50',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+  },
+  floatingButtonText: {
+    color: '#FFFFFF',
+    fontSize: 30,
     fontFamily: 'sans-serif',
   },
 });

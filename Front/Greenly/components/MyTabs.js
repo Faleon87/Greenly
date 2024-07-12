@@ -1,6 +1,5 @@
-// MyTabs.js
-import React from 'react';
-import { Image, TouchableOpacity, Alert } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { Image, TouchableOpacity, View, Text, Alert } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import homeIcon from '../icons/home.png';
@@ -16,24 +15,33 @@ import { identifyPlant } from '../api/cameraPlants';
 import * as ImagePicker from 'expo-image-picker';
 import Calendar from '../screens/ScreenCalendar';
 import Fertilizantes from '../screens/Fertilizantes';
- // Asegúrate de que la ruta al archivo Pantalla.js sea correcta
-
+import { useNavigation } from '@react-navigation/native';
+import logo from '../img/Logo.png';
 
 export function MyTabs() {
+  const navigation = useNavigation();
 
+  const setHeaderTitle = (title) => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ fontSize: 25,  color: '#F0F0F0' }}>{title}</Text>
+        </View>
+      ),
+    });
+  };
 
   const selectImage = async () => {
     const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-  
+
     if (libraryStatus !== 'granted' || cameraStatus !== 'granted') {
       alert('Necesitamos permisos para acceder a la cámara y a la galería');
       return;
     }
-  
-    // Aquí puedes preguntar al usuario si quiere usar la cámara o la biblioteca de medios
+
     const useCamera = await askUserCameraOrLibrary();
-  
+
     let result;
     if (useCamera) {
       result = await ImagePicker.launchCameraAsync({
@@ -49,15 +57,14 @@ export function MyTabs() {
         quality: 1,
       });
     }
-  
+
     if (result && !result.canceled) {
-      if(result.assets[0] && result.assets[0].uri){
+      if (result.assets[0] && result.assets[0].uri) {
         identifyPlant(result.assets[0].uri);
       }
     }
   };
-  
-  // Esta función es un placeholder. Deberías implementar la lógica para preguntar al usuario.
+
   const askUserCameraOrLibrary = async () => {
     return new Promise((resolve) => {
       Alert.alert(
@@ -78,8 +85,8 @@ export function MyTabs() {
     });
   };
 
-const Tab = createBottomTabNavigator();
-  
+  const Tab = createBottomTabNavigator();
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -91,35 +98,44 @@ const Tab = createBottomTabNavigator();
       }}
     >
       <Tab.Screen
-  name="Home"
-  component={Pantalla}
-  options={{
-    tabBarIcon: ({ focused, size }) => (
-      <Image source={homeIcon} style={{
-        width: size, height: size,
-        tintColor: focused ? '#02907D' : '#ffff'
-      }} />
-    ),
-    tabBarButton: (props) => (
-      <TouchableOpacity {...props} />
-    ),
-  }}
-/>
-      <Tab.Screen name="Plantas" component={Plantas}
+        name="Home"
+        component={Pantalla}
+        options={{
+          tabBarIcon: ({ focused, size }) => (
+            <Image source={homeIcon} style={{
+              width: size, height: size,
+              tintColor: focused ? '#02907D' : '#ffff'
+            }} />
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity {...props} />
+          ),
+        }}
+        listeners={{
+          focus: () => setHeaderTitle(''),
+        }}
+      />
+      <Tab.Screen
+        name="Plantas"
+        component={Plantas}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={plantasIcon} style={{
               width: size, height: size,
               tintColor: focused ? '#02907D' : '#ffff'
             }} />
-          ), tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-            />
+          ),
+          tabBarButton: (props) => (
+            <TouchableOpacity {...props} />
           ),
         }}
+        listeners={{
+          focus: () => setHeaderTitle('Plantas'),
+        }}
       />
-      <Tab.Screen name="Plagas" component={Plagas}
+      <Tab.Screen
+        name="Plagas"
+        component={Plagas}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={plagasIcon} style={{
@@ -128,10 +144,11 @@ const Tab = createBottomTabNavigator();
             }} />
           ),
           tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-            />
+            <TouchableOpacity {...props} />
           ),
+        }}
+        listeners={{
+          focus: () => setHeaderTitle('Plagas'),
         }}
       />
       <Tab.Screen
@@ -164,9 +181,13 @@ const Tab = createBottomTabNavigator();
             </TouchableOpacity>
           ),
         }}
+        listeners={{
+          focus: () => setHeaderTitle('Camera'),
+        }}
       />
-      <Tab.Screen name="Fertilizante"
-      component={Fertilizantes}
+      <Tab.Screen
+        name="Fertilizante"
+        component={Fertilizantes}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={fertilizante} style={{
@@ -175,14 +196,16 @@ const Tab = createBottomTabNavigator();
             }} />
           ),
           tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-            />
+            <TouchableOpacity {...props} />
           ),
         }}
+        listeners={{
+          focus: () => setHeaderTitle('Fertilizante'),
+        }}
       />
-       <Tab.Screen name="Calendar"
-      component={Calendar}
+      <Tab.Screen
+        name="Calendar"
+        component={Calendar}
         options={{
           tabBarIcon: ({ focused, size }) => (
             <Image source={calend} style={{
@@ -191,10 +214,11 @@ const Tab = createBottomTabNavigator();
             }} />
           ),
           tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-            />
+            <TouchableOpacity {...props} />
           ),
+        }}
+        listeners={{
+          focus: () => setHeaderTitle('Calendario'),
         }}
       />
     </Tab.Navigator>

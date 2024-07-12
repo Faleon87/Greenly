@@ -21,6 +21,7 @@ import DetallePlagas from './screens/DetallePlagas';
 import DetalleFertilizantes from './screens/DetalleFertilizantes';
 import TabTienda from './components/TabTienda';
 import PagarConTarjeta from './screens/PagarTarjeta';
+import AddPlant from './screens/AddPlant';
 
 
 const Stack = createStackNavigator();
@@ -86,7 +87,6 @@ export default function App() {
             headerStyle: {
               backgroundColor: '#02907D', // Cambia el color de fondo de la barra de navegación
             },
-            headerTitle: '', // Establece el título de la barra de navegación como una cadena vacía
             headerShadowVisible: false, // Oculta la sombra de la barra de navegación
           }}
         />
@@ -96,13 +96,20 @@ export default function App() {
         <Stack.Screen name="Form" component={Form} />
         <Stack.Screen name="Plantas" component={Plantas} />
         <Stack.Screen name="DetallePlanta" component={DetallePlanta} />
-        <Stack.Screen name="FormForo" component={FormForo} /> 
+        <Stack.Screen name="FormForo" component={FormForo}  options={{
+          headerStyle: {
+            backgroundColor: '#02907D',
+          },
+          headerTitle: 'Foro',
+        }}/> 
         <Stack.Screen name="Fertilizante" component={Fertilizante} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
         <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
         <Stack.Screen name="DetalleFertilizantes" component={DetalleFertilizantes} />
         <Stack.Screen name= "Tienda" component={TabTienda} />
         <Stack.Screen name= "PagarConTarjeta" component={PagarConTarjeta} />
+        <Stack.Screen name= "AddPlant" component={AddPlant} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

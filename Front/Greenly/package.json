@@ -34,7 +34,7 @@
     "card-validator": "^10.0.0",
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
-    "expo": "~51.0.17",
+    "expo": "~51.0.20",
     "expo-camera": "~15.0.13",
     "expo-file-system": "~17.0.1",
     "expo-image-picker": "~15.0.7",
