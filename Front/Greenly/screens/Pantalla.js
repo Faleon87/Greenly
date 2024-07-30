@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, Image, TouchableOpacity, ScrollView, View, Alert } from 'react-native';
+import { Text, StyleSheet, Image, TouchableOpacity, View, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import image1 from '../img/tiendaOnline.jpeg';
@@ -14,9 +14,6 @@ import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
 
-
-
-
 function Pantalla({route}) {
   const [username, setUsername] = useState('');
   const [img, setImg] = useState('');
@@ -29,7 +26,6 @@ function Pantalla({route}) {
     'Rain': rainyImage,
     'Snow': snowyImage,
     'Mist': mistyImage,
-    // add more mappings as needed
   };
 
   useEffect(() => {
@@ -72,45 +68,35 @@ function Pantalla({route}) {
     );
   }
 
-  
-
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('Form')}>
-      <Icon2 name="send" size={30} color="white" style={{
-        textShadowColor: 'black',
-        left: 160,
-        textShadowOffset: {width: -2, height: 2},
-        textShadowRadius: 3
-      }} />
+        <Icon2 name="send" size={30} color="white" style={styles.iconForm} />
       </TouchableOpacity>
-
-      <ScrollView>
-        <View style={styles.header}>
-          <View style={styles.welcomeContainer}>
-            <Text style={styles.welcome}>Bienvenido ,</Text>
-            <Text style={styles.username}>{username}</Text>
-          </View>
-          <Image source={img ? { uri: img } : null} style={styles.profileImage} />
-          <Icon name="cog" size={30} color="#000" style={styles.settingsIcon} onPress={()=> navigation.navigate('EditProfileScreen') }   />
+      <View style={styles.header}>
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcome}>Bienvenido ,</Text>
+          <Text style={styles.username}>{username}</Text>
         </View>
-        <Animatable.View
-          animation="fadeInUpBig"
-          duration={2000}
-          style={styles.weatherCard}
-        >
-          <Image source={weatherIconName[weather.current.condition.text]} style={styles.weatherImage} />
-          <View style={styles.weatherData}>
+        <Image source={img ? { uri: img } : null} style={styles.profileImage} />
+        <Icon name="cog" size={30} color="#000" style={styles.settingsIcon} onPress={()=> navigation.navigate('EditProfileScreen') } />
+      </View>
+      <Animatable.View
+        animation="fadeInUpBig"
+        duration={2000}
+        style={styles.weatherCard}
+      >
+        <Image source={weatherIconName[weather.current.condition.text]} style={styles.weatherImage} />
+        <View style={styles.weatherData}>
           <Text style={styles.cityText}>{weather.location.name}</Text>
-            <Text style={styles.temperatureText}>Temperature: {weather.current.temp_c}°C</Text>
-            <Text style={styles.humidityText}>Humidity: {weather.current.humidity}%</Text>
-          </View>
-        </Animatable.View>
-        <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Tienda')}>
+          <Text style={styles.temperatureText}>Temperature: {weather.current.temp_c}°C</Text>
+          <Text style={styles.humidityText}>Humidity: {weather.current.humidity}%</Text>
+        </View>
+      </Animatable.View>
+      <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('Tienda')}>
         <Image source={image1} style={styles.image} />
-        </TouchableOpacity>
-      </ScrollView>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -123,34 +109,38 @@ const styles = StyleSheet.create({
     backgroundColor: '#02907D',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: wp('5%'),
   },
   settingsIcon: {
     left: 10,
     color: 'black',
   },
   marketingText: {
-    fontSize: 20,
+    fontSize: hp('3%'),
     color: '#000',
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: hp('2%'),
+    marginBottom: hp('1%'),
     textAlign: 'center',
   },
   cityText: {
-    fontSize: 20,
+    fontSize: hp('2.5%'),
     color: '#000',
     fontWeight: 'bold',
-    marginBottom: 2,
+    marginBottom: hp('0.5%'),
   },
   iconForm: {
-    left: 160,
+    left: wp('40%'),
     color: 'white',
+    textShadowColor: 'black',
+    textShadowOffset: { width: -2, height: 2 },
+    textShadowRadius: 3,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: wp('2%'),
   },
   welcomeContainer: {
     flexDirection: 'row',
@@ -158,19 +148,19 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: hp('3%'),
-    right : 13,
+    right: wp('3%'),
     color: "white",
   },
   username: {
     fontSize: hp('3%'),
     color: "#2C1001",
-    right: 10,
+    right: wp('2%'),
     fontWeight: 'bold',
   },
   profileImage: {
     width: wp('15%'),
     height: wp('15%'),
-    borderRadius: 100,
+    borderRadius: wp('7.5%'),
   },
   text: {
     fontSize: hp('3%'),
@@ -189,13 +179,13 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     alignSelf: 'center',
   },
-
   weatherCard: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: wp('5%'),
+    padding: wp('5%'),
     alignItems: 'center',
+    marginVertical: hp('2%'),
   },
   weatherImage: {
     width: wp('20%'),
@@ -203,31 +193,22 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   weatherData: {
-    marginLeft: 20,
+    marginLeft: wp('5%'),
   },
   temperatureText: {
-    fontSize: 20,
+    fontSize: hp('2.5%'),
     fontWeight: 'bold',
     color: '#000',
-    marginBottom: 10,
+    marginBottom: hp('1%'),
   },
   humidityText: {
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: hp('2%'),
+    marginTop: hp('1%'),
     color: '#000',
   },
   loadingText: {
-    fontSize: 20,
+    fontSize: hp('2.5%'),
     fontStyle: 'italic',
     color: '#000',
   },
-  marketingText: {
-    fontSize: 25,
-    color: '#000',
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-
 });

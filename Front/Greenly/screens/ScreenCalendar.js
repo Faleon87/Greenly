@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { plantafecha } from '../api/plantafecha'; // Ajusta la ruta según sea necesario
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
 
 const App = () => {
 
@@ -48,16 +48,16 @@ const App = () => {
         })
         .catch(console.error);
     }
-  
+
     // Lógica para fetchIdUserAndData que se ejecuta independientemente de modalVisible
     const fetchIdUserAndData = async () => {
       const storedIdUser = await AsyncStorage.getItem('idUser');
       setIdUser(storedIdUser);
-  
+
       const result = await plantafecha(fechaFormateada, storedIdUser);
       setDatosPlanta(result);
     };
-  
+
     fetchIdUserAndData();
   }, [modalVisible, fechaFormateada]); // Añade 'fecha' a las dependencias si su valor puede cambiar y necesitas recargar los datos
 
@@ -138,7 +138,11 @@ const App = () => {
   };
 
 
-  
+
+  const handleDelete = (id) => {
+    // Lógica para eliminar el elemento
+    console.log(`Eliminar elemento con id: ${id}`);
+  };
 
 
   const seleccionarPlantaPorFecha = (fecha) => {
@@ -149,7 +153,7 @@ const App = () => {
     // Actualiza el estado con la planta seleccionada
     setDatosPlanta(planta);
 
-  
+
     // Actualizar datos de la planta seleccionada
     plantafecha(fecha, idUser)
       .then(data => {
@@ -161,143 +165,153 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
-    <ScrollView>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
-        <TextInput
-          placeholder="YYYY-MM-DD"
-          value={searchDate}
-          onChangeText={setSearchDate}
-          style={styles.searchInput}
-        />
-        <TouchableOpacity style={styles.buttonStyle} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Buscar Fecha</Text>
-        </TouchableOpacity>
-      </View>
-      <Calendar
-        // Estilos personalizados para el calendario
-        firstDay={1}
-        locale={'es'}
-        current={currentDate}
-        key={idUser}
-        style={styles.calendar}
-        // Personalización de día seleccionado
-        markedDates={markedDates}
-        theme={{
-          todayTextColor: 'red',
-          selectedDayBackgroundColor: 'red',
-          selectedDayTextColor: 'white',
-          textDayFontWeight: 'bold',
-          textMonthFontWeight: 'bold',
-          textDayHeaderFontWeight: 'bold',
-          textDayFontSize: 16,
-          textMonthFontSize: 16,
-          textDayHeaderFontSize: 16,
-        }} // Cambia el color del texto del día actual
-        // Más props de personalización aquí...
-        onDayPress={(day) => {
-          seleccionarFechaYMarcar(day);
-          seleccionarPlantaPorFecha(day.dateString);
-        }}
-      />
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => { setModalVisible(!modalVisible); }}
-      >
-        <View style={styles.modalView}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text style={styles.closeButtonText}>X</Text>
+      <ScrollView>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10 }}>
+          <TextInput
+            placeholder="YYYY-MM-DD"
+            value={searchDate}
+            onChangeText={setSearchDate}
+            style={styles.searchInput}
+          />
+          <TouchableOpacity style={styles.buttonStyle} onPress={handleSearch}>
+            <Text style={styles.buttonText}>Buscar Fecha</Text>
           </TouchableOpacity>
-          <Picker
-            selectedValue={plantaActual}
-            onValueChange={(itemValue, itemIndex) => setPlantaActual(itemValue)}
-            style={styles.plantas} // Ajustar el alto si es necesario
-          >
-            {plantas.map(planta => (
-              <Picker.Item key={planta.id} label={planta.nombre} value={planta.id} />
-            ))}
-          </Picker>
-          <TouchableOpacity
-            onPress={() => setIsPickerVisible(true)}
-            style={styles.datePickerButton}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Icon name="calendar-today" size={30} color="green" />
-              {fechaSeleccionada && <Text style={styles.fechaSeleccionada}>{fechaSeleccionada.toDateString()}</Text>}
-            </View>
-          </TouchableOpacity>
-          <Picker
-            selectedValue={accionSeleccionada}
-            onValueChange={(itemValue, itemIndex) => setAccionSeleccionada(itemValue)}
-            style={styles.accion} // Ajustar el alto si es necesario
-          >
-            <Picker.Item label="Sembrar" value="sembrar" />
-            <Picker.Item label="Cosechar" value="cosechar" />
-          </Picker>
-          {isPickerVisible && (
-            <DateTimePicker
-              value={fechaSeleccionada}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                if (selectedDate) {
-                  setFechaSeleccionada(selectedDate); // Establece la fecha seleccionada
-                  setIsPickerVisible(false); // Oculta el DateTimePicker después de seleccionar una fecha
-                }
-              }}
-            />
-          )}
-          <Button title="Guardar" onPress={guardarPlanta} />
         </View>
-      </Modal>
-      <View style={styles.content}>
-        {datosPlanta.filter(item => item.tipoAcción === 'sembrar').length > 0 && (
-          <>
-            <Text style={styles.plantasGuardadas}>Sembrar</Text>
-            <FlatList
-              data={datosPlanta.filter(item => item.tipoAcción === 'sembrar')}
-              keyExtractor={(item) => item.idUser}
-              horizontal={true}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
-                  <View style={styles.sembrar}>
-                    <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
-                    <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
-                    <Text style={styles.fecha}>{item.fecha}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </>
+        <Calendar
+          // Estilos personalizados para el calendario
+          firstDay={1}
+          locale={'es'}
+          current={currentDate}
+          key={idUser}
+          style={styles.calendar}
+          // Personalización de día seleccionado
+          markedDates={markedDates}
+          theme={{
+            todayTextColor: 'red',
+            selectedDayBackgroundColor: 'red',
+            selectedDayTextColor: 'white',
+            textDayFontWeight: 'bold',
+            textMonthFontWeight: 'bold',
+            textDayHeaderFontWeight: 'bold',
+            textDayFontSize: 16,
+            textMonthFontSize: 16,
+            textDayHeaderFontSize: 16,
+          }} // Cambia el color del texto del día actual
+          // Más props de personalización aquí...
+          onDayPress={(day) => {
+            seleccionarFechaYMarcar(day);
+            seleccionarPlantaPorFecha(day.dateString);
+          }}
+        />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => { setModalVisible(!modalVisible); }}
+        >
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+            <Picker
+              selectedValue={plantaActual}
+              onValueChange={(itemValue, itemIndex) => setPlantaActual(itemValue)}
+              style={styles.plantas} // Ajustar el alto si es necesario
+            >
+              {plantas.map(planta => (
+                <Picker.Item key={planta.id} label={planta.nombre} value={planta.id} />
+              ))}
+            </Picker>
+            <TouchableOpacity
+              onPress={() => setIsPickerVisible(true)}
+              style={styles.datePickerButton}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Icon name="calendar-today" size={30} color="green" />
+                {fechaSeleccionada && <Text style={styles.fechaSeleccionada}>{fechaSeleccionada.toDateString()}</Text>}
+              </View>
+            </TouchableOpacity>
+            <Picker
+              selectedValue={accionSeleccionada}
+              onValueChange={(itemValue, itemIndex) => setAccionSeleccionada(itemValue)}
+              style={styles.accion} // Ajustar el alto si es necesario
+            >
+              <Picker.Item label="Sembrar" value="sembrar" />
+              <Picker.Item label="Cosechar" value="cosechar" />
+            </Picker>
+            {isPickerVisible && (
+              <DateTimePicker
+                value={fechaSeleccionada}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  if (selectedDate) {
+                    setFechaSeleccionada(selectedDate); // Establece la fecha seleccionada
+                    setIsPickerVisible(false); // Oculta el DateTimePicker después de seleccionar una fecha
+                  }
+                }}
+              />
+            )}
+            <Button title="Guardar" onPress={guardarPlanta} />
+          </View>
+        </Modal>
+        <View style={styles.content}>
+  {datosPlanta.filter(item => item.tipoAcción === 'sembrar').length > 0 && (
+    <>
+      <Text style={styles.plantasGuardadas}>Sembrar</Text>
+      <FlatList
+        data={datosPlanta.filter(item => item.tipoAcción === 'sembrar')}
+        keyExtractor={item => item.idPlanta.idPlanta}
+        horizontal={true}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.idPlanta.idPlanta)}>
+              <Ionicons name="close-circle" size={24} color="red" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+              <View style={styles.sembrar}>
+                <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                <Text style={styles.fecha}>{item.fecha}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
-      </View>
-      <View style={styles.content}>
-        {datosPlanta.filter(item => item.tipoAcción === 'cosechar').length > 0 && (
-          <>
-            <Text style={styles.plantasGuardadas}>Cosechar</Text>
-            <FlatList
-              data={datosPlanta.filter(item => item.tipoAcción === 'cosechar')}
-              keyExtractor={(item) => item.idUser}
-              horizontal={true}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
-                  <View style={styles.cosechar}>
-                    <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
-                    <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
-                    <Text style={styles.fecha}>{item.fecha}</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
-          </>
+      />
+    </>
+  )}
+</View>
+<View style={styles.content}>
+  {datosPlanta.filter(item => item.tipoAcción === 'cosechar').length > 0 && (
+    <>
+      <Text style={styles.plantasGuardadas}>Cosechar</Text>
+      <FlatList
+        data={datosPlanta.filter(item => item.tipoAcción === 'cosechar')}
+        keyExtractor={(item) => `${item.idUser}-${item.idPlanta.idPlanta}`}
+        horizontal={true}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.idPlanta.idPlanta)}>
+              <Ionicons name="close-circle" size={24} color="red" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+              <View style={styles.cosechar}>
+                <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                <Text style={styles.fecha}>{item.fecha}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         )}
-      </View>
-    </ScrollView>
-    <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
+      />
+    </>
+  )}
+</View>
+      </ScrollView>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon style={styles.addcalendar} name="edit-calendar" size={30} />
       </TouchableOpacity>
     </View >
@@ -355,14 +369,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     right: 10,
-   
+
   },
   accion: {
     width: wp('40%'),
     height: 50, // Ajusta el alto según tus necesidades
 
   },
- modalView: {
+  modalView: {
     margin: 20, // Margen para que no esté pegado al borde
     borderRadius: 20, // Bordes redondeados para hacerlo más amigable
     padding: 35, // Añadir relleno para que no se vea tan pegado al borde
@@ -424,7 +438,24 @@ const styles = StyleSheet.create({
     width: wp('40%'),
     height: hp('5%'), // Ajusta el alto según tus necesidades
   },
-  
+  deleteButton: {
+    position: 'absolute',
+    right: 4,
+    top: 3, // Ajustado para estar en la parte superior de la tarjeta
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    margin: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    width: wp('35%'), // Ajustar el ancho según tus necesidades
+    elevation: 5,
+    position: 'relative', // Necesario para posicionar el botón de borrar
+  },
 });
 
 export default App;

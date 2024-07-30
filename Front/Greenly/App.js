@@ -3,13 +3,13 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
 import backButtonImage from './img/back.png';
-import MyTabs from './components/MyTabs'; // Asegúrate de que la ruta al archivo MyTabs.js sea correcta
+import MyTabs from './components/MyTabs';
 import MyTabsAdmin from './components/MyTabsAdmin';
 import Plantas from './screens/Plantas';
 import FormForo from './screens/FormForo';
@@ -23,7 +23,6 @@ import TabTienda from './components/TabTienda';
 import PagarConTarjeta from './screens/PagarTarjeta';
 import AddPlant from './screens/AddPlant';
 import AddFertilizante from './screens/AddFertilizante';
-
 
 const Stack = createStackNavigator();
 
@@ -40,15 +39,15 @@ function HomeScreen({ navigation }) {
       <View style={styles.textContainer}>
         <Text style={styles.welcomeText}>Bienvenido a </Text>
         <Text style={styles.greenlyText}>Greenly</Text>
-        <TouchableOpacity
+        <Pressable
           style={styles.button}
           onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.buttonLogin}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => { navigation.navigate('Register') }}>
+        </Pressable>
+        <Pressable style={styles.button} onPress={() => { navigation.navigate('Register') }}>
           <Text style={styles.buttonRegister}>Register</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -58,14 +57,7 @@ function HomeScreen({ navigation }) {
 function LoginScreenWithHeader({ navigation }) {
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: '', // Esto elimina el título
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image source={backButtonImage}
-            style={styles.backButtonImage}
-          />
-        </TouchableOpacity>
-      ),
+      headerTitle: '', 
       headerStyle: {
         backgroundColor: 'white',
       }
@@ -81,14 +73,14 @@ export default function App() {
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false, headerShadowVisible: false }} />
         <Stack.Screen name="Login" component={LoginScreenWithHeader} />
-            <Stack.Screen
+        <Stack.Screen
           name="Pantalla"
-          component={MyTabs} // Aquí es donde reemplazas Pantalla con MyTabs
+          component={MyTabs}
           options={{
             headerStyle: {
-              backgroundColor: '#02907D', // Cambia el color de fondo de la barra de navegación
+              backgroundColor: '#02907D',
             },
-            headerShadowVisible: false, // Oculta la sombra de la barra de navegación
+            headerShadowVisible: false,
           }}
         />
         <Stack.Screen name="Register" component={Register} />
@@ -97,31 +89,32 @@ export default function App() {
         <Stack.Screen name="Form" component={Form} />
         <Stack.Screen name="Plantas" component={Plantas} />
         <Stack.Screen name="DetallePlanta" component={DetallePlanta} />
-        <Stack.Screen name="FormForo" component={FormForo}  options={{
+        <Stack.Screen name="FormForo" component={FormForo} options={{
           headerStyle: {
             backgroundColor: '#02907D',
           },
           headerTitle: 'Foro',
-        }}/> 
+        }} />
         <Stack.Screen name="Fertilizante" component={Fertilizante} />
         <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
         <Stack.Screen name="DetallePlagas" component={DetallePlagas} />
         <Stack.Screen name="DetalleFertilizantes" component={DetalleFertilizantes} />
-        <Stack.Screen name= "Tienda" component={TabTienda} />
-        <Stack.Screen name= "PagarConTarjeta" component={PagarConTarjeta} />
-        <Stack.Screen name= "AddPlant" component={AddPlant} />
+        <Stack.Screen name="Tienda" component={TabTienda} />
+        <Stack.Screen name="PagarConTarjeta" component={PagarConTarjeta} />
+        <Stack.Screen name="AddPlant" component={AddPlant} />
         <Stack.Screen name="AddFertilizante" component={AddFertilizante} />
-
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#02907D',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 20,
   },
   imageContainer: {
     flex: 0.3,
@@ -140,18 +133,19 @@ const styles = StyleSheet.create({
     fontSize: hp('6%'),
     fontWeight: 'bold',
     color: 'white',
+    textAlign: 'center',
   },
   greenlyText: {
     fontSize: hp('6%'),
     fontWeight: 'bold',
     color: '#2C1001',
+    textAlign: 'center',
   },
   button: {
     borderRadius: 5,
     marginTop: hp('8%'),
   },
   buttonLogin: {
-    color: 'white',
     backgroundColor: '#8FD053',
     color: '#2C1001',
     width: wp('60%'),
@@ -162,8 +156,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonRegister: {
-    color: 'white',
     backgroundColor: '#2C1001',
+    color: 'white',
     width: wp('60%'),
     fontSize: hp('3%'),
     borderRadius: 5,
