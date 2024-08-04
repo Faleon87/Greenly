@@ -1,12 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// Importa tus imágenes aquí
 import eyeIcon from '../img/hide.png';
 import eyeSlashIcon from '../img/view.png';
-import logoImage from '../img/Logo.png'; // Asegúrate de reemplazar esto con la ruta a tu imagen
+import logoImage from '../img/Logo.png';
 import { loginUser } from '../api/login';
 
 export default function LoginScreen({ navigation }) {
@@ -20,14 +19,13 @@ export default function LoginScreen({ navigation }) {
   const [passwordError, setPasswordError] = React.useState('');
 
   const [isLoading, setIsLoading] = React.useState(false);
+
   const login = async () => {
     setIsLoading(true);
     try {
       const data = await loginUser(username, password);
       setIsLoading(false);
 
-
-      // Guarda el nombre de usuario en AsyncStorage
       await AsyncStorage.setItem('nombre', data.username);
 
       if (data.img !== null && data.img !== undefined) {
@@ -55,10 +53,11 @@ export default function LoginScreen({ navigation }) {
       }
     }
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image source={logoImage} style={styles.logoImage} />
+        <Image source={logoImage} style={styles.logoImage} resizeMode='contain' />
         <Text style={styles.logo}>Greenly</Text>
       </View>
       <Text style={styles.subtitle}>Welcome back. Enter your credentials to access your account</Text>
@@ -66,11 +65,11 @@ export default function LoginScreen({ navigation }) {
       <Input
         placeholder="Enter your email or username"
         inputContainerStyle={[styles.inputContainer, usernameError ? styles.errorInput : null]}
-        inputStyle={{ marginLeft: wp('3%') }}
+        inputStyle={styles.input}
         value={username}
         onChangeText={(text) => {
           setUsername(text);
-          setUsernameError(''); // Limpia el error cuando el usuario empieza a escribir
+          setUsernameError(''); // Clear error when user starts typing
         }}
       />
       {usernameError ? <Text style={styles.error}>{usernameError}</Text> : null}
@@ -79,15 +78,15 @@ export default function LoginScreen({ navigation }) {
         placeholder="Enter your password"
         secureTextEntry={hidePassword}
         inputContainerStyle={[styles.inputContainer, passwordError ? styles.errorInput : null]}
-        inputStyle={{ marginLeft: wp('3%') }}
+        inputStyle={styles.input}
         value={password}
         onChangeText={(text) => {
           setPassword(text);
-          setPasswordError(''); // Limpia el error cuando el usuario empieza a escribir
+          setPasswordError(''); // Clear error when user starts typing
         }}
         rightIcon={
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
-            <Image source={hidePassword ? eyeIcon : eyeSlashIcon} style={styles.icon} />
+            <Image source={hidePassword ? eyeIcon : eyeSlashIcon} style={styles.icon} resizeMode='contain' />
           </TouchableOpacity>
         }
       />
@@ -96,16 +95,14 @@ export default function LoginScreen({ navigation }) {
         <CheckBox
           checked={isSelected}
           onPress={() => {
-            setSelection(!isSelected); // Cambia el estado del checkbox
-            setError(''); // Limpiar el error cuando el checkbox se marca
+            setSelection(!isSelected); // Toggle checkbox state
+            setError(''); // Clear error when checkbox is checked
           }}
           checkedColor='#03453D'
         />
         <Text style={styles.labelCheckbox}>Keep me signed in</Text>
       </View>
-      <Text>
-        {error ? <Text style={styles.error}>{error}</Text> : null} {/* Muestra el error si existe */}
-      </Text>
+      {error ? <Text style={styles.error}>{error}</Text> : null} 
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -115,13 +112,12 @@ export default function LoginScreen({ navigation }) {
             setError('');
             setIsLoading(true);
             login();
-
           }
         }}
       >
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.signupContainer}>
         <Text style={styles.signup}>Don't have an Account?</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.signupBold}>Sign up here</Text>
@@ -135,9 +131,9 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     fontWeight: 'bold',
-    fontSize: hp('2%'),
-    textAlign: 'center',
-    marginTop: wp('-10%'),
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+    textAlign: 'left',
+    marginBottom: Platform.OS === 'web' ? '2vh': hp('2%')
   },
   errorInput: {
     borderColor: 'red',
@@ -145,87 +141,88 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'flex-start',
-    padding: wp('5%'),
+    justifyContent: 'center',
+    padding: Platform.OS === 'web' ? '5vw' : wp('5%'), // Usa vw en la web y % en móviles
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: wp('2%'),
+    marginBottom: Platform.OS === 'web' ? '5vh' : hp('5%'), // Usa vh en la web y % en móviles
   },
   logoImage: {
-    width: wp('20%'),
-    height: hp('10%'),
-    marginRight: wp('2%'),
+    width: Platform.OS === 'web' ? '20vw' : wp('20%'),
+    height: Platform.OS === 'web' ? '10vh' : hp('10%'),
+    marginRight: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   logo: {
-    fontSize: hp('4%'),
+    fontSize: Platform.OS === 'web' ? '2rem' : hp('4%'),
     fontWeight: 'bold',
-  },
-  title: {
-    fontSize: hp('4%'),
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: wp('8%'),
   },
   subtitle: {
-    fontSize: hp('2.5%'),
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
     textAlign: 'center',
-    marginBottom: wp('8%'),
+    marginBottom: Platform.OS === 'web' ? '4vh' : hp('4%'),
+    paddingHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
   },
   label: {
-    marginLeft: wp('3%'),
-    fontSize: hp('2%'),
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     fontWeight: 'bold',
-    marginBottom: wp('2%'),
+    marginBottom: Platform.OS === 'web' ? '1vh' : hp('1%'),
+    paddingHorizontal: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   inputContainer: {
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 10,
-    marginBottom: wp('2%'),
-    paddingHorizontal: wp('10%'),
+    marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%'),
+    paddingHorizontal: Platform.OS === 'web' ? '2vw' : wp('3%'),
+    height: Platform.OS === 'web' ? '6vh' : hp('6%'),
+
+  },
+  input: {
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+    
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: wp('90%'),
-    height: hp('10%'),
+    marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%'),
   },
   labelCheckbox: {
-    fontSize: hp('2%'),
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     fontWeight: 'bold',
   },
   button: {
     backgroundColor: '#8FD053',
-    padding: wp('3%'),
-    marginBottom: wp('5%'),
-    marginTop: wp('1%'),
+    paddingVertical: Platform.OS === 'web' ? '2vh' : hp('2%'),
+    paddingHorizontal: Platform.OS === 'web' ? '10vw' : wp('10%'),
+    marginBottom: Platform.OS === 'web' ? '3vh' : hp('3%'),
+    borderRadius: 5,
+    alignItems: 'center',
+    boxShadow: Platform.OS === 'web' ? '0px 4px 6px rgba(0, 0, 0, 0.1)' : 'none',
+    elevation: Platform.OS === 'android' ? 5 : 0,
   },
   buttonText: {
     color: '#000',
-    textAlign: 'center',
-    fontSize: hp('2.9%'),
+    fontSize: Platform.OS === 'web' ? '1.5rem' : hp('2.5%'),
   },
   signup: {
-    fontSize: hp('2.2%'),
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2.2%'),
     color: '#000',
     textAlign: 'center',
   },
   signupBold: {
     fontWeight: 'bold',
-    fontSize: hp('2.2%'),
-  },
-  inputContainer: {
-    height: hp('6%'),
-    borderWidth: 1.5,
-    borderColor: 'black',
-    marginBottom: hp('4%'),
-    borderRadius: 10,
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2.2%'),
   },
   icon: {
-    width: wp('5%'),
-    height: hp('2.5%'),
+    width: Platform.OS === 'web' ? '5vw' : wp('5%'),
+    height: Platform.OS === 'web' ? '2.5vh' : hp('2.5%'),
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

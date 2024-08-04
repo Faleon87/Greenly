@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, TextInput, FlatList, Image, Text, StyleSheet } from 'react-native';
+import { View, TextInput, FlatList, Image, Text, StyleSheet, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getPlantas } from '../api/getPlantas';
@@ -131,11 +131,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: wp('10%'),
-    width: wp('95%'),
-    borderRadius: 20,
-    marginRight: 40,
-    marginBottom: 10,
+    height: Platform.OS === 'web' ? '5vh' : 50, // Usa vh en la web y % en móviles
+    width: Platform.OS === 'web' ? '90vw' : wp('90%'),
+    borderRadius: Platform.OS === 'web' ? '5vw' : 25,
+    marginTop: Platform.OS === 'web' ? '2vh' : 20,
+    marginLeft: Platform.OS === 'web' ? '5vw' : wp('5%'),
+    marginBottom: Platform.OS === 'web' ? '2vh' : 20,
   },
   searchIcon: {
     padding: 10,
@@ -146,17 +147,21 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingBottom: 10,
     paddingLeft: 10,
-    width: wp('100%'),
+    width: Platform.OS === 'web' ? '100vw' : wp('100%'),
     backgroundColor: '#fff',
     color: '#424242',
   },
   item: {
     flex: 1,
     flexDirection: 'column',
-    margin: 5,
+    margin: Platform.OS === 'web' ? '1vw' : wp('1%'),
+    padding: Platform.OS === 'web' ? '1vw' : wp('1%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: Platform.OS === 'web' ? '4vw' : wp('4%'),
     borderRadius: 10,
-    height: wp('55%'),
-    width: wp('45%'), // Asegúrate de que este ancho permita dos elementos por fila teniendo en cuenta el margen
+    height: Platform.OS === 'web' ? '40vh' : wp('40%'),
+    width: Platform.OS === 'web' ? '40vw' : wp('40%'),
     overflow: 'hidden',
     backgroundColor: '#fff',
     elevation: 1,

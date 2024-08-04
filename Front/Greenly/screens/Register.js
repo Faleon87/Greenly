@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView, Platform } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,13 +10,11 @@ const defaultProfileImage = require('../img/profile.png');
 export default function RegisterScreen({ navigation }) {
     const [hidePassword, setHidePassword] = React.useState(true);
     const [agree, setAgree] = React.useState(false);
-
     const [name, setName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [confirmPassword, setConfirmPassword] = React.useState('');
-
     const [profileImage, setProfileImage] = React.useState(defaultProfileImage);
 
     const register = () => {
@@ -106,27 +104,30 @@ export default function RegisterScreen({ navigation }) {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <TouchableOpacity onPress={selectProfileImage}>
-                <Image source={profileImage} style={styles.profileImage} resizeMode='cover' />
+            <TouchableOpacity onPress={selectProfileImage} style={styles.profileImageContainer}>
+                <Image source={profileImage} style={styles.profileImage} resizeMode='contain' />
             </TouchableOpacity>
             <Text style={styles.label}>Name</Text>
             <Input
                 placeholder="Name"
-                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
                 value={name}
                 onChangeText={setName}
             />
             <Text style={styles.label}>Email</Text>
             <Input
                 placeholder="Email"
-                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
                 value={email}
                 onChangeText={setEmail}
             />
             <Text style={styles.label}>Username</Text>
             <Input
                 placeholder="Username"
-                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
                 value={username}
                 onChangeText={setUsername}
             />
@@ -134,7 +135,8 @@ export default function RegisterScreen({ navigation }) {
             <Input
                 placeholder="Password"
                 secureTextEntry={hidePassword}
-                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
                 value={password}
                 onChangeText={setPassword}
                 rightIcon={
@@ -147,7 +149,8 @@ export default function RegisterScreen({ navigation }) {
             <Input
                 placeholder="Confirm Password"
                 secureTextEntry={hidePassword}
-                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.inputContainer}
+                inputStyle={styles.inputText}
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
                 rightIcon={
@@ -162,7 +165,7 @@ export default function RegisterScreen({ navigation }) {
                     onPress={() => setAgree(!agree)}
                     checkedColor='#03453D'
                 />
-                <Text style={styles.labelCheckbox}>I agree with account</Text>
+                <Text style={styles.labelCheckbox}>I agree with the account</Text>
             </View>
             <TouchableOpacity
                 style={styles.button}
@@ -170,7 +173,7 @@ export default function RegisterScreen({ navigation }) {
             >
                 <Text style={styles.buttonText}>Register</Text>
             </TouchableOpacity>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+            <View style={styles.loginContainer}>
                 <Text style={styles.login}>I have an account</Text>
                 <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <Text style={styles.loginBold}> Login</Text>
@@ -185,61 +188,77 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         backgroundColor: 'white',
         justifyContent: 'center',
-        padding: wp('5%'),
+    },
+    profileImageContainer: {
+        alignItems: 'center',
     },
     profileImage: {
-        width: wp('30%'),
-        height: wp('30%'),
-        alignSelf: 'center',
-        marginBottom: wp('5%'),
-        borderRadius: wp('15%'),
+        width: Platform.OS === 'web' ? '20vw' : wp('30%'),
+        height: Platform.OS === 'web' ? '10vw' : wp('30%'),
+        borderRadius: Platform.OS === 'web' ? '15vw' : wp('15%'),
     },
     label: {
-        marginLeft: wp('3%'),
-        fontSize: hp('2%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+        marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+        marginTop: Platform.OS === 'web' ? '2vh' : hp('2%'),
+        width: Platform.OS === 'web' ? '80vw' : wp('80%'),
         fontWeight: 'bold',
-        marginBottom: wp('2%'),
     },
     inputContainer: {
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
-        height: hp('6%'),
-        marginBottom: wp('5%'),
-        paddingHorizontal: wp('3%'),
+        marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+        width: Platform.OS === 'web' ? '90vw' : wp('90%'),
+        height: Platform.OS === 'web' ? '5vh' : hp('5%'),
+    },
+    inputText: {
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+        height: Platform.OS === 'web' ? '5vh' : hp('5%'),
+        marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+
     },
     checkboxContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: wp('5%'),
+        marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+        marginTop: Platform.OS === 'web' ? '2vh' : hp('2%'),
     },
     labelCheckbox: {
-        fontSize: hp('2%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+        marginHorizontal: Platform.OS === 'web' ? '2vw' : wp('2%'),
         fontWeight: 'bold',
     },
     button: {
+        borderRadius: 5,
         backgroundColor: '#8FD053',
-        padding: wp('3%'),
-        marginBottom: wp('5%'),
-        marginTop: wp('1%'),
-        borderRadius: 10,
+        justifyContent: 'center',
+       
+        marginHorizontal: Platform.OS === 'web' ? '30vw' : wp('30%'),
+        height: Platform.OS === 'web' ? '5vh' : hp('5%'),
+        width: Platform.OS === 'web' ? '40vw' : wp('40%'),
     },
     buttonText: {
         color: '#000',
         textAlign: 'center',
-        fontSize: hp('2.5%'),
+        fontSize: Platform.OS === 'web' ? '1.5rem' : hp('2.5%')
+    },
+    loginContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+        marginTop: Platform.OS === 'web' ? '2vh' : hp('2%'),
+        marginBottom: Platform.OS === 'web' ? '2.5vh' : hp('2.5%'),
     },
     login: {
-        fontSize: wp('4%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
         color: '#000',
     },
     loginBold: {
         fontWeight: 'bold',
-        fontSize: wp('4%'),
-        marginLeft: 5,
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
     },
     icon: {
-        width: wp('5%'),
-        height: hp('2.5%'),
+        width: Platform.OS === 'web' ? '2rem' : wp('2%'),
+        height: Platform.OS === 'web' ? '1.5rem' : hp('2.5%'),
     },
 });

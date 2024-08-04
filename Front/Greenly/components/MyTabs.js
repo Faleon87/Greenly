@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { Image, TouchableOpacity, View, Text, Alert } from 'react-native';
+import { Image, TouchableOpacity, View, Text, Alert, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import homeIcon from '../icons/home.png';
@@ -25,7 +25,7 @@ export function MyTabs() {
     navigation.setOptions({
       headerTitle: () => (
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ fontSize: 25,  color: '#F0F0F0' }}>{title}</Text>
+          <Text style={{ fontSize: 25, color: '#F0F0F0' }}>{title}</Text>
         </View>
       ),
     });
@@ -87,6 +87,17 @@ export function MyTabs() {
 
   const Tab = createBottomTabNavigator();
 
+  const getTabBarIcon = (icon) => ({ focused, size }) => (
+    <Image
+      source={icon}
+      style={{
+        width: size,
+        height: size,
+        tintColor: focused ? '#02907D' : '#ffff',
+      }}
+    />
+  );
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -101,12 +112,7 @@ export function MyTabs() {
         name="Home"
         component={Pantalla}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={homeIcon} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
+          tabBarIcon: getTabBarIcon(homeIcon),
           tabBarButton: (props) => (
             <TouchableOpacity {...props} />
           ),
@@ -119,12 +125,7 @@ export function MyTabs() {
         name="Plantas"
         component={Plantas}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={plantasIcon} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
+          tabBarIcon: getTabBarIcon(plantasIcon),
           tabBarButton: (props) => (
             <TouchableOpacity {...props} />
           ),
@@ -137,12 +138,7 @@ export function MyTabs() {
         name="Plagas"
         component={Plagas}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={plagasIcon} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
+          tabBarIcon: getTabBarIcon(plagasIcon),
           tabBarButton: (props) => (
             <TouchableOpacity {...props} />
           ),
@@ -151,50 +147,42 @@ export function MyTabs() {
           focus: () => setHeaderTitle('Plagas'),
         }}
       />
-      <Tab.Screen
-        name="Camera"
-        component={Pantalla}
-        options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={cameraIcon} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
-          tabBarButton: (props) => (
-            <TouchableOpacity
-              {...props}
-              onPress={selectImage}
-              style={{
-                position: 'absolute',
-                top: '-100%',
-                left: '50%',
-                transform: [{ translateX: -wp("7.5%") }],
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 35,
-                width: wp("15%"),
-                height: wp("15%"),
-                backgroundColor: '#2C1001',
-              }}
-            >
-            </TouchableOpacity>
-          ),
-        }}
-        listeners={{
-          focus: () => setHeaderTitle('Camera'),
-        }}
-      />
+      {/* Conditionally render the Camera tab based on platform */}
+      {Platform.OS !== 'web' && (
+        <Tab.Screen
+          name="Camera"
+          component={Pantalla}
+          options={{
+            tabBarIcon: getTabBarIcon(cameraIcon),
+            tabBarButton: (props) => (
+              <TouchableOpacity
+                {...props}
+                onPress={selectImage}
+                style={{
+                  position: 'absolute',
+                  top: '-100%',
+                  left: '50%',
+                  transform: [{ translateX: -wp("7.5%") }],
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 35,
+                  width: wp("15%"),
+                  height: wp("15%"),
+                  backgroundColor: '#2C1001',
+                }}
+              />
+            ),
+          }}
+          listeners={{
+            focus: () => setHeaderTitle('Camera'),
+          }}
+        />
+      )}
       <Tab.Screen
         name="Fertilizante"
         component={Fertilizantes}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={fertilizante} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
+          tabBarIcon: getTabBarIcon(fertilizante),
           tabBarButton: (props) => (
             <TouchableOpacity {...props} />
           ),
@@ -207,12 +195,7 @@ export function MyTabs() {
         name="Calendar"
         component={Calendar}
         options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Image source={calend} style={{
-              width: size, height: size,
-              tintColor: focused ? '#02907D' : '#ffff'
-            }} />
-          ),
+          tabBarIcon: getTabBarIcon(calend),
           tabBarButton: (props) => (
             <TouchableOpacity {...props} />
           ),
