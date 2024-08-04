@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Likes } from '../entities/likes';
 import { User } from 'src/usuario/entities/user';
 import { Repository } from 'typeorm';
-import { CreateLikesDto } from '../dtoS/likes';
+import { CreateLikesDto } from '../dtos/likes';
 
 @Injectable()
 export class LikesService {
