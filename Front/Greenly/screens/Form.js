@@ -1,6 +1,6 @@
-import React, { useState, useEffect , useLayoutEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useLayoutEffect, useCallback } from 'react';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Alert} from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Chat } from '../api/Chat';
 import { FlatList } from 'react-native';
@@ -26,47 +26,55 @@ const App = () => {
     });
   }, [navigation]);
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      const questionsFromApi = await Chat();
-      console.log(questionsFromApi);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchQuestions = async () => {
+        const questionsFromApi = await Chat();
+        console.log(questionsFromApi);
 
-      const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
-        const likeObject = questionsFromApi.likesResult[index];
-        const questionDetails = questionsFromApi.preguntaResult[index];
-        return {
-          ...question,
-          likes: likeObject ? likeObject.likes : 0, // Aquí es donde accedes al número de likes
-          idLikes: likeObject ? likeObject.idLikes : null, // Aquí es donde accedes al idLikes
-          questionDetails: questionDetails ? questionDetails : null, // Aquí es donde accedes a los detalles de la pregunta
-          nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
-        };
-      });
+        const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
+          const likeObject = questionsFromApi.likesResult[index];
+          const questionDetails = questionsFromApi.preguntaResult[index];
 
-      // Extrae los nombres únicos de los cultivos
-      const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
-      setCultivoNames(['Todos', ...uniqueCultivoNames]);
+          return {
+            ...question,
+            likes: likeObject ? likeObject.likes : 0, // Aquí es donde accedes al número de likes
+            idLikes: likeObject ? likeObject.idLikes : null, // Aquí es donde accedes al idLikes
+            questionDetails: questionDetails ? questionDetails : null, // Aquí es donde accedes a los detalles de la pregunta
+            nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
+          };
+        });
 
-      setQuestions(questionsWithLikes);
-    };
+        // Extrae los nombres únicos de los cultivos
+        const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
+        setCultivoNames(['Todos', ...uniqueCultivoNames]);
 
-    // Llama a fetchQuestions inmediatamente
-    fetchQuestions();
-  }, []);
+        setQuestions(questionsWithLikes);
+      };
+
+      // Llama a fetchQuestions inmediatamente
+      fetchQuestions();
+    }, [])
+  );
+
   const handleLike = async (id) => {
+    console.log('handleLike called with id:', id);
+
     // Recupera el idUsuario del almacenamiento local
     const userId = await AsyncStorage.getItem('idUser');
-  
+    console.log('userId:', userId);
+
     // Recupera los likes del usuario del almacenamiento local
     const storedUserLikes = JSON.parse(await AsyncStorage.getItem(`userLikes_${userId}`)) || {};
-  
+    console.log('storedUserLikes before:', storedUserLikes);
+
     // Encuentra la pregunta que el usuario le dio like
     const questionIndex = questions.findIndex((question) => question.idLikes === id);
     if (questionIndex === -1) return;
-  
+
     // Encuentra la pregunta en sí
     const question = questions[questionIndex];
-  
+
     // Si el usuario ya ha dado like a esta pregunta, quita el like
     if (storedUserLikes[id]) {
       storedUserLikes[id] = undefined;
@@ -76,10 +84,11 @@ const App = () => {
       storedUserLikes[id] = true;
       question.likes += 1;
     }
-  
+
     // Guarda los likes del usuario en el almacenamiento local
     await AsyncStorage.setItem(`userLikes_${userId}`, JSON.stringify(storedUserLikes));
-  
+    console.log('storedUserLikes after:', storedUserLikes);
+
     // Actualiza el estado de los likes del usuario
     setUserLikes(storedUserLikes);
 
@@ -87,9 +96,16 @@ const App = () => {
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex] = question;
     setQuestions(updatedQuestions);
-  
+
     // Aquí deberías hacer una llamada a la API para actualizar el número de likes en la base de datos
     await updateLikes(id, question.likes);
+    console.log('Likes updated in the database');
+  };
+
+  const handleReport = (id) => {
+    // Aquí puedes manejar la lógica para reportar la pregunta
+    console.log('Report question with id:', id);
+    Alert.alert('Report', 'Question reported successfully');
   };
 
   // Filtra las preguntas basándote en el valor del filtro
@@ -116,7 +132,10 @@ const App = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <Card style={styles.card}>
-            <Card.Cover source={{ uri: item.nombreFoto }} style={styles.fotoPr} />
+            <Card.Cover
+              source={{ uri: `data:image/jpeg;base64,${item.nombreFoto}` }}
+              style={styles.fotoPr}
+            />
             <Card.Content>
               <View style={styles.cardContent}>
                 <View style={styles.questionContainer}>
@@ -135,33 +154,34 @@ const App = () => {
                       numberOfLines={4}
                       ellipsizeMode='tail'
                     >
-                      <Text>{item.idLikes}</Text>
                       <Text style={styles.descripcion}>Descripción:</Text>
                       {item.questionDetails.descripcion}
                     </Paragraph>
                   )}
                 </View>
                 <View style={styles.userInfo}>
-                  <Image
-                    style={styles.userImage}
-                    source={{ uri: item.idUsuario.img }}
-                  />
                   <View style={styles.userDetails}>
-                    <Paragraph>{item.idUsuario.username}</Paragraph>
-                    <TouchableOpacity
-                      onPress={() => handleLike(item.idLikes)}
-                    >
-                      <Icon style={styles.likeicon} name="heart" size={30} color={userLikes[item.idLikes] ? "red" : "grey"} />
-                    </TouchableOpacity>
-                    <Paragraph style={styles.likes}>{item.likes} likes</Paragraph>
+                    {item.questionDetails && item.questionDetails.idUsuario && (
+                      <>
+                        <Image
+                          source={{ uri: item.questionDetails.idUsuario.img }}
+                          style={styles.userImage}
+                        />
+                        <Text style={styles.userName}>{item.questionDetails.idUsuario.username}</Text>
+                      </>
+                    )}  
                   </View>
-                  <View style={styles.respond}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('Respuestas', { id: item.idPregunta })}
-                    >
-                      <Icon name="comment" size={30} color="#02907D" />
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity onPress={() => handleLike(item.idLikes)}>
+                    <View style={styles.likes}>
+                      <Icon name="heart" size={20} color={userLikes[item.idLikes] ? "red" : "grey"} />
+                      <Text>{item.likes}</Text>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleReport(item.questionDetails.idPregunta)}>
+                    <View style={styles.report}>
+                      <Icon name="exclamation" size={20} color="grey" />
+                    </View>
+                  </TouchableOpacity>
                 </View>
                 <View style={styles.date}>
                   {item.questionDetails && (
@@ -240,6 +260,9 @@ const styles = StyleSheet.create({
   likes: {
     marginLeft: 10,
   },
+  report: {
+    marginLeft: 10,
+  },
   fotoPr: {
     width: wd('90%'),
     height: wd('50%'),
@@ -253,6 +276,12 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginRight: 10,
+  },
+  userName: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginTop: 10,
+    fontWeight: 'bold',
   },
   floatingButton: {
     backgroundColor: '#02907D',

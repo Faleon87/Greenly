@@ -17,21 +17,24 @@ export class FotoPreguntasService {
     ) { }
 
 
-   async create(createFotoPregunta: FotoPregunta): Promise<FotoPreguntas> {
-        const user = await this.userRepository.findOne({
-            where: { idUser: createFotoPregunta.idUsuario }
-          });
-      
-        if (!user) {
-          throw new Error(`User with ID ${createFotoPregunta.idUsuario} not found`);
-        }
-      
-        const fotoPregunta = new FotoPreguntas();
-        fotoPregunta.nombreFoto = createFotoPregunta.nombreFoto;
-        fotoPregunta.idUsuario = user; // Assign the User to idUsuario
-        return this.fotoPreguntasRepository.save(fotoPregunta);
+    async create(createFotoPregunta: FotoPregunta): Promise<FotoPreguntas> {
+      const user = await this.userRepository.findOne({
+        where: { idUser: createFotoPregunta.idUsuario }
+      });
+  
+      if (!user) {
+        throw new Error(`User with ID ${createFotoPregunta.idUsuario} not found`);
       }
-
+  
+      const base64Data = createFotoPregunta.nombreFoto.replace(/^data:image\/jpeg;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+  
+      const fotoPregunta = new FotoPreguntas();
+      fotoPregunta.nombreFoto = buffer;
+      fotoPregunta.idUsuario = user; // Assign the User to idUsuario
+  
+      return this.fotoPreguntasRepository.save(fotoPregunta);
+    }
 
     async findByUserId(idUsuario: number): Promise<FotoPreguntas[]> {
         const user = await this.userRepository.findOne({ where: { idUser: idUsuario } });
@@ -45,11 +48,20 @@ export class FotoPreguntasService {
         });
 
     }
-    async findAll(): Promise<FotoPreguntas[]> {
-        return this.fotoPreguntasRepository.find({
-          relations: ['idUsuario']
-        });
-      }
+    
+    async findAll(): Promise<any[]> {
+      const fotoPreguntas = await this.fotoPreguntasRepository.find();
+    
+      return fotoPreguntas.map(fotoPregunta => {
+        const nombreFotoData = Buffer.isBuffer(fotoPregunta.nombreFoto)
+          ? fotoPregunta.nombreFoto.toString('base64')
+          : fotoPregunta.nombreFoto;
+        return {
+          ...fotoPregunta,
+          nombreFoto: nombreFotoData,
+        };
+      });
+    }
 
 
 }

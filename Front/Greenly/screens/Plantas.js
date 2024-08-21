@@ -1,28 +1,22 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { View, TextInput, FlatList, Image, Text, StyleSheet, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Make sure to install this package
+import { Ionicons } from '@expo/vector-icons';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { getPlantas } from '../api/getPlantas';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-
-const Plantas = ({navigation}) => {
+const Plantas = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [plantas, setPlantas] = useState([]);
   const [page, setPage] = useState(1);
 
-
-
   useEffect(() => {
     const timerId = setTimeout(() => {
       setDebouncedSearch(search);
     }, 300);
-
-    return () => {
-      clearTimeout(timerId);
-    };
+    return () => clearTimeout(timerId);
   }, [search]);
 
   useEffect(() => {
@@ -36,40 +30,38 @@ const Plantas = ({navigation}) => {
         return Array.from(plantasMap.values());
       });
     };
-
     fetchPlantas();
   }, [page]);
 
-
-
-  const loadMorePlantas = () => {
-    setPage(oldPage => oldPage + 1);
-  };
+  const loadMorePlantas = () => setPage(oldPage => oldPage + 1);
 
   const filteredPlantas = useMemo(() => {
     const normalizedSearch = debouncedSearch
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
-
     return plantas.filter(planta => {
       const normalizedNombrePlanta = planta.nombrePlanta
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-
       const normalizedNombreCientifico = planta.nombreCientifico
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
-
       return normalizedNombrePlanta.includes(normalizedSearch) || normalizedNombreCientifico.includes(normalizedSearch);
     });
   }, [plantas, debouncedSearch]);
 
-
-
-
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta })}>
+      <View style={styles.item}>
+        <Image source={{ uri: item.img }} style={styles.image} resizeMode='cover' />
+        <LinearGradient colors={['transparent', 'rgba(0,0,0,1)']} style={styles.gradient} />
+        <Text style={styles.itemText}>{item.nombrePlanta}</Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
@@ -87,18 +79,9 @@ const Plantas = ({navigation}) => {
         <FlatList
           data={filteredPlantas}
           keyExtractor={item => item.idPlanta.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity  onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta })}>
-              <View style={styles.item}>
-                <Image source={{ uri: item.img }} style={styles.image} resizeMode='cover' />
-                <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,1)']}
-                  style={styles.gradient} />
-                <Text style={styles.itemText}>{item.nombrePlanta}</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          numColumns={2} // Add this line
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
           onEndReached={loadMorePlantas}
           onEndReachedThreshold={0.5}
           initialNumToRender={10}
@@ -108,7 +91,7 @@ const Plantas = ({navigation}) => {
           showsVerticalScrollIndicator={false}
         />
       ) : (
-        <Text style={styles.noResults}>Lo siento, no se encuenta disponible</Text>
+        <Text style={styles.noResults}>Lo siento, no se encuentra disponible</Text>
       )}
     </View>
   );
@@ -119,7 +102,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#f5f5f5',
-    marginBottom: 40,
   },
   noResults: {
     textAlign: 'center',
@@ -128,39 +110,25 @@ const styles = StyleSheet.create({
   },
   searchSection: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    height: Platform.OS === 'web' ? '5vh' : 50, // Usa vh en la web y % en móviles
+    height: Platform.OS === 'web' ? '5vh' : 50,
     width: Platform.OS === 'web' ? '90vw' : wp('90%'),
     borderRadius: Platform.OS === 'web' ? '5vw' : 25,
-    marginTop: Platform.OS === 'web' ? '2vh' : 20,
-    marginLeft: Platform.OS === 'web' ? '5vw' : wp('5%'),
-    marginBottom: Platform.OS === 'web' ? '2vh' : 20,
+    marginVertical: Platform.OS === 'web' ? '2vh' : 20,
   },
   searchIcon: {
     padding: 10,
   },
   searchInput: {
     flex: 1,
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingBottom: 10,
-    paddingLeft: 10,
-    width: Platform.OS === 'web' ? '100vw' : wp('100%'),
+    padding: 10,
     backgroundColor: '#fff',
     color: '#424242',
   },
   item: {
-    flex: 1,
-    flexDirection: 'column',
-    margin: Platform.OS === 'web' ? '1vw' : wp('1%'),
-    padding: Platform.OS === 'web' ? '1vw' : wp('1%'),
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: Platform.OS === 'web' ? '4vw' : wp('4%'),
     borderRadius: 10,
-    height: Platform.OS === 'web' ? '40vh' : wp('40%'),
+    height: Platform.OS === 'web' ? '30vh' : 200,
     width: Platform.OS === 'web' ? '40vw' : wp('40%'),
     overflow: 'hidden',
     backgroundColor: '#fff',
@@ -168,12 +136,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 1, height: 1 },
     shadowRadius: 1.41,
+    shadowOpacity: 0.2,
+    margin: 10,
   },
   image: {
-    width: wp('100%'), // fixed width
-    height: 200, // fixed height
-    justifyContent: 'center',
-    alignSelf: 'center',
+    width: '100%',
+    height: '100%',
   },
   itemText: {
     position: 'absolute',
@@ -182,7 +150,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   gradient: {
     position: 'absolute',
@@ -190,7 +158,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: '50%',
-    borderRadius: 10,
+  },
+  columnWrapper: {
+    justifyContent: 'space-around',
   },
 });
 

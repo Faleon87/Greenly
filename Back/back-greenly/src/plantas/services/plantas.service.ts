@@ -93,4 +93,9 @@ export class PlantasService {
     return this.plantasRepository.save(planta);
   }
 
+
+  async delete(id: number): Promise<void> {
+    await this.plantasRepository.delete(id);
+  }
+
 }

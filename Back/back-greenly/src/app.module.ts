@@ -50,9 +50,9 @@ import { Tarjeta } from './tarjeta/entities/tarjeta';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres', // Cambia esto por el tipo de base de datos que estás usando
-      host: 'greenly.c9k3e9wvgt2e.us-east-1.rds.amazonaws.com', // Cambia esto por tu host
+      host: 'green.cnw4y4u06yd5.us-east-1.rds.amazonaws.com', // Cambia esto por tu host
       port: 5432, // Cambia esto por tu puerto
-      username: 'viju', // Cambia esto por tu nombre de usuario
+      username: 'postgres', // Cambia esto por tu nombre de usuario
       password: 'Viju2003$', // Cambia esto por tu contraseña
       database: 'postgres', // Cambia esto por tu nombre de base de datos
       entities: [
@@ -80,6 +80,7 @@ import { Tarjeta } from './tarjeta/entities/tarjeta';
           rejectUnauthorized: false,
         },
       },
+      logging: ['error' , 'warn' , 'info' , 'log'],
     }),
     TypeOrmModule.forFeature([
       Plantas,

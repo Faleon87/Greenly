@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -56,5 +57,12 @@ export class PlantasController {
     return this.plantasService.create(createPlantDto);
   }
 
+
+  @Delete(':id')
+  async delete(@Param('id', ParseIntPipe) id: number) {
+    console.log('id', id); // Asegúrate de que esto se ejecute
+    await this.plantasService.delete(id);
+    return { message: 'Planta eliminada correctamente' };
+  }
 
 }

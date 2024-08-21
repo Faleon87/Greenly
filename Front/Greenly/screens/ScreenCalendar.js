@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'; // Asegúrate de importar useState y useEffect desde 'react'
-import { View, Text, Button, FlatList, Image, Modal, StyleSheet, TouchableOpacity, Alert, TextInput } from 'react-native'; // Ajusta la ruta según sea necesario
+import { View, Text, Button, FlatList, Image, Modal, StyleSheet, TouchableOpacity, Alert, TextInput, Platform } from 'react-native'; // Ajusta la ruta según sea necesario
 import { Calendar } from 'react-native-calendars'; // Ajusta la ruta según sea necesario
 import { getPlantas } from '../api/getPlantas'; // Ajusta la ruta según sea necesario
 import DateTimePicker from '@react-native-community/datetimepicker'; // Asumiendo que se usa esta librería para el DatePicker
@@ -29,7 +29,8 @@ const App = () => {
   const [markedDates, setMarkedDates] = useState({}); // Fechas marcadas en el calendario
   const [searchDate, setSearchDate] = useState(''); // Fecha de búsqueda en formato YYYY-MM-DD
   const [currentDate, setCurrentDate] = useState(''); // Fecha actual para el calendario
-
+  // Formatear la fecha seleccionada para guardarla en el estado
+  const fechaFormateada = fechaSeleccionada.toISOString().split('T')[0];
 
 
   useEffect(() => {
@@ -114,8 +115,7 @@ const App = () => {
     seleccionarPlantaPorFecha(day.dateString);
   };
 
-  // Formatear la fecha seleccionada para guardarla en el estado
-  const fechaFormateada = fechaSeleccionada.toISOString().split('T')[0];
+
 
   // Guardar planta seleccionada
 
@@ -259,57 +259,51 @@ const App = () => {
           </View>
         </Modal>
         <View style={styles.content}>
-  {datosPlanta.filter(item => item.tipoAcción === 'sembrar').length > 0 && (
-    <>
-      <Text style={styles.plantasGuardadas}>Sembrar</Text>
-      <FlatList
-        data={datosPlanta.filter(item => item.tipoAcción === 'sembrar')}
-        keyExtractor={item => item.idPlanta.idPlanta}
-        horizontal={true}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.idPlanta.idPlanta)}>
-              <Ionicons name="close-circle" size={24} color="red" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
-              <View style={styles.sembrar}>
-                <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
-                <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
-                <Text style={styles.fecha}>{item.fecha}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-    </>
-  )}
-</View>
-<View style={styles.content}>
-  {datosPlanta.filter(item => item.tipoAcción === 'cosechar').length > 0 && (
-    <>
-      <Text style={styles.plantasGuardadas}>Cosechar</Text>
-      <FlatList
-        data={datosPlanta.filter(item => item.tipoAcción === 'cosechar')}
-        keyExtractor={(item) => `${item.idUser}-${item.idPlanta.idPlanta}`}
-        horizontal={true}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.idPlanta.idPlanta)}>
-              <Ionicons name="close-circle" size={24} color="red" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
-              <View style={styles.cosechar}>
-                <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
-                <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
-                <Text style={styles.fecha}>{item.fecha}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
-    </>
-  )}
-</View>
+          {datosPlanta.filter(item => item.tipoAcción === 'sembrar').length > 0 && (
+            <>
+              <Text style={styles.plantasGuardadas}>Sembrar</Text>
+              <FlatList
+                data={datosPlanta.filter(item => item.tipoAcción === 'sembrar')}
+                keyExtractor={item => item.idPlanta.idPlanta}
+                horizontal={true}
+                renderItem={({ item }) => (
+                  <View style={styles.card}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+                      <View style={styles.sembrar}>
+                        <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                        <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                        <Text style={styles.fecha}>{item.fecha}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </>
+          )}
+        </View>
+        <View style={styles.content}>
+          {datosPlanta.filter(item => item.tipoAcción === 'cosechar').length > 0 && (
+            <>
+              <Text style={styles.plantasGuardadas}>Cosechar</Text>
+              <FlatList
+                data={datosPlanta.filter(item => item.tipoAcción === 'cosechar')}
+                keyExtractor={(item) => `${item.idUser}-${item.idPlanta.idPlanta}`}
+                horizontal={true}
+                renderItem={({ item }) => (
+                  <View style={styles.card}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DetallePlanta', { idPlanta: item.idPlanta.idPlanta })}>
+                      <View style={styles.cosechar}>
+                        <Text style={styles.nombrePlanta}>{item.idPlanta.nombrePlanta}</Text>
+                        <Image source={{ uri: item.idPlanta.img }} style={styles.imagenPlanta} />
+                        <Text style={styles.fecha}>{item.fecha}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </>
+          )}
+        </View>
       </ScrollView>
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
         <Icon style={styles.addcalendar} name="edit-calendar" size={30} />
@@ -331,15 +325,15 @@ const styles = StyleSheet.create({
     padding: 10, // Espaciado interno para separar los elementos de los bordes
   },
   addcalendar: {
-    margin: 10,
+    margin: Platform.OS === 'web' ? 10 : 0, // Añade margen solo en la web
     color: 'black',
   },
   calendar: {
-    width: wp('100%'),
+    width: Platform.OS === 'web' ? '100vw' : wp('90%'),
   },
   searchInput: {
     flex: 1, // Ocupa todo el espacio disponible
-    marginRight: 10, // Espaciado a la derecha para separarlo del botón
+    marginRight: Platform.OS === 'web' ? 10 : 0, // Añade margen solo en la web
     borderColor: 'black', // Borde de color claro
     borderWidth: 1, // Grosor del borde
     borderRadius: 5, // Bordes redondeados
@@ -361,8 +355,8 @@ const styles = StyleSheet.create({
   },
   floatingButton: {
     backgroundColor: 'lightblue',
-    width: wp('15%'),
-    height: hp('7%'),
+    width: Platform.OS === 'web' ? '10vw' : wp('10%'),
+    height: Platform.OS === 'web' ? '10vw' : hp('10%'),
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center', // Alinea el contenido al centro
@@ -372,12 +366,12 @@ const styles = StyleSheet.create({
 
   },
   accion: {
-    width: wp('40%'),
+    width: Platform.OS === 'web' ? '50vw' : wp('50%'),
     height: 50, // Ajusta el alto según tus necesidades
 
   },
   modalView: {
-    margin: 20, // Margen para que no esté pegado al borde
+    margin: Platform.OS === 'web' ? '10vw' : 20, // Ajustar el margen según tus necesidades
     borderRadius: 20, // Bordes redondeados para hacerlo más amigable
     padding: 35, // Añadir relleno para que no se vea tan pegado al borde
     alignItems: "center", // Alinea el contenido al centro
@@ -396,8 +390,8 @@ const styles = StyleSheet.create({
     color: 'red',
     left: 10,
     top: 15,
-    width: wp('7%'),
-    height: hp('3%'),
+    width: Platform.OS === 'web' ? '5vw' : wp('5%'),
+    height: Platform.OS === 'web' ? '5vw' : hp('5%'),
     borderRadius: 15, // Bordes redondeados para hacerlo más amigable
   },
   closeButtonText: {
@@ -414,8 +408,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   imagenPlanta: {
-    width: wp('20%'), // Aumentar el ancho
-    height: hp('10%'), // Aumentar el alto
+    width: Platform.OS === 'web' ? '20vw' : wp('20%'),
+    height: Platform.OS === 'web' ? '20vw' : hp('20%'),
     borderRadius: 15, // Bordes más redondeados
     shadowColor: "#000", // Agregar sombra
     shadowOffset: {
@@ -435,13 +429,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Centra los elementos (imagen, fecha, nombre) verticalmente
   },
   plantas: {
-    width: wp('40%'),
-    height: hp('5%'), // Ajusta el alto según tus necesidades
-  },
-  deleteButton: {
-    position: 'absolute',
-    right: 4,
-    top: 3, // Ajustado para estar en la parte superior de la tarjeta
+    width: Platform.OS === 'web' ? '50vw' : wp('50%'),
+    height: Platform.OS === 'web' ? '5vw' : hp('5%'),
   },
   card: {
     backgroundColor: 'white',
@@ -452,7 +441,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    width: wp('35%'), // Ajustar el ancho según tus necesidades
+    width: Platform.OS === 'web' ? '30vw' : wp('30%'),
     elevation: 5,
     position: 'relative', // Necesario para posicionar el botón de borrar
   },
