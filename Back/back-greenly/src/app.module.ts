@@ -47,17 +47,18 @@ import { TarjetaService } from './tarjeta/servicies/tarjeta.service';
 import { Tarjeta } from './tarjeta/entities/tarjeta';
 import { Reports } from './chat/entities/reports';
 import { ReportsService } from './chat/services/reports.service';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres', // Cambia esto por el tipo de base de datos que estás usando
-      host: 'green.cnw4y4u06yd5.us-east-1.rds.amazonaws.com', // Cambia esto por tu host
-      port: 5432, // Cambia esto por tu puerto
-      username: 'postgres', // Cambia esto por tu nombre de usuario
-      password: 'Viju2003$', // Cambia esto por tu contraseña
-      database: 'postgres', // Cambia esto por tu nombre de base de datos
+      type: 'postgres',
+      host: 'green.cnw4y4u06yd5.us-east-1.rds.amazonaws.com',
+      port: 5432,
+      username: 'postgres',
+      password: 'Viju2003$',
+      database: 'postgres',
       entities: [
         Plantas,
         User,
@@ -84,7 +85,7 @@ import { ReportsService } from './chat/services/reports.service';
           rejectUnauthorized: false,
         },
       },
-      logging: ['error' , 'warn' , 'info' , 'log'],
+      logging: ['error', 'warn', 'info', 'log'],
     }),
     TypeOrmModule.forFeature([
       Plantas,
@@ -105,6 +106,10 @@ import { ReportsService } from './chat/services/reports.service';
       Tarjeta,
       Reports,
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Ruta al directorio de archivos estáticos
+      serveRoot: '/uploads', // URL base para acceder a los archivos
+    }),
   ],
   controllers: [
     AppController,

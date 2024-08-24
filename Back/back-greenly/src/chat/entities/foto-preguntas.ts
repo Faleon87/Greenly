@@ -7,8 +7,8 @@ export class FotoPreguntas {
     @PrimaryGeneratedColumn()
     idFotoPregunta: number;
   
-    @Column('bytea')
-    nombreFoto: Buffer;
+    @Column()
+    nombreFoto: string;
    
   
     @ManyToOne(() => User , user => user.fotosPreguntas)

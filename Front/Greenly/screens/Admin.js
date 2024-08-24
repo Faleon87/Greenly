@@ -7,8 +7,7 @@ import { fetchPlants } from '../api/adminPlantas';
 import { updatePlant } from '../api/updatePlantas';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { deletePlant } from '../api/deletePlant';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import { FontAwesome } from '@expo/vector-icons';
 export default function App() {
   const [data, setData] = useState([]);
   const [editData, setEditData] = useState(null);
@@ -122,7 +121,7 @@ export default function App() {
               <Text style={styles.updateButtonText}>Actualizar</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleDeletePlant(editItem.idPlanta)}>
-              <Icon name="delete" size={30} color="#FF0000" />
+              <FontAwesome name="bomb" size={30} color="#FF0000" />
             </TouchableOpacity>
           </View>
         </View>

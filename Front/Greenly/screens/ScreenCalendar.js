@@ -4,14 +4,14 @@ import { Calendar } from 'react-native-calendars'; // Ajusta la ruta según sea 
 import { getPlantas } from '../api/getPlantas'; // Ajusta la ruta según sea necesario
 import DateTimePicker from '@react-native-community/datetimepicker'; // Asumiendo que se usa esta librería para el DatePicker
 import { Picker } from '@react-native-picker/picker'; // Asumiendo que se usa esta librería para el Picker
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {FontAwesome} from '@expo/vector-icons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'; // Ajusta la ruta según sea necesario
 import { guardarDatosCalendar } from '../api/guardarDatosCalendar'; // Ajusta la ruta según sea necesario
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { plantafecha } from '../api/plantafecha'; // Ajusta la ruta según sea necesario
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons'; // Asegúrate de tener instalado @expo/vector-icons
+
 
 const App = () => {
 
@@ -230,7 +230,7 @@ const App = () => {
               style={styles.datePickerButton}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Icon name="calendar-today" size={30} color="green" />
+                <FontAwesome name="calendar" size={30} color="green" />
                 {fechaSeleccionada && <Text style={styles.fechaSeleccionada}>{fechaSeleccionada.toDateString()}</Text>}
               </View>
             </TouchableOpacity>
@@ -306,7 +306,7 @@ const App = () => {
         </View>
       </ScrollView>
       <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
-        <Icon style={styles.addcalendar} name="edit-calendar" size={30} />
+        <FontAwesome style={styles.addcalendar} name="edit" size={30} />
       </TouchableOpacity>
     </View >
 

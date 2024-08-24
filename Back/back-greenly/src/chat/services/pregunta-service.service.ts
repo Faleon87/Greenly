@@ -37,7 +37,7 @@ export class PreguntaServiceService {
 
       async findAll(): Promise<Pregunta[]> {
         return this.preguntaRepository.find({
-          relations: ['idUsuario']
+          relations: ['idUsuario'],
         });
       }
 }

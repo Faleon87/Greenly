@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Chat } from '../api/Chat';
@@ -9,7 +9,7 @@ import { widthPercentageToDP as wd } from 'react-native-responsive-screen';
 import updateLikes from '../api/updateLikes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import reportQuestion from '../api/report';
-import  getReports  from '../api/reports'; // Importa la nueva función
+import getReports from '../api/reports'; // Importa la nueva función
 
 const App = () => {
   const navigation = useNavigation();
@@ -17,8 +17,6 @@ const App = () => {
   const [userLikes, setUserLikes] = useState({});
   const [filter, setFilter] = useState('');
   const [reportedQuestions, setReportedQuestions] = useState({});
-
-  // Agrega un estado para los nombres de los cultivos
   const [cultivoNames, setCultivoNames] = useState([]);
 
   useLayoutEffect(() => {
@@ -31,6 +29,33 @@ const App = () => {
 
   useFocusEffect(
     useCallback(() => {
+      const checkPaymentStatus = async () => {
+        const hasPaid = await AsyncStorage.getItem('hasPaid');
+        if (!hasPaid) {
+          Alert.alert(
+            'Acceso Restringido',
+            'Esta funcionalidad es de pago y está en prueba. ¿Deseas pagar ahora?',
+            [
+              {
+                text: 'No',
+                onPress: () => navigation.goBack(), 
+
+                style: 'cancel',
+              },
+              {
+                text: 'Sí',
+                onPress: () => {
+                  Alert.alert('Pago', 'Pago realizado correctamente');
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+          return;
+        }
+    
+      };
+
       const fetchQuestions = async () => {
         const questionsFromApi = await Chat();
         console.log(questionsFromApi);
@@ -41,14 +66,13 @@ const App = () => {
 
           return {
             ...question,
-            likes: likeObject ? likeObject.likes : 0, // Aquí es donde accedes al número de likes
-            idLikes: likeObject ? likeObject.idLikes : null, // Aquí es donde accedes al idLikes
-            questionDetails: questionDetails ? questionDetails : null, // Aquí es donde accedes a los detalles de la pregunta
+            likes: likeObject ? likeObject.likes : 0,
+            idLikes: likeObject ? likeObject.idLikes : null,
+            questionDetails: questionDetails ? questionDetails : null,
             nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
           };
         });
 
-        // Extrae los nombres únicos de los cultivos
         const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
         setCultivoNames(['Todos', ...uniqueCultivoNames]);
 
@@ -64,53 +88,43 @@ const App = () => {
         setReportedQuestions(reportedQuestionsMap);
       };
 
-      // Llama a fetchQuestions y fetchReports inmediatamente
+      checkPaymentStatus();
       fetchQuestions();
       fetchReports();
-    }, [])
+    }, [navigation])
   );
 
   const handleLike = async (id) => {
     console.log('handleLike called with id:', id);
 
-    // Recupera el idUsuario del almacenamiento local
     const userId = await AsyncStorage.getItem('idUser');
     console.log('userId:', userId);
 
-    // Recupera los likes del usuario del almacenamiento local
     const storedUserLikes = JSON.parse(await AsyncStorage.getItem(`userLikes_${userId}`)) || {};
     console.log('storedUserLikes before:', storedUserLikes);
 
-    // Encuentra la pregunta que el usuario le dio like
     const questionIndex = questions.findIndex((question) => question.idLikes === id);
     if (questionIndex === -1) return;
 
-    // Encuentra la pregunta en sí
     const question = questions[questionIndex];
 
-    // Si el usuario ya ha dado like a esta pregunta, quita el like
     if (storedUserLikes[id]) {
       storedUserLikes[id] = undefined;
       question.likes -= 1;
     } else {
-      // Si el usuario no ha dado like a esta pregunta, añade el like
       storedUserLikes[id] = true;
       question.likes += 1;
     }
 
-    // Guarda los likes del usuario en el almacenamiento local
     await AsyncStorage.setItem(`userLikes_${userId}`, JSON.stringify(storedUserLikes));
     console.log('storedUserLikes after:', storedUserLikes);
 
-    // Actualiza el estado de los likes del usuario
     setUserLikes(storedUserLikes);
 
-    // Actualiza las preguntas
     const updatedQuestions = [...questions];
     updatedQuestions[questionIndex] = question;
     setQuestions(updatedQuestions);
 
-    // Aquí deberías hacer una llamada a la API para actualizar el número de likes en la base de datos
     await updateLikes(id, question.likes);
     console.log('Likes updated in the database');
   };
@@ -154,7 +168,6 @@ const App = () => {
     );
   };
 
-  // Filtra las preguntas basándote en el valor del filtro
   const filteredQuestions = questions.filter(question =>
     question.nombreCultivo.toLowerCase().includes(filter.toLowerCase())
   );
@@ -179,8 +192,9 @@ const App = () => {
         renderItem={({ item }) => (
           <Card style={styles.card}>
             <Card.Cover
-              source={{ uri: `data:image/jpeg;base64,${item.nombreFoto}` }}
+              source={{uri: item.nombreFoto}}
               style={styles.fotoPr}
+              PlaceholderContent={<ActivityIndicator />}
             />
             <Card.Content>
               <View style={styles.cardContent}>
@@ -210,8 +224,9 @@ const App = () => {
                     {item.questionDetails && item.questionDetails.idUsuario && (
                       <>
                         <Image
-                          source={{ uri: item.questionDetails.idUsuario.img }}
+                          source={{ uri: `data:image/jpeg;base64,${item.questionDetails.idUsuario.img.data}` }}
                           style={styles.userImage}
+                          PlaceholderContent={<ActivityIndicator />}
                         />
                         <Text style={styles.userName}>{item.questionDetails.idUsuario.username}</Text>
                       </>
@@ -261,21 +276,21 @@ const App = () => {
 
 const styles = StyleSheet.create({
   buttonListContainer: {
-    height: 50, // Ajusta este valor según tus necesidades
+    height: 50,
   },
   buttonContainer: {
     margin: 5,
-    height: 40, // Ajusta este valor según tus necesidades
+    height: 40,
     overflow: 'hidden',
   },
   button: {
-    backgroundColor: '#2C1001', // Cambia esto al color que desees
+    backgroundColor: '#2C1001',
     padding: 10,
     borderRadius: 5,
     margin: 5,
   },
   buttonText: {
-    color: 'white', // Cambia esto al color que desees
+    color: 'white',
   },
   likeicon: {
     marginLeft: 15,

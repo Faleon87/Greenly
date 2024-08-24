@@ -16,6 +16,7 @@
   "private": true,
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
+    "@expo/vector-icons": "^14.0.2",
     "@nestjs/common": "^10.3.8",
     "@nestjs/core": "^10.3.8",
     "@nestjs/passport": "^10.0.3",
@@ -63,6 +64,7 @@
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-image-picker": "^7.1.2",
+    "react-native-image-resizer": "^1.4.5",
     "react-native-keychain": "^8.2.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-modal": "^13.0.1",

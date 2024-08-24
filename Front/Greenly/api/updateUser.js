@@ -30,15 +30,14 @@ export const updateUser = async (idUser, nombre, username, apellido, email, pass
 
         console.log('Respuesta:', response);
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error('Error en la respuesta:', errorData);
-            Alert.alert('Error', `Error al actualizar los datos: ${response.status} ${response.statusText}`);
+            throw new Error('Network response was not ok');
         }else{
-            const responseData = await response.json();
-            console.log('Datos actualizados:', responseData);
-            Alert.alert('Éxito', 'Datos actualizados correctamente');
-        } 
+            Alert.alert('Datos actualizados', 'Los datos se han actualizado correctamente');
+        }
+
         return data;
     
 };

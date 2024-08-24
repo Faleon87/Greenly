@@ -13,7 +13,7 @@ import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
-import selectImg  from '../api/imagenUser';
+import selectImg from '../api/imagenUser';
 
 
 
@@ -81,12 +81,12 @@ function Pantalla({ route }) {
           <Text style={styles.username}>{username}</Text>
         </View>
         <Text>{console.log(img)}</Text>
-         {img ? (
-        <Image
-          source={{ uri: `data:image/jpeg;base64,${img}` }} // Asegúrate de usar el prefijo adecuado
-          style={styles.profileImage}
-        />
-      ) : null}
+        {img ? (
+          <Image
+            source={{ uri: `data:image/jpeg;base64,${img}` }} // Asegúrate de usar el prefijo adecuado
+            style={styles.profileImage}
+          />
+        ) : null}
         <View style={styles.iconsContainer}>
           <Icon
             name="cog"
@@ -146,11 +146,13 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     color: 'black',
+    textShadow: '-2px 2px 3px white',
+    marginHorizontal: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   iconForm: {
     color: 'white',
     textShadow: '-2px 2px 3px black',
-    marginHorizontal: Platform.OS === 'web' ? '1vw' : wp('2%'),
+    marginHorizontal: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   marketingText: {
     fontSize: Platform.OS === 'web' ? '2vw' : hp('3%'),
