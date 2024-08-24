@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, ScrollView, Pla
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import eyeIcon from '../img/hide.png';
 import eyeSlashIcon from '../img/view.png';
 const defaultProfileImage = require('../img/profile.png');
@@ -38,6 +39,8 @@ export default function RegisterScreen({ navigation }) {
             return;
         }
 
+        console.log('Registering user with:', name, email, username, password, profileImage);
+
         fetch('http://192.168.0.22:3000/user/register', {
             method: 'POST',
             headers: {
@@ -48,12 +51,17 @@ export default function RegisterScreen({ navigation }) {
                 email: email,
                 username: username,
                 password: password,
-                img: profileImage.uri,
+                img: profileImage,
             }),
         }).then((response) => response.json())
             .then((json) => {
-                console.log(json);
-                Alert.alert('User registered successfully');
+                Alert.alert('Debug', `Register response: ${JSON.stringify(json)}`);
+                if (json.error) {
+                    Alert.alert('Error', json.error);
+                } else {
+                    Alert.alert('Success', 'User registered successfully');
+                    navigation.navigate('Login');
+                }
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -87,10 +95,25 @@ export default function RegisterScreen({ navigation }) {
                         });
                     }
 
-                    console.log(result);
+                    console.log('ImagePicker result:', result);
+                    Alert.alert('Debug', `ImagePicker result: ${JSON.stringify(result)}`);
 
                     if (result && !result.cancelled) {
-                        setProfileImage({ uri: result.assets[0].uri });
+                        const fileUri = result.assets[0].uri;
+                        console.log('File URI:', fileUri);
+                        Alert.alert('Debug', `File URI: ${fileUri}`);
+
+                        const fileInfo = await FileSystem.getInfoAsync(fileUri);
+                        console.log('File Info:', fileInfo);
+                        Alert.alert('Debug', `File Info: ${JSON.stringify(fileInfo)}`);
+
+                        const fileBuffer = await FileSystem.readAsStringAsync(fileUri, {
+                            encoding: FileSystem.EncodingType.Base64,
+                        });
+                        console.log('File Buffer (Base64):', fileBuffer);
+                        Alert.alert('Debug', `File Buffer (Base64): ${fileBuffer.substring(0, 100)}...`);
+
+                        setProfileImage(fileBuffer);
                     }
                 },
                 style: index === cancelButtonIndex ? 'cancel' : 'default',
@@ -98,10 +121,23 @@ export default function RegisterScreen({ navigation }) {
         );
 
         if (result && !result.cancelled) {
-            setProfileImage({ uri: result.uri });
-        }
-    }
+            const fileUri = result.assets[0].uri;
+            console.log('File URI:', fileUri);
+            Alert.alert('Debug', `File URI: ${fileUri}`);
 
+            const fileInfo = await FileSystem.getInfoAsync(fileUri);
+            console.log('File Info:', fileInfo);
+            Alert.alert('Debug', `File Info: ${JSON.stringify(fileInfo)}`);
+
+            const fileBuffer = await FileSystem.readAsStringAsync(fileUri, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
+            console.log('File Buffer (Base64):', fileBuffer);
+            Alert.alert('Debug', `File Buffer (Base64): ${fileBuffer.substring(0, 100)}...`);
+
+            setProfileImage(fileBuffer);
+        }
+    };
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <TouchableOpacity onPress={selectProfileImage} style={styles.profileImageContainer}>
@@ -231,7 +267,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#8FD053',
         justifyContent: 'center',
-       
+
         marginHorizontal: Platform.OS === 'web' ? '30vw' : wp('30%'),
         height: Platform.OS === 'web' ? '5vh' : hp('5%'),
         width: Platform.OS === 'web' ? '40vw' : wp('40%'),

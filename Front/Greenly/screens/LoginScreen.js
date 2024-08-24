@@ -20,7 +20,14 @@ export default function LoginScreen({ navigation }) {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const handleForgotPassword = () => {
+    navigation.navigate('PasswordRecoveryScreen');
+  };
+
   const login = async () => {
+
+
+
     setIsLoading(true);
     try {
       const data = await loginUser(username, password);
@@ -28,11 +35,6 @@ export default function LoginScreen({ navigation }) {
 
       await AsyncStorage.setItem('nombre', data.username);
 
-      if (data.img !== null && data.img !== undefined) {
-        await AsyncStorage.setItem('img', data.img);
-      } else {
-        await AsyncStorage.setItem('img', 'https://www.kindpng.com/picc/m/78-785827_user-profile-avatar-login-human-png-icon.png');
-      }
 
       await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
 
@@ -52,6 +54,7 @@ export default function LoginScreen({ navigation }) {
         setError(error.message);
       }
     }
+
   };
 
   return (
@@ -101,8 +104,11 @@ export default function LoginScreen({ navigation }) {
           checkedColor='#03453D'
         />
         <Text style={styles.labelCheckbox}>Keep me signed in</Text>
+        <TouchableOpacity onPress={handleForgotPassword}>
+          <Text style={styles.labelforgot}>Forgot Password?</Text>
+        </TouchableOpacity>
       </View>
-      {error ? <Text style={styles.error}>{error}</Text> : null} 
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -133,7 +139,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     textAlign: 'left',
-    marginBottom: Platform.OS === 'web' ? '2vh': hp('2%')
+    marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%')
+  },
+  labelforgot: {
+    fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
+    color: '#03453D',
+    marginLeft: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   errorInput: {
     borderColor: 'red',
@@ -182,7 +193,7 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
-    
+
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -192,6 +203,7 @@ const styles = StyleSheet.create({
   labelCheckbox: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     fontWeight: 'bold',
+
   },
   button: {
     backgroundColor: '#8FD053',

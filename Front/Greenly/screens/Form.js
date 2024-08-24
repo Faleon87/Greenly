@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, Alert} from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Alert } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Chat } from '../api/Chat';
@@ -8,12 +8,15 @@ import { Card, Paragraph } from 'react-native-paper';
 import { widthPercentageToDP as wd } from 'react-native-responsive-screen';
 import updateLikes from '../api/updateLikes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import reportQuestion from '../api/report';
+import  getReports  from '../api/reports'; // Importa la nueva función
 
 const App = () => {
   const navigation = useNavigation();
   const [questions, setQuestions] = useState([]);
   const [userLikes, setUserLikes] = useState({});
   const [filter, setFilter] = useState('');
+  const [reportedQuestions, setReportedQuestions] = useState({});
 
   // Agrega un estado para los nombres de los cultivos
   const [cultivoNames, setCultivoNames] = useState([]);
@@ -52,8 +55,18 @@ const App = () => {
         setQuestions(questionsWithLikes);
       };
 
-      // Llama a fetchQuestions inmediatamente
+      const fetchReports = async () => {
+        const reportsFromApi = await getReports();
+        const reportedQuestionsMap = reportsFromApi.reduce((acc, report) => {
+          acc[report.idPregunta] = true;
+          return acc;
+        }, {});
+        setReportedQuestions(reportedQuestionsMap);
+      };
+
+      // Llama a fetchQuestions y fetchReports inmediatamente
       fetchQuestions();
+      fetchReports();
     }, [])
   );
 
@@ -102,10 +115,43 @@ const App = () => {
     console.log('Likes updated in the database');
   };
 
-  const handleReport = (id) => {
-    // Aquí puedes manejar la lógica para reportar la pregunta
-    console.log('Report question with id:', id);
-    Alert.alert('Report', 'Question reported successfully');
+  const handleReport = async (idPregunta, idUser) => {
+    console.log('handleReport called with:', idPregunta, idUser);
+    Alert.alert('Debug', `handleReport called with: ${idPregunta}, ${idUser}`);
+
+    try {
+      const result = await reportQuestion(idPregunta, idUser);
+
+      if (result) {
+        setReportedQuestions(prevState => ({
+          ...prevState,
+          [idPregunta]: true,
+        }));
+        Alert.alert('Pregunta reportada', 'La pregunta ha sido reportada correctamente.');
+      } else {
+        Alert.alert('Error', 'Error al reportar la pregunta.');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Error al reportar la pregunta.');
+    }
+  };
+
+  const confirmReport = (idPregunta, idUser) => {
+    Alert.alert(
+      'Confirmación',
+      '¿Estás seguro de que quieres reportar esta pregunta?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Sí',
+          onPress: () => handleReport(idPregunta, idUser),
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   // Filtra las preguntas basándote en el valor del filtro
@@ -169,7 +215,7 @@ const App = () => {
                         />
                         <Text style={styles.userName}>{item.questionDetails.idUsuario.username}</Text>
                       </>
-                    )}  
+                    )}
                   </View>
                   <TouchableOpacity onPress={() => handleLike(item.idLikes)}>
                     <View style={styles.likes}>
@@ -177,9 +223,17 @@ const App = () => {
                       <Text>{item.likes}</Text>
                     </View>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleReport(item.questionDetails.idPregunta)}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (reportedQuestions[item.questionDetails.idPregunta]) {
+                        Alert.alert('Lo siento', 'Esta pregunta ya ha sido reportada.');
+                      } else {
+                        confirmReport(item.questionDetails.idPregunta, item.questionDetails.idUsuario.idUser);
+                      }
+                    }}
+                  >
                     <View style={styles.report}>
-                      <Icon name="exclamation" size={20} color="grey" />
+                      <Icon name="exclamation" size={20} color={reportedQuestions[item.questionDetails.idPregunta] ? "red" : "grey"} />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -302,7 +356,7 @@ const styles = StyleSheet.create({
   },
   userDetails: {
     flexDirection: 'row',
-  },
+  }
 });
 
 export default App;

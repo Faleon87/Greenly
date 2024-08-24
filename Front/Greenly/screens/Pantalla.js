@@ -13,6 +13,9 @@ import snowyImage from '../img/snowy.png';
 import mistyImage from '../img/misty.png';
 import * as Animatable from 'react-native-animatable';
 import { useNavigation } from '@react-navigation/native';
+import selectImg  from '../api/imagenUser';
+
+
 
 function Pantalla({ route }) {
   const [username, setUsername] = useState('');
@@ -35,8 +38,11 @@ function Pantalla({ route }) {
     };
 
     const fetchImg = async () => {
-      const storedImg = await AsyncStorage.getItem('img');
-      setImg(storedImg);
+      const storedImg = await AsyncStorage.getItem('idUser');
+      if (storedImg) {
+        const img = await selectImg(storedImg);
+        setImg(img);
+      }
     };
 
     const getWeather = async () => {
@@ -74,7 +80,13 @@ function Pantalla({ route }) {
           <Text style={styles.welcome}>Bienvenido,</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
-        {img ? <Image source={{ uri: img }} style={styles.profileImage} /> : null}
+        <Text>{console.log(img)}</Text>
+         {img ? (
+        <Image
+          source={{ uri: `data:image/jpeg;base64,${img}` }} // Asegúrate de usar el prefijo adecuado
+          style={styles.profileImage}
+        />
+      ) : null}
         <View style={styles.iconsContainer}>
           <Icon
             name="cog"
@@ -83,7 +95,7 @@ function Pantalla({ route }) {
             onPress={() => navigation.navigate('EditProfileScreen')}
           />
           <TouchableOpacity onPress={() => navigation.navigate('Form')}>
-            <Icon2
+            <Icon
               name="send"
               size={Platform.OS === 'web' ? 40 : 30}
               style={styles.iconForm}
@@ -96,19 +108,23 @@ function Pantalla({ route }) {
         duration={2000}
         style={styles.weatherCard}
       >
-        <Image
-          source={weatherIconName[weather.current.condition.text]}
-          style={styles.weatherImage}
-        />
-        <View style={styles.weatherData}>
-          <Text style={styles.cityText}>{weather.location.name}</Text>
-          <Text style={styles.temperatureText}>
-            Temperature: {weather.current.temp_c}°C
-          </Text>
-          <Text style={styles.humidityText}>
-            Humidity: {weather.current.humidity}%
-          </Text>
-        </View>
+        {weather && weather.current && weather.current.condition && (
+          <>
+            <Image
+              source={weatherIconName[weather.current.condition.text]}
+              style={styles.weatherImage}
+            />
+            <View style={styles.weatherData}>
+              <Text style={styles.cityText}>{weather.location.name}</Text>
+              <Text style={styles.temperatureText}>
+                Temperature: {weather.current.temp_c}°C
+              </Text>
+              <Text style={styles.humidityText}>
+                Humidity: {weather.current.humidity}%
+              </Text>
+            </View>
+          </>
+        )}
       </Animatable.View>
       <Text style={styles.marketingText}>¡Visita Nuestra Tienda Online!</Text>
       <TouchableOpacity onPress={() => navigation.navigate('Tienda')}>

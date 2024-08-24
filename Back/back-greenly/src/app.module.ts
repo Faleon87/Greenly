@@ -45,6 +45,9 @@ import { Carrito } from './carrito/entities/carrito';
 import { TarjetaController } from './tarjeta/controller/tarjeta.controller';
 import { TarjetaService } from './tarjeta/servicies/tarjeta.service';
 import { Tarjeta } from './tarjeta/entities/tarjeta';
+import { Reports } from './chat/entities/reports';
+import { ReportsService } from './chat/services/reports.service';
+
 
 @Module({
   imports: [
@@ -72,6 +75,7 @@ import { Tarjeta } from './tarjeta/entities/tarjeta';
         Productos,
         Carrito,
         Tarjeta,
+        Reports,
       ],
       synchronize: true,
       ssl: true,
@@ -98,8 +102,8 @@ import { Tarjeta } from './tarjeta/entities/tarjeta';
       Semillas,
       Abonos,
       Carrito,
-      Tarjeta
-      
+      Tarjeta,
+      Reports,
     ]),
   ],
   controllers: [
@@ -134,6 +138,7 @@ import { Tarjeta } from './tarjeta/entities/tarjeta';
     AbonosService,
     CarritoService,
     TarjetaService,
+    ReportsService,
   ],
 })
 export class AppModule {}

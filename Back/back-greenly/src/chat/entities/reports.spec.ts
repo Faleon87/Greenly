@@ -1,4 +1,4 @@
-import { Reports } from '../../entities/reports';
+import { Reports } from '../entities/reports';
 
 describe('Reports', () => {
   it('should be defined', () => {

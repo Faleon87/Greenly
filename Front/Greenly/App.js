@@ -20,6 +20,7 @@ import TabTienda from './components/TabTienda';
 import PagarConTarjeta from './screens/PagarTarjeta';
 import AddPlant from './screens/AddPlant';
 import AddFertilizante from './screens/AddFertilizante';
+import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
 
 const Stack = createStackNavigator();
 const { width, height } = Dimensions.get('window');
@@ -100,6 +101,7 @@ export default function App() {
         <Stack.Screen name="PagarConTarjeta" component={PagarConTarjeta} />
         <Stack.Screen name="AddPlant" component={AddPlant} />
         <Stack.Screen name="AddFertilizante" component={AddFertilizante} />
+        <Stack.Screen name="PasswordRecoveryScreen" component={PasswordRecoveryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,13 +3,15 @@ import { PreguntaServiceService } from '../services/pregunta-service.service';
 import { FotoPreguntasService } from '../services/foto-preguntas.service';
 import { LikesService } from '../services/likes.service';
 import { UserService } from '../../usuario/services/user.service';
+import { ReportsService } from '../services/reports.service';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly preguntaService: PreguntaServiceService,
     private readonly fotoPreguntasService: FotoPreguntasService,
     private readonly likesService: LikesService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly reportsService: ReportsService,
   ) { }
 
 
@@ -24,7 +26,7 @@ export class ChatController {
     const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant };
     const fotoPreguntaDto = { nombreFoto: image, idUsuario: idUser };
     const likesDto = { idUsuario: idUser, likes: 0 }; // Add the missing properties 'likes' and 'idUsuario' to the 'likesDto' object
-    const preguntaResult = await this.preguntaService.create(preguntaDto); 
+    const preguntaResult = await this.preguntaService.create(preguntaDto);
     const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
     const likesResult = await this.likesService.create(likesDto);
     return { preguntaResult, fotoPreguntasResult, likesResult };
@@ -42,5 +44,19 @@ export class ChatController {
   async updateLikes(@Param('id') id: number, @Body('likes') likes: number) {
     return this.likesService.updateLikes(id, likes);
   }
+
+  @Post('report')
+  async report(@Body('idPregunta') idPregunta: number, @Body('idUser') idUser: number) {
+    return this.reportsService.create(idPregunta, idUser);
+  }
+
+  @Get('reports')
+  async getReports() {
+    return this.reportsService.findAll();
+  }
   
+
+
+
+
 }

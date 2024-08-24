@@ -26,8 +26,8 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ nullable: true })
-  img: string;
+  @Column('bytea', { nullable: true })
+  img: Buffer | null;
 
   @OneToMany(() => Pregunta, pregunta => pregunta.idUsuario)
   preguntas: Pregunta[];
