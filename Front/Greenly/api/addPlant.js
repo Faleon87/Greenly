@@ -2,7 +2,7 @@ export const addPlant = async (plant) => {
 
     console.log('Plant:', plant);
 
-    const API_URL = 'http://44.192.55.84:3000/';
+    const API_URL = 'http://3.80.72.197:3000/';
 
     const response = await fetch(`${API_URL}/plantas/add`, {
         method: 'POST',

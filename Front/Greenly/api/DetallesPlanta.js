@@ -1,6 +1,6 @@
 export const DetallesPlanta = async (idPlanta) => {
     try {
-      const response = await fetch(`http://44.192.55.84:3000/plantas/${idPlanta}`);
+      const response = await fetch(`http://3.80.72.197:3000/plantas/${idPlanta}`);
       const data = await response.json();
       return data;
 

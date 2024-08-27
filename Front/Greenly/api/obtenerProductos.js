@@ -1,7 +1,7 @@
 // api.js
 const obtenerProductos = async () => {
     try {
-      const respuesta = await fetch('http://44.192.55.84:3000/productos/card');
+      const respuesta = await fetch('http://3.80.72.197:3000/productos/card');
       const productos = await respuesta.json();
       return productos;
     } catch (error) {

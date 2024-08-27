@@ -93,7 +93,7 @@ nest g class dtos/productDto --flat
 docker build -t greenly1.0.0 .
 
 # Etiquetar la imagen al repositorio ECR
-docker tag greenly1.0.0:v.1 380591173693.dkr.ecr.us-east-1.amazonaws.com/greenly:jaime
+docker tag greenly1.0.0:v.1 380591173693.dkr.ecr.us-east-1.amazonaws.com/greenly:test
 
 # Docker run
 docker run -d -p 3000:3000 --name greenly2.0-container greenly1.0.0

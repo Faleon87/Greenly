@@ -3,7 +3,7 @@
 export const guardarDatosCarrito = async (idUser, idProducto) => {
 
     try {
-        const url = `http://44.192.55.84:3000/carrito/add`; // Asegúrate de que esta URL es correcta
+        const url = `http://3.80.72.197:3000/carrito/add`; // Asegúrate de que esta URL es correcta
         const data = {
             idUser: Number(idUser), // Asegúrate de que es un número
             idProducto: Number(idProducto) // Asegúrate de que es un número

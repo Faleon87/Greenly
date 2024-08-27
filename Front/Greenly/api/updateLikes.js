@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
 
 const updateLikes= async (id, likes) => {
-    const response = await fetch(`http://44.192.55.84:3000/chat/updatelikes/${id}`, {
+    const response = await fetch(`http://3.80.72.197:3000/chat/updatelikes/${id}`, {
       method: 'PUT', 
       headers: {
         'Content-Type': 'application/json',

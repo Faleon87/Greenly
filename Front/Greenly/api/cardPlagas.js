@@ -1,6 +1,6 @@
 export async function cardPlagas() {
     try {
-        const response = await fetch('http://44.192.55.84:3000/plagas/cards');
+        const response = await fetch('http://3.80.72.197:3000/plagas/cards');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

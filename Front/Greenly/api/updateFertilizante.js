@@ -3,7 +3,7 @@ export const updateFertilizante = async (id, item) => {
     console.log('id:', id, 'item:', item);
   
     try {
-      const response = await fetch(`http://44.192.55.84:3000/fertilizantes/${id}`, {
+      const response = await fetch(`http://3.80.72.197:3000/fertilizantes/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'
