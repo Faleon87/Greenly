@@ -1,6 +1,6 @@
 export const addFertilizer = async (fertilizer) => {
     try {
-      const response = await fetch('http://192.168.0.22/fertilizantes', {
+      const response = await fetch('http://44.192.55.84:3000//fertilizantes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

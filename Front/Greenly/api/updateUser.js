@@ -20,7 +20,7 @@ export const updateUser = async (idUser, nombre, username, apellido, email, pass
     console.log('Datos a enviar:', JSON.stringify(updatedData));
 
     // Mostrar alerta con los datos (opcional)
-        const response = await fetch(`http://192.168.0.22:3000/user/update/${idUser}`, { // Usar idUser en lugar de id
+        const response = await fetch(`http://44.192.55.84:3000/user/update/${idUser}`, { // Usar idUser en lugar de id
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

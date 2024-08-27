@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 
 export const DetallesPlagas = async (idPlanta) => {
   try {
-    const response = await fetch(`http://192.168.0.22:3000/plagas/${idPlanta}`);
+    const response = await fetch(`http://44.192.55.84:3000/plagas/${idPlanta}`);
     const data = await response.json();
     return data;
   } catch (error) {

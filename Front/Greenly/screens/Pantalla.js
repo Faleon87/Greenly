@@ -77,7 +77,7 @@ function Pantalla({ route }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.welcomeContainer}>
-          <Text style={styles.welcome}>Bienvenido,</Text>
+          <Text style={styles.welcome}>Welcome,</Text>
           <Text style={styles.username}>{username}</Text>
         </View>
         <Text>{console.log(img)}</Text>

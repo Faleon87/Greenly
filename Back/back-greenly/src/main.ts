@@ -8,18 +8,18 @@ async function bootstrap() {
 
   // Configuración de CORS
   app.enableCors({
-    origin: 'http://localhost:8081', // Origen permitido
+    origin: '*', // Origen permitido
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
     allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept', // Cabeceras permitidas
   });
 
-  // Aumentar el límite de tamaño del cuerpo para peticiones grandes
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({extended: true }));
 
   // Usar el middleware de compresión
   app.use(compression());
 
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

@@ -1,6 +1,6 @@
 const selectImg = async (idUser) => {
     try {
-        const response = await fetch(`http:/192.168.0.22:3000/user/perfil/${idUser}`, {
+        const response = await fetch(`http://44.192.55.84:3000/user/perfil/${idUser}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

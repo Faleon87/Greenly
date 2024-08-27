@@ -86,3 +86,22 @@ nest g class entities/product --flat
 nest g class dtos/productDto --flat
 ```
 
+
+## Dockerfile
+
+# Como construir una imagen
+docker build -t greenly1.0.0 .
+
+# Etiquetar la imagen al repositorio ECR
+docker tag greenly1.0.0:v.1 380591173693.dkr.ecr.us-east-1.amazonaws.com/greenly:jaime
+
+# Docker run
+docker run -d -p 3000:3000 --name greenly2.0-container greenly1.0.0
+d465cf67df242038c833102c3ec8d48562555e76866012f6fdc56396d69e9232
+
+# Subir la nueva imagen
+docker push 380591173693.dkr.ecr.us-east-1.amazonaws.com/greenly:jaime
+
+# como actualizar 
+
+aws ecs update-service --cluster greenly --service greenly --force-new-deployment

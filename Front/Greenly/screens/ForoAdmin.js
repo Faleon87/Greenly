@@ -111,7 +111,7 @@ const ForoAdmin = () => {
                     <Card style={styles.card}>
                         <View style={styles.iconOverImageContainer}>
                             <Card.Cover source={{ uri: item.nombreFoto }} style={styles.fotoPr} />
-                            <TouchableOpacity onPress={() => deleteQuestion(item.id)}> 
+                            <TouchableOpacity onPress={() => deleteQuestion(item.id)}>
                                 <Icon name="times" style={styles.iconOnTop} size={30} color="red" />
                             </TouchableOpacity>
                         </View>
@@ -140,12 +140,16 @@ const ForoAdmin = () => {
                                     )}
                                 </View>
                                 <View style={styles.userInfo}>
-                                    <Image
-                                        style={styles.userImage}
-                                        source={{ uri: item.idUsuario.img }}
-                                    />
                                     <View style={styles.userDetails}>
-                                        <Paragraph>{item.idUsuario.username}</Paragraph>
+                                        {item.questionDetails && item.questionDetails.idUsuario && (
+                                            <>
+                                                <Image
+                                                    source={{ uri: `data:image/jpeg;base64,${item.questionDetails.idUsuario.img.data}` }}
+                                                    style={styles.userImage}
+                                                />
+                                                <Text style={styles.userName}>{item.questionDetails.idUsuario.username}</Text>
+                                            </>
+                                        )}
                                         <TouchableOpacity
                                             onPress={() => handleLike(item.idLikes)}
                                         >

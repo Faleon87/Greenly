@@ -11,7 +11,8 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "nest start --prod",
-    "start:prod:debug": "nest start --prod --debug"
+    "start:prod:debug": "nest start --prod --debug",
+    "clean": "rm -rf dist"
   },
   "private": true,
   "dependencies": {
@@ -45,7 +46,6 @@
     "expo-linear-gradient": "~13.0.2",
     "expo-location": "~17.0.1",
     "expo-notifications": "^0.28.16",
-    "expo-permissions": "^14.4.0",
     "expo-secure-store": "~13.0.2",
     "expo-status-bar": "~1.12.1",
     "fuse.js": "^7.0.0",

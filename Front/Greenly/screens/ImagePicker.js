@@ -6,7 +6,8 @@ import * as FileSystem from 'expo-file-system';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ImagePickerComponent = ({ onImageSelect }) => {
-  const [image, setImage] = useState(null);
+  const [image, 
+    setImage] = useState(null);
 
   const pickImage = async () => {
     try {

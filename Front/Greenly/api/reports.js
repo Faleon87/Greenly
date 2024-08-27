@@ -4,7 +4,7 @@ import { Alert } from "react-native";
 // reportService.js
 export const getReportStatus = async () => {
     try {
-        const response = await fetch(`http://192.168.0.22:3000/chat/reports`, {
+        const response = await fetch(`http://44.192.55.84:3000/chat/reports`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

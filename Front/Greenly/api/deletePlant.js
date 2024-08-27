@@ -3,7 +3,7 @@ export const deletePlant = async (id) => {
   console.log('ID:', id); // ID: 1
 
   try {
-    const response = await fetch(`http://192.168.0.22:3000/plantas/${id}`, {
+    const response = await fetch(`http://44.192.55.84:3000/plantas/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

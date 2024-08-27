@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform } from 'react-native';
 import recoverPassword  from '../api/passwordRecovery';
 import { useNavigation } from '@react-navigation/native';
 
 const PasswordRecoveryScreen = () => {
 
-    const navigator = useNavigation();
+
+  useLayoutEffect(() => {
+    navigator.setOptions({
+      headerTitle: 'Password Recovery',
+    });
+  }, []);
+
+  const navigator = useNavigation();
 
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,7 +39,7 @@ const PasswordRecoveryScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recover Password</Text>
-      <Text style={styles.instructions}>Enter your email address to receive a password recovery link.</Text>
+      <Text style={styles.instructions}>Enter your email address to receive a new Password.</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter your email"

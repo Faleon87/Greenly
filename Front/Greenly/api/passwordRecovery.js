@@ -1,5 +1,5 @@
 const recoverPassword = async (email) => {
-      const response = await fetch('http://192.168.0.22:3000/user/recover', {
+      const response = await fetch('http://44.192.55.84:3000/user/recover', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

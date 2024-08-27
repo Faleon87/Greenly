@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Text, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Chat } from '../api/Chat';
@@ -38,7 +38,7 @@ const App = () => {
             [
               {
                 text: 'No',
-                onPress: () => navigation.goBack(), 
+                onPress: () => navigation.goBack(),
 
                 style: 'cancel',
               },
@@ -53,7 +53,7 @@ const App = () => {
           );
           return;
         }
-    
+
       };
 
       const fetchQuestions = async () => {
@@ -192,7 +192,7 @@ const App = () => {
         renderItem={({ item }) => (
           <Card style={styles.card}>
             <Card.Cover
-              source={{uri: item.nombreFoto}}
+              source={{ uri: item.nombreFoto }}
               style={styles.fotoPr}
               PlaceholderContent={<ActivityIndicator />}
             />
@@ -236,6 +236,13 @@ const App = () => {
                     <View style={styles.likes}>
                       <Icon name="heart" size={20} color={userLikes[item.idLikes] ? "red" : "grey"} />
                       <Text>{item.likes}</Text>
+                    </View>
+                    <View style={styles.respond}>
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('Respuestas', { id: item.idPregunta })}
+                      >
+                        <Icon name="comment" size={30} color="#02907D" />
+                      </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -304,7 +311,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   respond: {
-    marginLeft: 1,
+    marginHorizontal: Platform.OS === 'web' ? 10 : 0,
   },
   cardContent: {
     flexDirection: 'column',

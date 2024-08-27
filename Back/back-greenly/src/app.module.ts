@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -49,6 +49,7 @@ import { Reports } from './chat/entities/reports';
 import { ReportsService } from './chat/services/reports.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { Middleware } from './middleware/middleware';
 
 @Module({
   imports: [
@@ -146,4 +147,9 @@ import { join } from 'path';
     ReportsService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(Middleware)
+    .forRoutes('*');
+  }
+}

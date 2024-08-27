@@ -1,5 +1,5 @@
 export const loginUser = async (username, password) => {
-      const response = await fetch('http://192.168.0.22:3000/user/login', { // Cambiar la IP por la de tu servidor
+      const response = await fetch('http://44.192.55.84:3000/user/login', { // Cambiar la IP por la de tu servidor
       method: 'POST', // Método HTTP POST
       headers: { // Cabeceras de la petición
         'Content-Type': 'application/json',
