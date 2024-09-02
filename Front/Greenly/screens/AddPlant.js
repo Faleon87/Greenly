@@ -1,8 +1,17 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Alert, Platform } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { addPlant } from '../api/addPlant'; // Asegúrate de tener esta función en tu API
+import { fonts } from 'react-native-elements/dist/config';
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#4CAF50', // Cambia este color al que desees
+  }
+};
 
 export default function AddPlant({ navigation }) {
   const [nombrePlanta, setNombrePlanta] = useState('');
@@ -67,83 +76,97 @@ export default function AddPlant({ navigation }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TextInput
-        label="Nombre de la planta"
-        value={nombrePlanta}
-        onChangeText={setNombrePlanta}
-        style={styles.input}
-      />
-      <TextInput
-        label="Nombre científico"
-        value={nombreCientifico}
-        onChangeText={setNombreCientifico}
-        style={styles.input}
-      />
-      <TextInput
-        label="Identificación de la planta"
-        value={identificacion}
-        onChangeText={setIdentificacion}
-        style={styles.input}
-      />
-      <TextInput
-        label="Imagen"
-        value={img}
-        onChangeText={setImg}
-        style={styles.input}
-      />
-      <TextInput
-        label="Siembra"
-        value={siembra}
-        onChangeText={setSiembra}
-        style={styles.input}
-      />
-      <TextInput
-        label="Temporada de Siembra"
-        value={temporadaSiembra}
-        onChangeText={setTemporadaSiembra}
-        style={styles.input}
-      />
-      <TextInput
-        label="Profundidad de Siembra"
-        value={profundSiembra}
-        onChangeText={setProfundSiembra}
-        style={styles.input}
-      />
-      <TextInput
-        label="Distancia entre Plantas"
-        value={distanciaPlantas}
-        onChangeText={setDistanciaPlantas}
-        style={styles.input}
-      />
-      <TextInput
-        label="Rotaciones"
-        value={rotaciones}
-        onChangeText={setRotaciones}
-        style={styles.input}
-      />
-      <TextInput
-        label="Clima y Temperatura"
-        value={climaTemperatura}
-        onChangeText={setClimaTemperatura}
-        style={styles.input}
-      />
-      <TextInput
-        label="Riego"
-        value={riego}
-        onChangeText={setRiego}
-        style={styles.input}
-      />
-      <TextInput
-        label="Riego Estimado"
-        value={riegoEstimado}
-        onChangeText={setRiegoEstimado}
-        style={styles.input}
-      />
-      <TouchableOpacity style={styles.addButton} onPress={handleAddPlant}>
-        <Text style={styles.addButtonText}>Añadir Planta</Text>
-      </TouchableOpacity>
-    </ScrollView>
+    <PaperProvider theme={theme}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <TextInput
+          label="Nombre de la planta"
+          value={nombrePlanta}
+          onChangeText={setNombrePlanta}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Nombre científico"
+          value={nombreCientifico}
+          onChangeText={setNombreCientifico}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Identificación de la planta"
+          value={identificacion}
+          onChangeText={setIdentificacion}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Imagen"
+          value={img}
+          onChangeText={setImg}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Siembra"
+          value={siembra}
+          onChangeText={setSiembra}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Temporada de Siembra"
+          value={temporadaSiembra}
+          onChangeText={setTemporadaSiembra}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Profundidad de Siembra"
+          value={profundSiembra}
+          onChangeText={setProfundSiembra}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Distancia entre Plantas"
+          value={distanciaPlantas}
+          onChangeText={setDistanciaPlantas}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Rotaciones"
+          value={rotaciones}
+          onChangeText={setRotaciones}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Clima y Temperatura"
+          value={climaTemperatura}
+          onChangeText={setClimaTemperatura}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Riego"
+          value={riego}
+          onChangeText={setRiego}
+          style={styles.input}
+          theme={theme}
+        />
+        <TextInput
+          label="Riego Estimado"
+          value={riegoEstimado}
+          onChangeText={setRiegoEstimado}
+          style={styles.input}
+          theme={theme}
+        />
+        <TouchableOpacity style={styles.addButton} onPress={handleAddPlant}>
+          <Text style={styles.addButtonText}>Añadir Planta</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </PaperProvider>
   );
 }
 
@@ -154,18 +177,24 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: '#FFFFFF',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
     borderRadius: Platform.OS === 'web' ? '1vw' : wp('1%'),
-    fontSize: Platform.OS === 'web' ? '1.5vw' : wp('3%'),
+    marginBottom: Platform.OS === 'web' ? '2vw' : wp('2%'),
   },
   addButton: {
     backgroundColor: '#4CAF50',
     paddingVertical: Platform.OS === 'web' ? '2vw' : wp('2%'),
     paddingHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
     borderRadius: Platform.OS === 'web' ? '1vw' : wp('1%'),
-    alignItems: 'center',
   },
   addButtonText: {
     color: '#FFFFFF',
-    fontSize: Platform.OS === 'web' ? '1.5vw' : wp('3%'),
+    fontFamily: 'Manrope Bold',
+    height: Platform.OS === 'web' ? '2vw' : wp('8%'),
+    textAlignVertical: 'center',
+    fontSize: Platform.OS === 'web' ? '1.2vw' : wp('4%'),
+    textAlign: 'center',
   },
 });

@@ -8,10 +8,6 @@ COPY .env .env
 RUN npm run build
 
 
-
-
-
-
 # Etapa de producción
 FROM node:18.13.0-alpine
 WORKDIR /app

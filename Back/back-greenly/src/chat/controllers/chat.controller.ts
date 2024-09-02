@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { PreguntaServiceService } from '../services/pregunta-service.service';
 import { FotoPreguntasService } from '../services/foto-preguntas.service';
 import { LikesService } from '../services/likes.service';
 import { UserService } from '../../usuario/services/user.service';
 import { ReportsService } from '../services/reports.service';
+import { Pregunta } from '../entities/pregunta';
 
 @Controller('chat')
 export class ChatController {
@@ -23,13 +24,36 @@ export class ChatController {
     @Body('image') image: string,
     @Body('idUser') idUser: number,
   ) {
-    const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant };
-    const fotoPreguntaDto = { nombreFoto: image, idUsuario: idUser };
-    const likesDto = { idUsuario: idUser, likes: 0 }; // Add the missing properties 'likes' and 'idUsuario' to the 'likesDto' object
-    const preguntaResult = await this.preguntaService.create(preguntaDto);
-    const fotoPreguntasResult = await this.fotoPreguntasService.create(fotoPreguntaDto);
-    const likesResult = await this.likesService.create(likesDto);
-    return { preguntaResult, fotoPreguntasResult, likesResult };
+    const preguntaDto = { pregunta: question, descripcion: description, idUsuario: idUser, nombreCultivo: plant }; // idUsuario is the id of the user who asked the question
+    const preguntaResult = await this.preguntaService.create(preguntaDto); // Create the question
+
+    if (!preguntaResult) {
+      throw new Error('Error creating the question');
+    }
+
+    if (!preguntaResult.idPregunta) {
+      throw new Error('The created question does not have an idPregunta');
+    }
+
+
+    const fotoPreguntaDto = { idPregunta: preguntaResult.idPregunta, nombreFoto: image, idUsuario: idUser }; // idPregunta is the id of the question
+
+    console.log('fotoPreguntaDto', fotoPreguntaDto);
+
+    const fotoPreguntaResult = await this.fotoPreguntasService.create(fotoPreguntaDto); // Create the image
+
+
+    if (!fotoPreguntaResult) {
+      throw new Error('Error creating the image');
+    }
+
+    const likes = 0;
+    const crearlikes = await this.likesService.create({ likes, idUsuario: idUser, idPregunta: preguntaResult.idPregunta });
+
+    return { preguntaResult, fotoPreguntaResult, crearlikes };
+
+
+
   }
 
   @Get('renderchat')
@@ -54,8 +78,17 @@ export class ChatController {
   async getReports() {
     return this.reportsService.findAll();
   }
-  
 
+  @Delete('delete/:id')
+  async delete(@Param('id') id: number) {
+    return this.preguntaService.delete(id);
+  }
+
+
+  @Get('pregunta/:id')
+  async getPregunta(@Param('id') id: number) {
+    return this.preguntaService.findById(id);
+  }
 
 
 

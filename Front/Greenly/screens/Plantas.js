@@ -106,7 +106,8 @@ const styles = StyleSheet.create({
   noResults: {
     textAlign: 'center',
     fontSize: 20,
-    color: '#888',
+    color: 'red',
+    fontFamily: 'Manrope Regular',
   },
   searchSection: {
     flexDirection: 'row',
@@ -124,6 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#fff',
+    fontFamily: 'Manrope Regular',
     color: '#424242',
   },
   item: {
@@ -150,7 +152,7 @@ const styles = StyleSheet.create({
     width: '100%',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
   },
   gradient: {
     position: 'absolute',

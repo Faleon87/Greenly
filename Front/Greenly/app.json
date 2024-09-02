@@ -4,7 +4,7 @@
     "slug": "Greenly",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./img/Logo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./img/Logo.png",
@@ -19,12 +19,15 @@
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take profile pictures.",
         "NSPhotoLibraryUsageDescription": "This app accesses the photo library for profile pictures."
-      }
+      },
+      "bundleIdentifier": "com.vigu.Greenly"
     },
     "android": {
+      "jsEngine": "hermes",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./img/Logo.png",
+        "backgroundColor": "black",
+        "usesClearTextTraffic": true
       },
       "permissions": [
         "CAMERA",
@@ -33,14 +36,15 @@
         "INTERNET",
         "NOTIFICATIONS"
       ],
-      "jsEngine": "hermes",
       "package": "com.vigu.Greenly"
     },
     "web": {
       "favicon": "./img/Logo.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-build-properties",
+      "expo-font"
     ],
     "extra": {
       "eas": {

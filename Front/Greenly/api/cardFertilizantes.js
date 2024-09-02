@@ -1,18 +1,12 @@
 export async function cardFertilizantes() {
     try {
-        const response = await fetch('http://3.80.72.197:3000/fertilizantes/cards');
+        const response = await fetch('http://192.168.0.22:3000/fertilizantes/cards');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        const fertilizantes = data.map(fertilizantes => ({
-            idFertilizante: fertilizantes.idFertilizante,
-            nombreFertilizante: fertilizantes.nombreFertilizante,
-            tipoFertilizante: fertilizantes.tipoFertilizante,   
-            img: fertilizantes.img,
-        }));
-        console.log(fertilizantes);
-        return fertilizantes;
+        console.log('Datos recibidos de la API:', data); // Log para ver los datos recibidos
+        return data;
     } catch (error) {
         console.error('There was a problem with the fetch operation: ', error);
     }

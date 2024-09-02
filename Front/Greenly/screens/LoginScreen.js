@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
 import { Input, CheckBox } from 'react-native-elements';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -23,19 +23,34 @@ export default function LoginScreen({ navigation }) {
   const handleForgotPassword = () => {
     navigation.navigate('PasswordRecoveryScreen');
   };
+  useEffect(() => {
+    const checkUserLoggedIn = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('nombre');
+        console.log('aqui',storedUser);
+        if (storedUser!= 'admin' && storedUser != null) {
+          // Si hay un usuario almacenado, navega directamente a la pantalla 'Pantalla'
+          navigation.navigate('Pantalla');
+        }else if(storedUser === 'admin'){
+          navigation.navigate('Admin');
+        }
+      } catch (error) {
+        console.error('Error al verificar el usuario logueado:', error);
+      }
+    };
+
+    checkUserLoggedIn();
+  }, []);
+  
+
+
 
   const login = async () => {
-
-
-
     setIsLoading(true);
     try {
       const data = await loginUser(username, password);
       setIsLoading(false);
-
       await AsyncStorage.setItem('nombre', data.username);
-
-
       await AsyncStorage.setItem('idUser', JSON.stringify(data.idUser));
 
       if (username === 'admin') {
@@ -136,15 +151,16 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   error: {
     color: 'red',
-    fontWeight: 'bold',
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     textAlign: 'left',
-    marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%')
+    marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%'),
+    fontFamily: 'Manrope Light',
   },
   labelforgot: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     color: '#03453D',
     marginLeft: Platform.OS === 'web' ? '2vw' : wp('2%'),
+    fontFamily: 'Manrope Bold',
   },
   errorInput: {
     borderColor: 'red',
@@ -168,19 +184,20 @@ const styles = StyleSheet.create({
   },
   logo: {
     fontSize: Platform.OS === 'web' ? '2rem' : hp('4%'),
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
   },
   subtitle: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
     textAlign: 'center',
     marginBottom: Platform.OS === 'web' ? '4vh' : hp('4%'),
     paddingHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
+    fontFamily: 'Manrope Regular',
   },
   label: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
-    fontWeight: 'bold',
     marginBottom: Platform.OS === 'web' ? '1vh' : hp('1%'),
     paddingHorizontal: Platform.OS === 'web' ? '2vw' : wp('2%'),
+    fontFamily: 'Manrope SemiBold',
   },
   inputContainer: {
     borderColor: 'gray',
@@ -189,11 +206,10 @@ const styles = StyleSheet.create({
     marginBottom: Platform.OS === 'web' ? '2vh' : hp('2%'),
     paddingHorizontal: Platform.OS === 'web' ? '2vw' : wp('3%'),
     height: Platform.OS === 'web' ? '6vh' : hp('6%'),
-
   },
   input: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
-
+    fontFamily: 'Manrope Regular',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -202,7 +218,7 @@ const styles = StyleSheet.create({
   },
   labelCheckbox: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Regular',
 
   },
   button: {
@@ -218,14 +234,16 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontSize: Platform.OS === 'web' ? '1.5rem' : hp('2.5%'),
+    fontFamily: 'Manrope SemiBold',
   },
   signup: {
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2.2%'),
     color: '#000',
     textAlign: 'center',
+    fontFamily: 'Manrope Light',
   },
   signupBold: {
-    fontWeight: 'bold',
+    fontFamily: 'Manrope SemiBold',
     fontSize: Platform.OS === 'web' ? '1rem' : hp('2.2%'),
   },
   icon: {
@@ -237,4 +255,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+
 });

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { FertilizantesService } from '../services/fertilizantes.service';
 import { Fertilizantes } from '../entities/fertilizantes';
 import { CreateFertilizanteDto } from '../dtos/create-fertilizantes';
@@ -17,8 +17,13 @@ export class FertilizantesController {
         const fertilizante = this.fertilizantesService.findAll();
         return (await fertilizante).map(fertilizante => ({
             idFertilizante: fertilizante.idFertilizante,
+            tipoFertilizante: fertilizante.tipoFertilizante,
             nombreFertilizante: fertilizante.nombreFertilizante,
             img: fertilizante.img,
+            descripcion: fertilizante.descripcion,
+            elaboracion: fertilizante.elaboracion,
+            ubicacion: fertilizante.ubicacion,
+            cantidad: fertilizante.cantidad,
         }));
     }
     @Patch(':id')
@@ -29,5 +34,41 @@ export class FertilizantesController {
         console.log('id', id, 'updateFertilizanteDto', updateFertilizanteDto);
         return this.fertilizantesService.update(id, updateFertilizanteDto);
     }
+
+    @Post('add')
+    async addFertilizante(
+        @Body() body: Fertilizantes
+    ): Promise<Fertilizantes> {
+        const { nombreFertilizante, tipoFertilizante, img, descripcion, elaboracion, ubicacion, cantidad } = body;
+        
+        console.log('body', body);
+        
+        const newFertilizer = {
+            nombreFertilizante,
+            tipoFertilizante,
+            img,
+            descripcion,
+            elaboracion,
+            ubicacion,
+            cantidad,
+        };
+        return this.fertilizantesService.create(newFertilizer);
+    }
+
+    @Delete(':id')
+    async deleteFertilizante(
+        @Param('id') id: number
+    ): Promise<Fertilizantes> {
+        return this.fertilizantesService.delete(id);
+    }
+
+    @Get('detalle/:id')
+    async findFertilizanteById(
+        @Param('id') id: number
+    ): Promise<Fertilizantes> {
+        return this.fertilizantesService.findById(id);
+    }
+
+
 
 }

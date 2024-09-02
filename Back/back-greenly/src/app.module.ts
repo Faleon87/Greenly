@@ -108,8 +108,8 @@ import { Middleware } from './middleware/middleware';
       Reports,
     ]),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'), // Ruta al directorio de archivos estáticos
-      serveRoot: '/uploads', // URL base para acceder a los archivos
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
   ],
   controllers: [
@@ -149,7 +149,6 @@ import { Middleware } from './middleware/middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(Middleware)
-    .forRoutes('*');
+    consumer.apply(Middleware).forRoutes('*');
   }
 }

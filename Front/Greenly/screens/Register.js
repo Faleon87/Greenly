@@ -119,24 +119,6 @@ export default function RegisterScreen({ navigation }) {
                 style: index === cancelButtonIndex ? 'cancel' : 'default',
             })),
         );
-
-        if (result && !result.cancelled) {
-            const fileUri = result.assets[0].uri;
-            console.log('File URI:', fileUri);
-            Alert.alert('Debug', `File URI: ${fileUri}`);
-
-            const fileInfo = await FileSystem.getInfoAsync(fileUri);
-            console.log('File Info:', fileInfo);
-            Alert.alert('Debug', `File Info: ${JSON.stringify(fileInfo)}`);
-
-            const fileBuffer = await FileSystem.readAsStringAsync(fileUri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            console.log('File Buffer (Base64):', fileBuffer);
-            Alert.alert('Debug', `File Buffer (Base64): ${fileBuffer.substring(0, 100)}...`);
-
-            setProfileImage(fileBuffer);
-        }
     };
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -150,12 +132,14 @@ export default function RegisterScreen({ navigation }) {
                 inputStyle={styles.inputText}
                 value={name}
                 onChangeText={setName}
+                inputContainerStyle={{ borderBottomWidth: 0 }}
             />
             <Text style={styles.label}>Email</Text>
             <Input
                 placeholder="Email"
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
+                inputContainerStyle={{ borderBottomWidth: 0 }}
                 value={email}
                 onChangeText={setEmail}
             />
@@ -165,6 +149,7 @@ export default function RegisterScreen({ navigation }) {
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 value={username}
+                inputContainerStyle={{ borderBottomWidth: 0 }}
                 onChangeText={setUsername}
             />
             <Text style={styles.label}>Password</Text>
@@ -173,6 +158,7 @@ export default function RegisterScreen({ navigation }) {
                 secureTextEntry={hidePassword}
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
+                inputContainerStyle={{ borderBottomWidth: 0 }}
                 value={password}
                 onChangeText={setPassword}
                 rightIcon={
@@ -185,6 +171,7 @@ export default function RegisterScreen({ navigation }) {
             <Input
                 placeholder="Confirm Password"
                 secureTextEntry={hidePassword}
+                inputContainerStyle={{ borderBottomWidth: 0 }}
                 containerStyle={styles.inputContainer}
                 inputStyle={styles.inputText}
                 value={confirmPassword}
@@ -241,16 +228,21 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     inputContainer: {
+        borderColor: 'black',
+        borderWidth: 1,
+        borderRadius: 5,
         marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
         fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
         width: Platform.OS === 'web' ? '90vw' : wp('90%'),
         height: Platform.OS === 'web' ? '5vh' : hp('5%'),
+        textDecorationLine: 'none',  
+
     },
     inputText: {
         fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
         height: Platform.OS === 'web' ? '5vh' : hp('5%'),
         marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'),
-
+        width: Platform.OS === 'web' ? '80vw' : wp('80%'),
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -267,7 +259,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#8FD053',
         justifyContent: 'center',
-
         marginHorizontal: Platform.OS === 'web' ? '30vw' : wp('30%'),
         height: Platform.OS === 'web' ? '5vh' : hp('5%'),
         width: Platform.OS === 'web' ? '40vw' : wp('40%'),
@@ -286,15 +277,15 @@ const styles = StyleSheet.create({
         marginBottom: Platform.OS === 'web' ? '2.5vh' : hp('2.5%'),
     },
     login: {
-        fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
         color: '#000',
     },
     loginBold: {
         fontWeight: 'bold',
-        fontSize: Platform.OS === 'web' ? '1rem' : hp('2.5%'),
+        fontSize: Platform.OS === 'web' ? '1rem' : hp('2%'),
     },
     icon: {
-        width: Platform.OS === 'web' ? '2rem' : wp('2%'),
+        width: Platform.OS === 'web' ? '2rem' : wp('6%'),
         height: Platform.OS === 'web' ? '1.5rem' : hp('2.5%'),
     },
 });

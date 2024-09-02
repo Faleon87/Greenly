@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { cardPlagas } from '../api/cardPlagas';
-//import { updatePlaga } from '../api/updatePlaga';
+import updatePlaga from '../api/updatePlaga';
+import { FontAwesome } from '@expo/vector-icons';
+import AddPlaga from './AddPlaga';
+import deletePlaga from '../api/deletePlaga';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const PlagaAdmin = () => {
   const [data, setData] = useState([]);
@@ -11,23 +15,27 @@ const PlagaAdmin = () => {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const result = await cardPlagas();
-        setData(result);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const navigation = useNavigation();
 
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const result = await cardPlagas();
+      setData(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const filteredData = useMemo(() => 
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
+
+  const filteredData = useMemo(() =>
     data.filter(item =>
       item.nombrePlaga.toLowerCase().includes(search.toLowerCase())
     ), [search, data]);
@@ -42,18 +50,29 @@ const PlagaAdmin = () => {
     });
   }, [data]);
 
-  /*const handleUpdate = useCallback(async (id) => {
-    const item = editData || data.find(item => item.idPlaga === id);
+  const handleUpdate = useCallback(async (id) => {
     try {
-      const updatedData = await updatePlaga(id, item);
-      console.log(updatedData);
-      setData(prevData => prevData.map(item => item.idPlaga === id ? { ...item, ...editData } : item));
-      setEditData(null);
-      Alert.alert('Éxito', 'Plaga actualizada con éxito');
+      const item = editData || data.find(item => item.idPlaga === id);
+      const result = await updatePlaga(id, item);
+      if (result) {
+        Alert.alert('¡Éxito!', 'Plaga actualizada correctamente.');
+        fetchData();
+      }
     } catch (error) {
-      Alert.alert('Error', 'Error al actualizar la plaga');
+      console.error(error);
+      Alert.alert('¡Error!', 'Ha ocurrido un error al actualizar la plaga.');
     }
-  }, [data, editData]);*/
+  }, [editData, data]);
+
+  const handleDeleteFert = async (id) => {
+    const result = await deletePlaga(id);
+    fetchData(); // Recargar la lista después de eliminar
+    Alert.alert('Éxito', 'Fertilizante eliminado con éxito');
+  }
+
+  const handleAddNewPlaga = () => {
+    navigation.navigate('AddPlaga');
+  }
 
   const renderItem = ({ item }) => {
     const theme = { colors: { primary: '#4CAF50', text: 'black' } };
@@ -62,42 +81,47 @@ const PlagaAdmin = () => {
       <View key={editItem.idPlaga} style={styles.itemContainer}>
         <TextInput
           label="Nombre de la Plaga"
-          value={editItem.nombrePlaga}
+          value={String(editItem.nombrePlaga)}
           onChangeText={(text) => handleInputChange(text, editItem.idPlaga, 'nombrePlaga')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Descripción"
-          value={editItem.descripcion}
+          value={String(editItem.descripcion)}
           onChangeText={(text) => handleInputChange(text, editItem.idPlaga, 'descripcion')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Acciones Preventivas"
-          value={editItem.accionesPreventivas}
+          value={String(editItem.accionesPreventivas)}
           onChangeText={(text) => handleInputChange(text, editItem.idPlaga, 'accionesPreventivas')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Lucha Directa"
-          value={editItem.luchaDirecta}
+          value={String(editItem.luchaDirecta)}
           onChangeText={(text) => handleInputChange(text, editItem.idPlaga, 'luchaDirecta')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Imagen"
-          value={editItem.img}
+          value={String(editItem.img)}
           onChangeText={(text) => handleInputChange(text, editItem.idPlaga, 'img')}
           style={styles.itemInput}
           theme={theme}
         />
-        <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(editItem.idPlaga)}>
-          <Text style={styles.updateButtonText}>Actualizar</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(String(editItem.idPlaga))}>
+            <Text style={styles.updateButtonText}>Actualizar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleDeleteFert(String(editItem.idPlaga))}>
+            <FontAwesome name="bomb" size={30} color="#FF0000" />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -122,6 +146,9 @@ const PlagaAdmin = () => {
       ) : (
         <Text style={styles.noResultsText}>Lo siento, pero eso no existe.</Text>
       )}
+      <TouchableOpacity style={styles.floatingButton} onPress={handleAddNewPlaga}>
+        <Text style={styles.floatingButtonText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -138,7 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#4CAF50',
     borderRadius: 5,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   itemContainer: {
     padding: 10,
@@ -152,18 +179,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  }, 
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   totalPlagasText: {
     textAlign: 'center',
     fontSize: 20,
     color: '#000',
     marginTop: 10,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   itemInput: {
     marginBottom: 10,
     fontSize: 16,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
     backgroundColor: '#F5F5F5',
     borderWidth: 1,
     borderColor: '#B2BABB',
@@ -179,21 +211,38 @@ const styles = StyleSheet.create({
   updateButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   noResultsText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#D32F2F',
     marginTop: 10,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   loadingText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#000',
     marginTop: 10,
-    fontFamily: 'sans-serif',
+    fontFamily: 'Manrope Bold',
+  }, 
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: '#4CAF50',
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 8,
+  },
+  floatingButtonText: {
+    color: '#FFFFFF',
+    fontSize: 30,
+    fontFamily: 'Manrope Bold',
   },
 });
 

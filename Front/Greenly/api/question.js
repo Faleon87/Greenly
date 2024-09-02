@@ -1,7 +1,7 @@
 import { Alert } from "react-native";
 
 export const saveData = async (navigator, idUser, question, description, plant, image) => {
-    const response = await fetch('http://3.80.72.197:3000/chat', {
+    const response = await fetch('http://192.168.0.22:3000/chat', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

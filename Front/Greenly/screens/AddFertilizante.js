@@ -20,8 +20,8 @@ export default function AddFertilizer({ navigation }) {
   }, [navigation]);
 
   const handleAddFertilizer = () => {
-    if (!nombreFertilizante || !tipoFertilizante || !img) {
-      Alert.alert('Error', 'Los campos Nombre del fertilizante, Tipo de fertilizante e Imagen son obligatorios.');
+    if (!nombreFertilizante || !tipoFertilizante || !img || !descripcion || !elaboracion || !ubicacion || !cantidad) {
+      Alert.alert('Error', 'Todos los campos son obligatorios.');
       return;
     }
 
@@ -44,8 +44,11 @@ export default function AddFertilizer({ navigation }) {
         }, 1000); 
       })
       .catch(error => {
-        console.error('Error al añadir el fertilizante:', error);
-      });
+        console.error('Error al añadir el fertilizante:', error
+        );
+      }
+    );
+  
   };
 
   return (

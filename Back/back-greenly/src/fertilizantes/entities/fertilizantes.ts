@@ -31,6 +31,6 @@ export class Fertilizantes {
     @Column({ nullable: true })
     cantidad: string;
 
-    
+
 
 }

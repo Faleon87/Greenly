@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StyleSheet, Text, View, Image, Pressable, Dimensions, Platform } from 'react-native';
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import LoginScreen from './screens/LoginScreen';
 import Register from './screens/Register';
 import MapsScreen from './screens/MapScreen';
@@ -21,9 +23,26 @@ import PagarConTarjeta from './screens/PagarTarjeta';
 import AddPlant from './screens/AddPlant';
 import AddFertilizante from './screens/AddFertilizante';
 import PasswordRecoveryScreen from './screens/PasswordRecoveryScreen';
+import AddFertilizer from './screens/AddFertilizante';
+import AddPlaga from './screens/AddPlaga';
+import Respuestas from './screens/Respuestas';
 
 const Stack = createStackNavigator();
 const { width, height } = Dimensions.get('window');
+
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'Manrope Light': require('./assets/fonts/static/Manrope-Light.ttf'),
+    'Manrope Bold': require('./assets/fonts/static/Manrope-Bold.ttf'),
+    'Manrope Regular': require('./assets/fonts/static/Manrope-Regular.ttf'),
+    'Manrope SemiBold': require('./assets/fonts/static/Manrope-SemiBold.ttf'),
+    'Manrope ExtraBold': require('./assets/fonts/static/Manrope-ExtraBold.ttf'),
+    'Manrope Medium': require('./assets/fonts/static/Manrope-Medium.ttf'),
+    'Manrope ExtraLight': require('./assets/fonts/static/Manrope-ExtraLight.ttf'),
+  });
+};
+
+SplashScreen.preventAutoHideAsync();
 
 function HomeScreen({ navigation }) {
   return (
@@ -67,6 +86,27 @@ function LoginScreenWithHeader({ navigation }) {
 }
 
 export default function App() {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadResourcesAndDataAsync() {
+      try {
+        await fetchFonts();
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setFontLoaded(true);
+        SplashScreen.hideAsync();
+      }
+    }
+
+    loadResourcesAndDataAsync();
+  }, []);
+
+  if (!fontLoaded) {
+    return null;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -102,6 +142,8 @@ export default function App() {
         <Stack.Screen name="AddPlant" component={AddPlant} />
         <Stack.Screen name="AddFertilizante" component={AddFertilizante} />
         <Stack.Screen name="PasswordRecoveryScreen" component={PasswordRecoveryScreen} />
+        <Stack.Screen name="AddPlaga" component={AddPlaga} />
+        <Stack.Screen name="Respuestas" component={Respuestas} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -133,12 +175,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     textAlign: 'center',
+    fontFamily: 'Manrope Bold',
   },
   greenlyText: {
     fontSize: Platform.OS === 'web' ? '4vw' : height * 0.04, // Usa unidades relativas en la web
     fontWeight: 'bold',
     color: '#2C1001',
     textAlign: 'center',
+    fontFamily: 'Manrope Bold',
   },
   button: {
     borderRadius: 5,
@@ -152,6 +196,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: Platform.OS === 'web' ? '1vh' : height * 0.01, // Usa unidades relativas en la web
     textAlign: 'center',
+    fontFamily: 'Manrope Bold',
   },
   buttonRegister: {
     backgroundColor: '#2C1001',
@@ -161,6 +206,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingVertical: Platform.OS === 'web' ? '1vh' : height * 0.01, // Usa unidades relativas en la web
     textAlign: 'center',
+    fontFamily: 'Manrope Bold',
   },
   backButtonImage: {
     width: Platform.OS === 'web' ? '10vw' : width * 0.1, // Usa unidades relativas en la web

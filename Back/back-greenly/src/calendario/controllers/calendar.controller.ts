@@ -1,6 +1,7 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { CalendarService } from '../services/calendar.service';
 import { CalendarInsertDto } from '../dtos/calendar-insert-dto';
+
 
 
 @Controller('calendar')
@@ -28,5 +29,18 @@ export class CalendarController {
         }
     }
 
+    @Delete('delete/:fecha/:idUser/:planta/:accionSeleccionada')
+    async eliminarPlanta(@Param('fecha') fecha: Date, @Param('idUser') idUser: number, @Param('planta') planta: number, @Param('accionSeleccionada') accionSeleccionada: string) {
+       
+        console.log('fecha', fecha, 'idUser', idUser, 'planta', planta);
+
+        try {
+            return this.calendarService.eliminarPlanta(fecha, idUser, planta, accionSeleccionada);
+        } catch (error) {
+            console.error(error);
+            throw new HttpException('Error al eliminar la planta', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
 
 }

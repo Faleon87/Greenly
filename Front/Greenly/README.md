@@ -11,4 +11,9 @@ code .
 #Empezar maquina android
 npx expo start
 
+# Crear el apk
+
+eas build
+
+
 

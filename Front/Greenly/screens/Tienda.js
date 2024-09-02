@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Alert, TextInput } from 'react-native';
 import { obtenerProductos } from '../api/obtenerProductos';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as Animatable from 'react-native-animatable';
 import { guardarDatosCarrito } from '../api/insertCarrito';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export default function Tienda() {
-
   const [productos, setProductos] = useState([]);
   const [filtro, setFiltro] = useState('');
   const [idUser, setIdUser] = useState(null);
-
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     const cargarProductos = async () => {
@@ -21,23 +19,17 @@ export default function Tienda() {
     };
     cargarProductos();
 
-    // Paso 3 y 4: Cargar y almacenar el idUser desde AsyncStorage
     const cargarIdUser = async () => {
       const storedIdUser = await AsyncStorage.getItem('idUser');
-      setIdUser(storedIdUser); // Almacenar el idUser en el estado
+      setIdUser(storedIdUser);
     };
     cargarIdUser();
   }, []);
 
- 
-
-
-
   const FiltroBoton = ({ categoria }) => (
     <TouchableOpacity
       style={styles.botonFiltro}
-      onPress={() => setFiltro(categoria)
-      }
+      onPress={() => setFiltro(categoria)}
     >
       <Text style={styles.textoBoton}>{categoria || 'Todos'}</Text>
     </TouchableOpacity>
@@ -46,18 +38,12 @@ export default function Tienda() {
   const ProductoItem = ({ item }) => {
     const iconoCarrito = useRef(null);
 
-
-
     const animateIcon = () => {
       iconoCarrito.current?.bounce(800);
-
-      // Insertar el producto en el carrito
-      guardarDatosCarrito(idUser,item.idProducto);
-
-      // Esperar unos segundos antes de mostrar la alerta
+      guardarDatosCarrito(idUser, item.idProducto);
       setTimeout(() => {
         Alert.alert('Producto añadido al carrito', 'Has comprado ' + item.nombre + ' por €' + item.precio, [{ text: 'OK' }], { cancelable: false });
-      }, 1000); // Espera 2000 milisegundos (2 segundos) antes de mostrar la alerta
+      }, 1000);
     };
 
     return (
@@ -69,6 +55,7 @@ export default function Tienda() {
           <Text style={item.stock > 0 ? styles.stockDisponible : styles.stockNoDisponible}>
             {item.stock > 0 ? `Stock: ${item.stock}` : 'No está disponible'}
           </Text>
+          <Text style={styles.bioInfo}>BIO</Text>
         </View>
         <TouchableOpacity
           style={styles.iconoCarrito}
@@ -95,8 +82,17 @@ export default function Tienda() {
           <FiltroBoton key={categoria} categoria={categoria} />
         ))}
       </View>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar por nombre"
+        value={search}
+        onChangeText={setSearch}
+      />
       <FlatList
-        data={productos.filter(producto => filtro === '' || producto.Categoria === filtro)}
+        data={productos.filter(producto => 
+          (filtro === '' || producto.Categoria === filtro) &&
+          producto.nombre.toLowerCase().includes(search.toLowerCase())
+        )}
         renderItem={({ item }) => <ProductoItem item={item} />}
         keyExtractor={item => item.idProducto}
       />
@@ -107,13 +103,13 @@ export default function Tienda() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4', // Se mantiene el fondo neutro
+    backgroundColor: '#f4f4f4',
   },
   filtroContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingVertical: 20,
-    backgroundColor: 'linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%)', // Gradiente sutil
+    backgroundColor: 'linear-gradient(180deg, #ffffff 0%, #f0f0f0 100%)',
     borderBottomWidth: 1,
     borderBottomColor: '#dcdcdc',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -137,25 +133,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   iconoCarrito: {
-    backgroundColor: 'skyblue', // Color de fondo para mayor contraste
+    backgroundColor: 'skyblue',
     padding: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    // Ajustar el tamaño y el margen según sea necesario
     height: 50,
     width: 50,
     marginLeft: 'auto',
   },
-
-
   textoBoton: {
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 14,
   },
   producto: {
-    flexDirection: 'row', // Mantener los elementos en una fila
+    flexDirection: 'row',
     padding: 15,
     marginHorizontal: 15,
     marginVertical: 10,
@@ -168,39 +161,46 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   detalles: {
-    flex: 1, // Asegura que el texto se expanda correctamente
-    flexDirection: 'column', // Alinea el texto en una columna
+    flex: 1,
+    flexDirection: 'column',
   },
   imagen: {
-    width: 100, // Ajustar según sea necesario
-    height: 100, // Ajustar para mantener la proporción
+    width: 100,
+    height: 100,
     borderRadius: 10,
     marginRight: 20,
   },
   nombre: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#333333', // Mejor contraste
+    color: '#333333',
   },
   precio: {
     color: '#28a745',
     fontSize: 16,
   },
   botonCarrito: {
-    // Ajustes específicos para el botón
-    backgroundColor: '#e91e63', // Color de fondo para mayor contraste
+    backgroundColor: '#e91e63',
     padding: 10,
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    // Ajustar el tamaño y el margen según sea necesario
-    height: 40, // Altura del botón
-    width: 120, // Ancho del botón
-    marginLeft: 'auto', // Alinea el botón a la derecha
+    height: 40,
+    width: 120,
+    marginLeft: 'auto',
   },
   textoBotonCarrito: {
     color: '#ffffff',
     fontWeight: 'bold',
-    fontSize: 14, // Ajustar el tamaño de la fuente para mejorar la legibilidad
+    fontSize: 14,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: '#dcdcdc',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
 });

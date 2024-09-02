@@ -27,7 +27,14 @@ export default function App() {
         .catch(error => {
           console.error(error);
           setIsLoading(false);
-        });
+        });  
+
+      return () => {
+        setData([]);
+        setEditData(null);
+        setSearch('');
+        setIsLoading(false);
+      }
     }, [])
   );
 
@@ -78,6 +85,14 @@ export default function App() {
         console.log(json);
       })
       .catch(error => console.error(error));
+
+      // recargar la lista de plantas
+      fetchPlants()
+        .then(json => {
+          setData(json);
+        })
+        .catch(error => console.error(error));
+        
   }
 
 
@@ -172,7 +187,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#4CAF50',
     borderRadius: 5,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   itemContainer: {
     padding: 10,
@@ -191,13 +206,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     color: '#000',
-    marginTop: 10,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    margin: 10,
+    fontFamily: 'Manrope Bold',
   },
   itemInput: {
     marginBottom: 10,
     fontSize: 16,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    fontFamily: 'Manrope Regular',
     backgroundColor: '#F5F5F5',
     borderWidth: 1,
     borderColor: '#B2BABB',
@@ -205,7 +220,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
   },
   updateButton: {
@@ -218,14 +233,14 @@ const styles = StyleSheet.create({
   updateButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
   noResultsText: {
     textAlign: 'center',
     fontSize: 16,
     color: '#D32F2F',
     marginTop: 10,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    fontFamily: 'Manrope Regular',
   },
   floatingButton: {
     position: 'absolute',
@@ -242,6 +257,6 @@ const styles = StyleSheet.create({
   floatingButtonText: {
     color: '#FFFFFF',
     fontSize: 30,
-    fontFamily: Platform.OS === 'web' ? 'Arial' : 'sans-serif',
+    fontFamily: 'Manrope Bold',
   },
 });

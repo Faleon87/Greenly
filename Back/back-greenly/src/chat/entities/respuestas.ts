@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../usuario/entities/user';
+import { Pregunta } from './pregunta';
 
 @Entity('respuestas')
 export class Respuestas {
@@ -16,4 +17,6 @@ export class Respuestas {
     @CreateDateColumn()
     fechaHora: Date;
 
+    @ManyToOne(() => Pregunta, pregunta => pregunta.respuestas, { onDelete: 'CASCADE' })
+    pregunta: Pregunta;
 }

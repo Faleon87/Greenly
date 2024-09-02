@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { Calendar } from '../entities/calendar'; // Asegúrate de importar tu entidad Calendar
 import { CalendarInsertDto } from '../dtos/calendar-insert-dto'; // Importa tu DTO
+
 
 @Injectable() // Decorador de inyección de dependencias
 export class CalendarService {
@@ -41,6 +42,29 @@ export class CalendarService {
             throw error;
         }
     }
+
+
+    
+
+    async eliminarPlanta(fecha: Date, idUser: number, planta: number, accionSeleccionada: string): Promise<Calendar> {
+        try {
+            // Buscar el registro en la base de datos
+            const calendar = await this.calendarRepository.findOne({
+                where: { fecha, idUsuario: Equal(idUser), idPlanta: Equal(planta), tipoAcción: accionSeleccionada }
+            });
+            // Si no se encuentra el registro, lanzar un error
+            if (!calendar) {
+                throw new Error('No se encontró el registro');
+            }
+            // Eliminar el registro de la base de datos
+            await this.calendarRepository.remove(calendar);
+            return calendar; // Return the deleted calendar
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
 
 
 

@@ -3,7 +3,7 @@ import { View, Text, Alert, Animated, StyleSheet, ImageBackground, ScrollView, I
 import { DetallesPlagas } from '../api/DetallesPlaga';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const DetallePlagas = ({ route, navigation }) => {
+const DetallePlagas = ({ rotue, navigation }) => {
     const { idPlaga } = route.params;
     const [plaga, setPlaga] = useState(null);
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
     fieldTitle: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Manrope Bold',
         color: '#2C1001',
     },
     textContainer: {
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
         textAlign: 'justify',
+        fontFamily: 'Manrope Regular',
     },
 
 });

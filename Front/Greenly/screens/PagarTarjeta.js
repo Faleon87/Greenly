@@ -3,10 +3,13 @@ import { View, StyleSheet, Text, ImageBackground, TouchableOpacity, Alert, Image
 import { TextInput } from 'react-native-paper';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import logo from '../img/Logo.png';
+import logoGood from '../img/LogoGood.png';
 import { guardarTarjeta } from '../api/guardarTarjeta';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
+import obtenerTarjetas from '../api/obtenerTarjetas';
 
 
 
@@ -39,6 +42,9 @@ const PagarTarjeta = () => {
     };
 
 
+
+
+
     // Obtener el id del usuario y solicitar permisos de notificación
     useEffect(() => {
         const cargarIdUsuarioYPedirPermisos = async () => {
@@ -46,11 +52,29 @@ const PagarTarjeta = () => {
             const storedIdUsuario = await AsyncStorage.getItem('idUser');
             setIdUsuario(storedIdUsuario);
 
+
+            //Cargar tarjetas guardadas
+
+            // API para obtener las tarjetas guardadas
+            const result = await obtenerTarjetas(storedIdUsuario);
+            console.log(result);
+
+
+            //Obtener permisos de notificación
             // Solicitar permisos de notificación
             const { status } = await Notifications.requestPermissionsAsync();
             if (status !== 'granted') {
                 alert('Se requieren permisos de notificación para esta funcionalidad.');
             }
+
+            Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                    shouldShowAlert: true,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                }),
+            });
+
         };
 
         cargarIdUsuarioYPedirPermisos();
@@ -62,9 +86,6 @@ const PagarTarjeta = () => {
     const confirmarPedido = async () => {
         // Aquí puedes agregar la lógica para confirmar el pedido, por ejemplo, llamando a una API
         // Mostrar una notificación de confirmación
-
-        
-
         await Notifications.scheduleNotificationAsync({
             content: {
                 title: 'Pedido Confirmado',
@@ -74,7 +95,7 @@ const PagarTarjeta = () => {
                 categoryIdentifier: 'pedido',
                 color: 'blue',
                 autoDismiss: true,
-                icon: '../img/Logo.png',
+                icon: logoGood,
             },
             trigger: null,
         });
@@ -128,7 +149,7 @@ const PagarTarjeta = () => {
                         style: 'cancel',
                     },
                     {
-                        text: 'Guardar',
+                        text: 'Guardar Tarjeta y Confirmar Pedido',
                         onPress: async () => {
 
                             // Lógica para guardar la tarjeta y enviar el pedido por correo
@@ -145,14 +166,6 @@ const PagarTarjeta = () => {
                                 Alert.alert("Error", "Ocurrió un error al guardar la tarjeta.");
                             }
 
-                        },
-                    },
-                    {
-                        text: 'Solo Confirmar Pedido',
-                        onPress: () => {
-                            //Logica para confirmar con nofiticacion
-                            console.log('Pedido confirmado');
-                            confirmarPedido();
                         },
                     },
                 ],
@@ -223,7 +236,6 @@ const PagarTarjeta = () => {
             <TouchableOpacity style={styles.button} onPress={handlePress}>
                 <Text style={{ color: 'white', fontSize: 18 }}>Pagar</Text>
             </TouchableOpacity>
-
         </View>
     );
 };

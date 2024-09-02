@@ -167,16 +167,17 @@ const styles = StyleSheet.create({
   },
   fieldTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
     color: '#2C1001',
   },
   text: {
     fontSize: 16,
     color: '#2C1001',
+    fontFamily: 'Manrope Regular',
   },
   asociaciones: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 'Manrope Bold',
     color: 'green',
     marginBottom: 10,
   },
@@ -201,6 +202,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     marginBottom: 10,
+    fontFamily: 'Manrope Regular',
   },
   separator: {
     borderTopWidth: 1,
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888',
     marginBottom: 10,
-    fontStyle: 'italic',
+    fontFamily: 'Manrope Medium',
   },
   horizontalScroll: {
     marginBottom: 10,

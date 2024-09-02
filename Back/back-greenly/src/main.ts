@@ -6,20 +6,23 @@ import * as compression from 'compression';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Configuración de CORS
-  app.enableCors({
-    origin: '*', // Origen permitido
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos
-    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept', // Cabeceras permitidas
-  });
-
-
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({extended: true }));
-
   // Usar el middleware de compresión
   app.use(compression());
 
+  // Configurar el parser de body
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+
+  // Middleware para manejar las cabeceras
+  app.use((_req: any, res: { setHeader: (arg0: string, arg1: string) => void; }, next: () => void) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+  });
+
+  // Iniciar el servidor en el puerto 3000
   await app.listen(3000, '0.0.0.0');
 }
+
 bootstrap();

@@ -1,5 +1,6 @@
 
-import { Entity,  Column,  PrimaryGeneratedColumn } from 'typeorm';
+import { Entity,  Column,  PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Pregunta } from './pregunta';
 
 @Entity('reports')
 export class Reports {
@@ -11,9 +12,9 @@ export class Reports {
     idUser: number;
 
     @Column()
-    idPregunta: number;
-
-    @Column()
     createdAt: Date;
+
+    @ManyToOne(() => Pregunta, pregunta => pregunta.reports, { onDelete: 'CASCADE' })
+    pregunta: Pregunta;
 
 }

@@ -1,91 +1,91 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Chat } from '../api/Chat';
+import Chat from '../api/Chat';
 import { FlatList } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
 import { widthPercentageToDP as wd } from 'react-native-responsive-screen';
 import updateLikes from '../api/updateLikes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { deleteQuestion } from '../api/deleteQuestion';
+import getReports from '../api/reports';
 
 const ForoAdmin = () => {
     const navigation = useNavigation();
     const [questions, setQuestions] = useState([]);
     const [userLikes, setUserLikes] = useState({});
     const [filter, setFilter] = useState('');
-
-    // Agrega un estado para los nombres de los cultivos
+    const [reportedQuestions, setReportedQuestions] = useState({});
     const [cultivoNames, setCultivoNames] = useState([]);
 
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            const questionsFromApi = await Chat();
-            console.log(questionsFromApi);
+    const fetchQuestions = async () => {
+        const questionsFromApi = await Chat();
+        console.log(questionsFromApi);
 
-            const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
-                const likeObject = questionsFromApi.likesResult[index];
-                const questionDetails = questionsFromApi.preguntaResult[index];
-                return {
-                    ...question,
-                    likes: likeObject ? likeObject.likes : 0, // Aquí es donde accedes al número de likes
-                    idLikes: likeObject ? likeObject.idLikes : null, // Aquí es donde accedes al idLikes
-                    questionDetails: questionDetails ? questionDetails : null, // Aquí es donde accedes a los detalles de la pregunta
-                    nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
-                };
-            });
+        const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
+            const likeObject = questionsFromApi.likesResult[index];
+            const questionDetails = questionsFromApi.preguntaResult[index];
+            return {
+                ...question,
+                likes: likeObject ? likeObject.likes : 0,
+                idLikes: likeObject ? likeObject.idLikes : null,
+                questionDetails: questionDetails ? questionDetails : null,
+                nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
+            };
+        });
 
-            // Extrae los nombres únicos de los cultivos
-            const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
-            setCultivoNames(['Todos', ...uniqueCultivoNames]);
+        const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
+        setCultivoNames(['Todos', ...uniqueCultivoNames]);
 
-            setQuestions(questionsWithLikes);
-        };
+        setQuestions(questionsWithLikes);
+    };
 
-        // Llama a fetchQuestions inmediatamente
-        fetchQuestions();
-    }, []);
+    const fetchReports = async () => {
+        const reportsFromApi = await getReports();
+        const reportedQuestionsMap = reportsFromApi.reduce((acc, report) => {
+            acc[report.idPregunta] = true;
+            return acc;
+        }, {});
+        setReportedQuestions(reportedQuestionsMap);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchReports();
+            fetchQuestions();
+        }, [])
+    );
+
     const handleLike = async (id) => {
-        // Recupera el idUsuario del almacenamiento local
         const userId = await AsyncStorage.getItem('idUser');
-
-        // Recupera los likes del usuario del almacenamiento local
         const storedUserLikes = JSON.parse(await AsyncStorage.getItem(`userLikes_${userId}`)) || {};
-
-        // Encuentra la pregunta que el usuario le dio like
         const questionIndex = questions.findIndex((question) => question.idLikes === id);
         if (questionIndex === -1) return;
-
-        // Encuentra la pregunta en sí
         const question = questions[questionIndex];
 
-        // Si el usuario ya ha dado like a esta pregunta, quita el like
         if (storedUserLikes[id]) {
             storedUserLikes[id] = undefined;
             question.likes -= 1;
         } else {
-            // Si el usuario no ha dado like a esta pregunta, añade el like
             storedUserLikes[id] = true;
             question.likes += 1;
         }
 
-        // Guarda los likes del usuario en el almacenamiento local
         await AsyncStorage.setItem(`userLikes_${userId}`, JSON.stringify(storedUserLikes));
-
-        // Actualiza el estado de los likes del usuario
         setUserLikes(storedUserLikes);
 
-        // Actualiza las preguntas
         const updatedQuestions = [...questions];
         updatedQuestions[questionIndex] = question;
         setQuestions(updatedQuestions);
 
-        // Aquí deberías hacer una llamada a la API para actualizar el número de likes en la base de datos
         await updateLikes(id, question.likes);
     };
 
-    // Filtra las preguntas basándote en el valor del filtro
+    const handleDelete = (questionId) => {
+        deleteQuestion(questionId, fetchQuestions);
+    };
+
     const filteredQuestions = questions.filter(question =>
         question.nombreCultivo.toLowerCase().includes(filter.toLowerCase())
     );
@@ -111,7 +111,7 @@ const ForoAdmin = () => {
                     <Card style={styles.card}>
                         <View style={styles.iconOverImageContainer}>
                             <Card.Cover source={{ uri: item.nombreFoto }} style={styles.fotoPr} />
-                            <TouchableOpacity onPress={() => deleteQuestion(item.id)}>
+                            <TouchableOpacity onPress={() => handleDelete(item.questionDetails.idPregunta)}>
                                 <Icon name="times" style={styles.iconOnTop} size={30} color="red" />
                             </TouchableOpacity>
                         </View>
@@ -144,7 +144,7 @@ const ForoAdmin = () => {
                                         {item.questionDetails && item.questionDetails.idUsuario && (
                                             <>
                                                 <Image
-                                                    source={{ uri: `data:image/jpeg;base64,${item.questionDetails.idUsuario.img.data}` }}
+                                                    source={{ uri: item.questionDetails.idUsuario.img ? `data:image/jpeg;base64,${item.questionDetails.idUsuario.img}` : 'URL_DE_IMAGEN_POR_DEFECTO' }}
                                                     style={styles.userImage}
                                                 />
                                                 <Text style={styles.userName}>{item.questionDetails.idUsuario.username}</Text>
@@ -156,6 +156,9 @@ const ForoAdmin = () => {
                                             <Icon style={styles.likeicon} name="heart" size={30} color={userLikes[item.idLikes] ? "red" : "grey"} />
                                         </TouchableOpacity>
                                         <Paragraph style={styles.likes}>{item.likes} likes</Paragraph>
+                                    </View>
+                                    <View style={styles.report}>
+                                        <Icon name="exclamation" size={20} color={reportedQuestions[item.questionDetails.idPregunta] ? "red" : "grey"} />
                                     </View>
                                     <View style={styles.respond}>
                                         <TouchableOpacity
@@ -189,21 +192,21 @@ const ForoAdmin = () => {
 
 const styles = StyleSheet.create({
     buttonListContainer: {
-        height: 50, // Ajusta este valor según tus necesidades
+        height: 50,
     },
     buttonContainer: {
         margin: 5,
-        height: 40, // Ajusta este valor según tus necesidades
+        height: 40,
         overflow: 'hidden',
     },
     button: {
-        backgroundColor: '#2C1001', // Cambia esto al color que desees
+        backgroundColor: '#2C1001',
         padding: 10,
         borderRadius: 5,
         margin: 5,
     },
     buttonText: {
-        color: 'white', // Cambia esto al color que desees
+        color: 'white',
     },
     likeicon: {
         marginLeft: 15,
@@ -281,9 +284,13 @@ const styles = StyleSheet.create({
     },
     iconOnTop: {
         position: 'absolute',
-        bottom: 160, // Ajusta según sea necesario
-        right: 10, // Ajusta según sea necesario
-        // Otros estilos para el icono, si son necesarios
+        backgroundColor: 'white',
+        padding: 5,
+        width: 40,
+        textAlign: 'center',
+        borderRadius: 50,
+        bottom: 150,
+        right: 10,
     },
 });
 

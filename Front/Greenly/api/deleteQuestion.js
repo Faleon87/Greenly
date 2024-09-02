@@ -1,10 +1,9 @@
 import { Alert } from "react-native";
 
-async function deleteQuestion(questionId) {
-  // Muestra una alerta de confirmación antes de proceder
+async function deleteQuestion(questionId, onSuccess) {
   Alert.alert(
-    "Confirmación", // Título de la alerta
-    "¿Estás seguro de que quieres eliminar este elemento?", // Mensaje de la alerta
+    "Confirmación",
+    "¿Estás seguro de que quieres eliminar este elemento?",
     [
       {
         text: "Cancelar",
@@ -12,15 +11,35 @@ async function deleteQuestion(questionId) {
         style: "cancel"
       },
       { text: "Eliminar", onPress: async () => {
-          // Lógica para llamar a la API y borrar la pregunta
-          console.log("Lógica de eliminación para el ID:", questionId);
-          // Aquí iría el código para llamar a la API, por ejemplo:
-          // const response = await fetch(`URL_DE_TU_API/${questionId}`, { method: 'DELETE' });
-          // if (response.ok) { console.log('Elemento eliminado'); }
+          Alert.alert('Eliminando pregunta...', 'Con id: ' + questionId);
+
+          try {
+            const response = await fetch(`http://192.168.0.22:3000/chat/delete/${questionId}`, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+
+            if (response.ok) {
+              Alert.alert('Pregunta eliminada', 'La pregunta se ha eliminado correctamente');
+              if (onSuccess) {
+                onSuccess(); // Llama al callback de éxito
+              }
+            }
+            return await response.json();
+          } catch (error) {
+            console.error('Error:', error);
+            throw error;
+          }
         } 
       }
     ],
-    { cancelable: false } // Esto evita que se cierre la alerta al tocar fuera de ella
+    { cancelable: false }
   );
 }
 

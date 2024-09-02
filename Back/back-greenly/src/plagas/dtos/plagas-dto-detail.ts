@@ -1,6 +1,6 @@
 import { IsString, IsUrl } from "class-validator";
 
-export class                                                                PlagasDtoDetail {
+export class PlagasDtoDetail {
 
     @IsString()
     readonly nombrePlaga: string;

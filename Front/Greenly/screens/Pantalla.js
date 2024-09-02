@@ -157,14 +157,14 @@ const styles = StyleSheet.create({
   marketingText: {
     fontSize: Platform.OS === 'web' ? '2vw' : hp('3%'),
     color: '#000',
-    fontWeight: 'bold',
+    fontFamily: 'Manrope ExtraBold',
     textAlign: 'center',
     marginVertical: Platform.OS === 'web' ? '2vh' : hp('2%'),
   },
   cityText: {
     fontSize: Platform.OS === 'web' ? '1.5vw' : hp('2.5%'),
     color: '#000',
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
     marginBottom: Platform.OS === 'web' ? '1vh' : hp('1%'),
   },
   header: {
@@ -185,11 +185,12 @@ const styles = StyleSheet.create({
   welcome: {
     fontSize: Platform.OS === 'web' ? '2vw' : hp('3%'),
     color: 'white',
+    fontFamily: 'Manrope SemiBold',
   },
   username: {
     fontSize: Platform.OS === 'web' ? '2vw' : hp('3%'),
     color: '#2C1001',
-    fontWeight: 'bold',
+    fontFamily: 'Manrope SemiBold',
     marginLeft: Platform.OS === 'web' ? '1vw' : wp('2%'),
   },
   profileImage: {
@@ -230,12 +231,13 @@ const styles = StyleSheet.create({
   },
   temperatureText: {
     fontSize: Platform.OS === 'web' ? '1.5vw' : hp('2.5%'),
-    fontWeight: 'bold',
+    fontFamily: 'Manrope SemiBold',
     color: '#000',
   },
   humidityText: {
     fontSize: Platform.OS === 'web' ? '1.2vw' : hp('2%'),
     color: '#000',
+    fontFamily: 'Manrope Regular',
   },
   loadingText: {
     fontSize: Platform.OS === 'web' ? '2vw' : hp('2.5%'),

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { getPlantas } from '../api/getPlantas';
@@ -44,7 +44,7 @@ const App = () => {
     // Maneja el éxito (por ejemplo, muestra un mensaje o redirige al usuario)
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchPlantas();
   }, [fetchPlantas]);
 

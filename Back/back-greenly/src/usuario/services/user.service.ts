@@ -36,12 +36,16 @@ export class UserService {
     username: string,
     password: string,
   ): Promise<User> {
+
+    console.log('Received username:', username);
+    console.log('Received password:', password);
+
     const user = await this.userRepository.findOne({
       where: [{ username: username }, { email: username }],
     });
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
     if (
       !user.password ||
@@ -231,6 +235,18 @@ export class UserService {
     return `Password recovery email sent to ${email}`;
   }
 
+  async getUsers(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
+  async comprobarPassword(idUser: number, password: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({ where: { idUser } });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${idUser} not found`);
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    return isMatch;
+  }
 
 
 }

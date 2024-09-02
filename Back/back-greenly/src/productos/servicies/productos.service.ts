@@ -12,11 +12,9 @@ export class ProductosService {
         private productosRepository: Repository<Productos>
     ) { }
 
-    async findAll(page: number = 1, pageSize: number = 10): Promise<DtoproductoDtoget[]> {
+    async findAll(): Promise<DtoproductoDtoget[]> {
         const productos = await this.productosRepository.find({
-            select: ['idProducto', 'nombre', 'precio', 'stock', 'imagen', 'Categoria'],
-            take: pageSize,
-            skip: (page - 1) * pageSize
+            select: ['idProducto', 'nombre', 'precio', 'stock', 'imagen', 'Categoria']
         });
         return productos;
     }

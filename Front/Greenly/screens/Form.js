@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect, useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Text, Alert, ActivityIndicator, Platform } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Chat } from '../api/Chat';
+import getChat from '../api/Chat';
 import { FlatList } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
 import { widthPercentageToDP as wd } from 'react-native-responsive-screen';
@@ -39,7 +39,6 @@ const App = () => {
               {
                 text: 'No',
                 onPress: () => navigation.goBack(),
-
                 style: 'cancel',
               },
               {
@@ -53,39 +52,52 @@ const App = () => {
           );
           return;
         }
-
       };
 
       const fetchQuestions = async () => {
-        const questionsFromApi = await Chat();
-        console.log(questionsFromApi);
+        try {
+          const questionsFromApi = await getChat();
+          console.log(questionsFromApi, 'questionsFromApi');
 
-        const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
-          const likeObject = questionsFromApi.likesResult[index];
-          const questionDetails = questionsFromApi.preguntaResult[index];
+          if (!questionsFromApi || !questionsFromApi.fotoPreguntasResult || !questionsFromApi.likesResult || !questionsFromApi.preguntaResult) {
+            throw new Error('Invalid data structure');
+          }
 
-          return {
-            ...question,
-            likes: likeObject ? likeObject.likes : 0,
-            idLikes: likeObject ? likeObject.idLikes : null,
-            questionDetails: questionDetails ? questionDetails : null,
-            nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
-          };
-        });
+          const questionsWithLikes = questionsFromApi.fotoPreguntasResult.map((question, index) => {
+            const likeObject = questionsFromApi.likesResult[index];
+            const questionDetails = questionsFromApi.preguntaResult[index];
 
-        const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
-        setCultivoNames(['Todos', ...uniqueCultivoNames]);
+            return {
+              ...question,
+              likes: likeObject ? likeObject.likes : 0,
+              idLikes: likeObject ? likeObject.idLikes : null,
+              questionDetails: questionDetails ? questionDetails : null,
+              nombreCultivo: questionDetails ? questionDetails.nombreCultivo : null,
+            };
+          });
 
-        setQuestions(questionsWithLikes);
+          const uniqueCultivoNames = [...new Set(questionsWithLikes.map(question => question.nombreCultivo))];
+          setCultivoNames(['Todos', ...uniqueCultivoNames]);
+
+          setQuestions(questionsWithLikes);
+        } catch (error) {
+          console.error('Error fetching questions:', error);
+          Alert.alert('Error', 'Failed to load questions');
+        }
       };
 
       const fetchReports = async () => {
-        const reportsFromApi = await getReports();
-        const reportedQuestionsMap = reportsFromApi.reduce((acc, report) => {
-          acc[report.idPregunta] = true;
-          return acc;
-        }, {});
-        setReportedQuestions(reportedQuestionsMap);
+        try {
+          const reportsFromApi = await getReports();
+          const reportedQuestionsMap = reportsFromApi.reduce((acc, report) => {
+            acc[report.idPregunta] = true;
+            return acc;
+          }, {});
+          setReportedQuestions(reportedQuestionsMap);
+        } catch (error) {
+          console.error('Error fetching reports:', error);
+          Alert.alert('Error', 'Failed to load reports');
+        }
       };
 
       checkPaymentStatus();
@@ -224,7 +236,7 @@ const App = () => {
                     {item.questionDetails && item.questionDetails.idUsuario && (
                       <>
                         <Image
-                          source={{ uri: `data:image/jpeg;base64,${item.questionDetails.idUsuario.img.data}` }}
+                          source={{ uri: `data:image/jpeg;base64,${item.questionDetails.idUsuario.img}` }}
                           style={styles.userImage}
                           PlaceholderContent={<ActivityIndicator />}
                         />
@@ -239,7 +251,7 @@ const App = () => {
                     </View>
                     <View style={styles.respond}>
                       <TouchableOpacity
-                        onPress={() => navigation.navigate('Respuestas', { id: item.idPregunta })}
+                        onPress={() => navigation.navigate('Respuestas', { idPregunta: item.questionDetails.idPregunta })}
                       >
                         <Icon name="comment" size={30} color="#02907D" />
                       </TouchableOpacity>

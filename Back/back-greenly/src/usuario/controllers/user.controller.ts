@@ -53,4 +53,17 @@ export class UserController {
   }
 
 
+  @Get()
+  async getUsers(): Promise<User[]> {
+    return this.userService.getUsers();
+  }
+
+ 
+  @Post('comprobarPassword/:id')
+  async comprobarPassword(@Param('id') idUser: number, @Body('password') password: string): Promise<any> {
+      console.log('password ', password);
+      const isMatch = await this.userService.comprobarPassword(idUser, password);
+      return { success: isMatch };
+  }
+
 }

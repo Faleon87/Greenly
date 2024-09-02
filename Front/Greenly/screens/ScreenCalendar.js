@@ -4,13 +4,14 @@ import { Calendar } from 'react-native-calendars'; // Ajusta la ruta según sea 
 import { getPlantas } from '../api/getPlantas'; // Ajusta la ruta según sea necesario
 import DateTimePicker from '@react-native-community/datetimepicker'; // Asumiendo que se usa esta librería para el DatePicker
 import { Picker } from '@react-native-picker/picker'; // Asumiendo que se usa esta librería para el Picker
-import {FontAwesome} from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen'; // Ajusta la ruta según sea necesario
 import { guardarDatosCalendar } from '../api/guardarDatosCalendar'; // Ajusta la ruta según sea necesario
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { plantafecha } from '../api/plantafecha'; // Ajusta la ruta según sea necesario
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
+import eliminarPlantaform from '../api/eliminarPlanta'; // Ajusta la ruta según sea necesario
 
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
   const [markedDates, setMarkedDates] = useState({}); // Fechas marcadas en el calendario
   const [searchDate, setSearchDate] = useState(''); // Fecha de búsqueda en formato YYYY-MM-DD
   const [currentDate, setCurrentDate] = useState(''); // Fecha actual para el calendario
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   // Formatear la fecha seleccionada para guardarla en el estado
   const fechaFormateada = fechaSeleccionada.toISOString().split('T')[0];
 
@@ -48,7 +50,21 @@ const App = () => {
           }
         })
         .catch(console.error);
+    } else if (isDeleteModalVisible) {
+      getPlantas()
+        .then(data => {
+          const plantasConIdYNombre = data.map(planta => ({
+            id: planta.idPlanta,
+            nombre: planta.nombrePlanta
+          }));
+          setPlantas(plantasConIdYNombre);
+          if (plantasConIdYNombre.length > 0) {
+            setPlantaActual(plantasConIdYNombre[0].id);
+          }
+        })
+        .catch(console.error);
     }
+
 
     // Lógica para fetchIdUserAndData que se ejecuta independientemente de modalVisible
     const fetchIdUserAndData = async () => {
@@ -60,7 +76,7 @@ const App = () => {
     };
 
     fetchIdUserAndData();
-  }, [modalVisible, fechaFormateada]); // Añade 'fecha' a las dependencias si su valor puede cambiar y necesitas recargar los datos
+  }, [modalVisible, fechaFormateada, isDeleteModalVisible]); // Añade 'fecha' a las dependencias si su valor puede cambiar y necesitas recargar los datos
 
   const handleSearch = () => {
     // Verifica si la fecha ingresada es válida
@@ -138,11 +154,13 @@ const App = () => {
   };
 
 
+  const eliminarPlanta = async () => {
+    setDeleteModalVisible(false);
+    const result = await eliminarPlantaform(fechaFormateada, idUser, plantaActual, accionSeleccionada);
+    console.log(result);
 
-  const handleDelete = (id) => {
-    // Lógica para eliminar el elemento
-    console.log(`Eliminar elemento con id: ${id}`);
-  };
+
+  }
 
 
   const seleccionarPlantaPorFecha = (fecha) => {
@@ -162,6 +180,29 @@ const App = () => {
       .catch(console.error);
 
   };
+
+  const handleFloatingButtonPress = () => {
+    Alert.alert(
+      'Seleccione una acción',
+      '¿Qué desea hacer?',
+      [
+        {
+          text: 'Añadir',
+          onPress: () => setModalVisible(true),
+        },
+        {
+          text: 'Eliminar',
+          onPress: () => setDeleteModalVisible(true),
+        },
+        {
+          text: 'Cancelar',
+          onPress: () => console.log('Cancelar'),
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
 
   return (
     <View style={{ flex: 1 }}>
@@ -305,7 +346,44 @@ const App = () => {
           )}
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isDeleteModalVisible}
+        onRequestClose={() => { setDeleteModalVisible(!isDeleteModalVisible); }}
+      >
+        <View style={styles.modalContent}>
+        <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setDeleteModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
+          <Picker
+            selectedValue={plantaActual}
+            onValueChange={(itemValue, itemIndex) => setPlantaActual(itemValue)}
+            style={styles.plantas} // Ajustar el alto si es necesario
+          >
+            {plantas.map(planta => (
+              <Picker.Item key={planta.id} label={planta.nombre} value={planta.id} />
+            ))}
+          </Picker>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <FontAwesome name="calendar" size={30} color="green" />
+            {fechaSeleccionada && <Text style={styles.fechaSeleccionada}>{fechaSeleccionada.toDateString()}</Text>}
+          </View>
+          <Picker
+            selectedValue={accionSeleccionada}
+            onValueChange={(itemValue, itemIndex) => setAccionSeleccionada(itemValue)}
+            style={styles.accion} // Ajustar el alto si es necesario
+          >
+            <Picker.Item label="Sembrar" value="sembrar" />
+            <Picker.Item label="Cosechar" value="cosechar" />
+          </Picker>
+          <Button title="Eliminar" onPress={eliminarPlanta} />
+        </View>
+      </Modal>
+      <TouchableOpacity style={styles.floatingButton} onPress={() => handleFloatingButtonPress()}>
         <FontAwesome style={styles.addcalendar} name="edit" size={30} />
       </TouchableOpacity>
     </View >
@@ -329,6 +407,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   calendar: {
+    marginHorizontal: Platform.OS === 'web' ? '5vw' : wp('5%'), // Ajustar el margen según tus necesidades
     width: Platform.OS === 'web' ? '100vw' : wp('90%'),
   },
   searchInput: {
@@ -338,10 +417,6 @@ const styles = StyleSheet.create({
     borderWidth: 1, // Grosor del borde
     borderRadius: 5, // Bordes redondeados
     padding: 8, // Espaciado interno
-  },
-  nombrePlanta: {
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   buttonText: {
     color: 'white',
@@ -368,7 +443,7 @@ const styles = StyleSheet.create({
   accion: {
     width: Platform.OS === 'web' ? '50vw' : wp('50%'),
     height: 50, // Ajusta el alto según tus necesidades
-
+    marginVertical: 10, // Añade margen vertical
   },
   modalView: {
     margin: Platform.OS === 'web' ? '10vw' : 20, // Ajustar el margen según tus necesidades
@@ -401,6 +476,8 @@ const styles = StyleSheet.create({
   fechaSeleccionada: {
     fontSize: 18,
     marginLeft: 10,
+    marginTop: 10,
+    marginBottom: 25,
   },
   plantasGuardadas: {
     fontSize: 20,
@@ -444,6 +521,18 @@ const styles = StyleSheet.create({
     width: Platform.OS === 'web' ? '30vw' : wp('30%'),
     elevation: 5,
     position: 'relative', // Necesario para posicionar el botón de borrar
+  },
+  modalContent: {
+    padding: 20,
+    width: Platform.OS === 'web' ? '50vw' : wp('50%'),
+    height: Platform.OS === 'web' ? '30vh' : hp('30%'),
+    backgroundColor: 'white',
+    marginTop: Platform.OS === 'web' ? '20vh' : hp('10%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: Platform.OS === 'web' ? '20vw' : wp('5%'),
+    width: Platform.OS === 'web' ? '50vw' : wp('90%'),
+    borderRadius: 20,
   },
 });
 

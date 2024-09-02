@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
   title: {
     padding: 10,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
     color: '#424242',
   },
   searchSection: {
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
     width: wp('45%'),
     backgroundColor: '#fff',
     color: '#424242',
+    fontFamily: 'Manrope Regular',
   },
   image: {
     width: wp('45%'),

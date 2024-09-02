@@ -1,6 +1,6 @@
 export async function getPlantas() {
     try {
-        const response = await fetch('http://3.80.72.197:3000/plantas/cards');
+        const response = await fetch('http://192.168.0.22:3000/plantas/cards');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

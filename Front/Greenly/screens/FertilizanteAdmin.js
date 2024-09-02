@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { View, StyleSheet, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { TextInput, FAB } from 'react-native-paper';
 import { widthPercentageToDP as wp } from 'react-native-responsive-screen';
 import { cardFertilizantes } from '../api/cardFertilizantes';
 import { updateFertilizante } from '../api/updateFertilizante';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
+import { deleteFert } from '../api/deleteFert';
 
 const FertilizanteAdmin = () => {
   const [data, setData] = useState([]);
@@ -13,23 +15,26 @@ const FertilizanteAdmin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const result = await cardFertilizantes();
-        setData(result);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const result = await cardFertilizantes();
+      console.log('Result',  result);
+      setData(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
-  const filteredData = useMemo(() => 
+  const filteredData = useMemo(() =>
     data.filter(item =>
       item.nombreFertilizante.toLowerCase().includes(search.toLowerCase())
     ), [search, data]);
@@ -43,6 +48,17 @@ const FertilizanteAdmin = () => {
       return { ...item, [field]: text };
     });
   }, [data]);
+
+  const handleDeleteFert = async (id) => {
+    try {
+      await deleteFert(id);
+      fetchData(); // Recargar la lista después de eliminar
+      Alert.alert('Éxito', 'Fertilizante eliminado con éxito');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Error al eliminar el fertilizante');
+    }
+  };
 
   const handleUpdate = useCallback(async (id) => {
     const item = editData || data.find(item => item.idFertilizante === id);
@@ -85,35 +101,40 @@ const FertilizanteAdmin = () => {
         />
         <TextInput
           label="Descripción"
-          value={editItem.descripcion}
+          value={editItem.descripcion || ''}
           onChangeText={(text) => handleInputChange(text, editItem.idFertilizante, 'descripcion')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Elaboración"
-          value={editItem.elaboracion}
+          value={editItem.elaboracion || ''}
           onChangeText={(text) => handleInputChange(text, editItem.idFertilizante, 'elaboracion')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Ubicación"
-          value={editItem.ubicacion}
+          value={editItem.ubicacion || ''}
           onChangeText={(text) => handleInputChange(text, editItem.idFertilizante, 'ubicacion')}
           style={styles.itemInput}
           theme={theme}
         />
         <TextInput
           label="Cantidad"
-          value={editItem.cantidad}
+          value={editItem.cantidad || ''}
           onChangeText={(text) => handleInputChange(text, editItem.idFertilizante, 'cantidad')}
           style={styles.itemInput}
           theme={theme}
         />
-        <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(editItem.idFertilizante)}>
-          <Text style={styles.updateButtonText}>Actualizar</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.updateButton} onPress={() => handleUpdate(editItem.idFertilizante)}>
+            <Text style={styles.updateButtonText}>Actualizar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleDeleteFert(editItem.idFertilizante)}>
+            <FontAwesome name="bomb" size={30} color="#FF0000" />
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -141,7 +162,7 @@ const FertilizanteAdmin = () => {
       <FAB
         style={styles.fab}
         icon="plus"
-        onPress={() => navigation.navigate('NuevaPantalla')}
+        onPress={() => navigation.navigate('AddFertilizante')}
       />
     </View>
   );
@@ -151,6 +172,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
   searchInput: {
     margin: 10,

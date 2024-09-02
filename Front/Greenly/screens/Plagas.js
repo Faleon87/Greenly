@@ -68,15 +68,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     overflow: 'hidden',
-    width: wp('45%'),
-    height: 250,    
-    flex: 1, // Asegura que el componente se expanda correctamente
+    width: wp('46%'),
+    height: 256,    
     margin: 5, // Ajusta el margen según sea necesario
   },
   title: {
     padding: 10,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Manrope Bold',
     color: '#424242',
   },
   searchSection: {
@@ -100,6 +99,7 @@ const styles = StyleSheet.create({
     width: wp('45%'),
     backgroundColor: '#fff',
     color: '#424242',
+    fontFamily: 'Manrope Regular',
   },
   image: {
     width: '100%', 
