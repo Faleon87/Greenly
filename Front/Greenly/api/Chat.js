@@ -1,5 +1,5 @@
 export const getChat = async () => {
-        const response = await fetch(`http://192.168.0.22:3000/chat/renderchat`, {
+        const response = await fetch(`http://greenly.ddns.net:3000/chat/renderchat`, {
             method: 'GET',
         });
 

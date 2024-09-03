@@ -1,7 +1,7 @@
 export const getUserData = async (idUser) => {
     console.log('idUser:', idUser);
     try {
-      const response = await fetch(`http://192.168.0.22:3000/user/profile/${idUser}`);
+      const response = await fetch(`http://greenly.ddns.net:3000/user/profile/${idUser}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

@@ -5,7 +5,7 @@ export const addFertilizer = async (fertilizer) => {
     const body = JSON.stringify(fertilizer);
     console.log('Request Body:', body);
 
-    const response = await fetch('http://192.168.0.22:3000/fertilizantes/add', {
+    const response = await fetch('http://greenly.ddns.net:3000/fertilizantes/add', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

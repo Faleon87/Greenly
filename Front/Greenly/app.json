@@ -26,8 +26,7 @@
       "jsEngine": "hermes",
       "adaptiveIcon": {
         "foregroundImage": "./img/Logo.png",
-        "backgroundColor": "black",
-        "usesClearTextTraffic": true
+        "backgroundColor": "#FFFFFF"
       },
       "permissions": [
         "CAMERA",
@@ -39,7 +38,7 @@
       "package": "com.vigu.Greenly"
     },
     "web": {
-      "favicon": "./img/Logo.png"
+      "favicon": "./img/LogoGood.png"
     },
     "plugins": [
       "expo-secure-store",

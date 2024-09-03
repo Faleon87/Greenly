@@ -1,6 +1,6 @@
 export async function cardFertilizantes() {
     try {
-        const response = await fetch('http://192.168.0.22:3000/fertilizantes/cards');
+        const response = await fetch('http://greenly.ddns.net:3000/fertilizantes/cards');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

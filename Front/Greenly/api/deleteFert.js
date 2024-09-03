@@ -3,7 +3,7 @@ export const deleteFert = async (id) => {
   console.log('ID:', id); // ID: 1
 
   try {
-    const response = await fetch(`http://192.168.0.22:3000/fertilizantes/${id}`, {
+    const response = await fetch(`http://greenly.ddns.net:3000/fertilizantes/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

@@ -144,6 +144,10 @@ android {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
         }
     }
+
+    lint{
+          baseline = file("lint-baseline.xml")
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">3.80.72.197</domain>
+        <domain includeSubdomains="true">greenly.ddns.net</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">plant.id</domain>
     </domain-config>
       <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">weatherapi.com</domain>
+    </domain-config>
+<domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">34.200.241.250</domain>
     </domain-config>
 </network-security-config>

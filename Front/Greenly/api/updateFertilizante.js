@@ -3,7 +3,7 @@ export const updateFertilizante = async (id, item) => {
     console.log('id:', id, 'item:', item);
   
     try {
-      const response = await fetch(`http://192.168.0.22:3000/fertilizantes/${id}`, {
+      const response = await fetch(`http://greenly.ddns.net:3000/fertilizantes/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json'

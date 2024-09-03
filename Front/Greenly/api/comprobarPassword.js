@@ -1,6 +1,6 @@
 const comprobarPassword= async (idUser, password) => {
 
-    const url = `http://192.168.0.22:3000/user/comprobarPassword/${idUser}`;
+    const url = `http://greenly.ddns.net:3000/user/comprobarPassword/${idUser}`;
     const response = await fetch(url, {
         method: 'POST',
         headers: {

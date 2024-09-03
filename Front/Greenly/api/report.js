@@ -6,7 +6,7 @@ export const reportQuestion = async (idPregunta, idUser) => {
     Alert.alert('Debug', `reportQuestion called with: ${idPregunta}, ${idUser}`);
 
     try {
-        const response = await fetch('http://192.168.0.22:3000/chat/report', {
+        const response = await fetch('http://greenly.ddns.net:3000/chat/report', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

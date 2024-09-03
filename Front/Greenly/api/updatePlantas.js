@@ -3,7 +3,7 @@ import { loadSweetAlert2 } from '../notificaciones/SweetAlert2'; // Asegúrate d
 
 export const updatePlant = async (id, updatedData) => {
     try {
-        const response = await fetch(`http://192.168.0.22:3000/plantas/${id}`, {
+        const response = await fetch(`http://greenly.ddns.net:3000/plantas/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

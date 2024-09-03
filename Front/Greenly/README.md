@@ -13,7 +13,9 @@ npx expo start
 
 # Crear el apk
 
-eas build
+expo prebuild
+
+
 
 
 

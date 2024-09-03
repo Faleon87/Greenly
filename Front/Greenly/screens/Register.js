@@ -41,7 +41,7 @@ export default function RegisterScreen({ navigation }) {
 
         console.log('Registering user with:', name, email, username, password, profileImage);
 
-        fetch('http://192.168.0.22:3000/user/register', {
+        fetch('http://greenly.ddns.net:3000/user/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

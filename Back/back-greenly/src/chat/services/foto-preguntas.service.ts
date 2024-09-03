@@ -75,7 +75,7 @@ export class FotoPreguntasService {
 
     return fotoPreguntas.map(fotoPregunta => ({
       ...fotoPregunta,
-      nombreFoto: `https://greenly.ddns.net:3000/uploads/${fotoPregunta.nombreFoto}`, // Ruta pública para el archivo
+      nombreFoto: `http://greenly.ddns.net:3000/uploads/${fotoPregunta.nombreFoto}`, // Ruta pública para el archivo
     }));
   }
 }

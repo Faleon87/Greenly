@@ -8,10 +8,7 @@ import { guardarTarjeta } from '../api/guardarTarjeta';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
 import obtenerTarjetas from '../api/obtenerTarjetas';
-
-
 
 const PagarTarjeta = () => {
     const navigate = useNavigation();
@@ -41,10 +38,6 @@ const PagarTarjeta = () => {
         setExpiry(formattedDate);
     };
 
-
-
-
-
     // Obtener el id del usuario y solicitar permisos de notificación
     useEffect(() => {
         const cargarIdUsuarioYPedirPermisos = async () => {
@@ -52,15 +45,12 @@ const PagarTarjeta = () => {
             const storedIdUsuario = await AsyncStorage.getItem('idUser');
             setIdUsuario(storedIdUsuario);
 
-
-            //Cargar tarjetas guardadas
-
+            // Cargar tarjetas guardadas
             // API para obtener las tarjetas guardadas
             const result = await obtenerTarjetas(storedIdUsuario);
             console.log(result);
 
-
-            //Obtener permisos de notificación
+            // Obtener permisos de notificación
             // Solicitar permisos de notificación
             const { status } = await Notifications.requestPermissionsAsync();
             if (status !== 'granted') {
@@ -74,13 +64,10 @@ const PagarTarjeta = () => {
                     shouldSetBadge: false,
                 }),
             });
-
         };
 
         cargarIdUsuarioYPedirPermisos();
     }, []);
-
-
 
     // Lógica para confirmar con notificación
     const confirmarPedido = async () => {
@@ -102,7 +89,6 @@ const PagarTarjeta = () => {
     };
 
     // Cambiar el título de la pantalla
-
     useLayoutEffect(() => {
         navigate.setOptions({
             headerTitle: () => (
@@ -119,9 +105,7 @@ const PagarTarjeta = () => {
 
     // Función para manejar el botón de pagar
     const handlePress = () => {
-
         // Validar los campos
-
         if (!cardNumber || cardNumber.length < 19) {
             setErrors({ cardNumber: 'Número de tarjeta inválido' });
             return;
@@ -151,7 +135,6 @@ const PagarTarjeta = () => {
                     {
                         text: 'Guardar Tarjeta y Confirmar Pedido',
                         onPress: async () => {
-
                             // Lógica para guardar la tarjeta y enviar el pedido por correo
                             const result = await guardarTarjeta(idUsuario, cardNumber, name, expiry, cvv);
 
@@ -165,14 +148,12 @@ const PagarTarjeta = () => {
                             } else {
                                 Alert.alert("Error", "Ocurrió un error al guardar la tarjeta.");
                             }
-
                         },
                     },
                 ],
                 { cancelable: false }
             );
         }
-
     };
 
     return (
@@ -239,6 +220,7 @@ const PagarTarjeta = () => {
         </View>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#f8f9fa', // Color de fondo más claro

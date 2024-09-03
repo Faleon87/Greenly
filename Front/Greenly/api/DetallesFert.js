@@ -3,7 +3,7 @@ export const DetallesPlanta = async (id) => {
 
         console.log('Fetching data for ID:', id);
 
-      const response = await fetch(`http://192.168.0.22:3000/fertilizantes/detalle/${id}`);
+      const response = await fetch(`http://greenly.ddns.net:3000/fertilizantes/detalle/${id}`);
       const data = await response.json();
       return data;
 

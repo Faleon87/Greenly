@@ -4,7 +4,7 @@ const updateLikes= async (id, likes) => {
 
   console.log(id, likes);
 
-    const response = await fetch(`http://192.168.0.22:3000/chat/updatelikes/${id}`, {
+    const response = await fetch(`http://greenly.ddns.net:3000/chat/updatelikes/${id}`, {
       method: 'PUT', 
       headers: {
         'Content-Type': 'application/json',

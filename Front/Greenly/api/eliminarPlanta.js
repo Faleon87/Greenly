@@ -4,7 +4,7 @@ const eliminarPlanta = async (fecha, idUser, planta, accionSeleccionada) => {
 
     Alert.alert('Eliminar', fecha + ' ' + idUser + ' ' + planta); ;
 
-    const url = `http://192.168.0.22:3000/calendar/delete/${fecha}/${idUser}/${planta}/${accionSeleccionada}`; 
+    const url = `http://greenly.ddns.net:3000/calendar/delete/${fecha}/${idUser}/${planta}/${accionSeleccionada}`; 
     const response = await fetch(url, {
         method: 'DELETE',
         headers: {

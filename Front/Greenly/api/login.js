@@ -8,7 +8,7 @@ export const loginUser = async (username, password) => {
       throw new Error('No internet connection');
     }
 
-    const response = await fetch('http://192.168.0.22:3000/user/login', {
+    const response = await fetch('http://greenly.ddns.net:3000/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

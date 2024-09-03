@@ -2,7 +2,7 @@
 
 export const guardarDatosCalendar = async (idUsuario, fecha, tipoAccion, idPlanta) => {
     try {
-        const url = `http://192.168.0.22:3000/calendar/plantas`; // Asegúrate de que esta URL es correcta
+        const url = `http://greenly.ddns.net:3000/calendar/plantas`; // Asegúrate de que esta URL es correcta
         const data = {
             idUsuario: Number(idUsuario), // Asegúrate de que es un número
             fecha: fecha, // Convierte la fecha a un objeto Date y luego a una cadena en formato YYYY-MM-DD

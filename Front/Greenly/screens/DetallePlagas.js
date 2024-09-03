@@ -3,7 +3,7 @@ import { View, Text, Alert, Animated, StyleSheet, ImageBackground, ScrollView, I
 import { DetallesPlagas } from '../api/DetallesPlaga';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const DetallePlagas = ({ rotue, navigation }) => {
+const DetallePlagas = ({ route, navigation }) => {
     const { idPlaga } = route.params;
     const [plaga, setPlaga] = useState(null);
     const scrollY = useRef(new Animated.Value(0)).current;

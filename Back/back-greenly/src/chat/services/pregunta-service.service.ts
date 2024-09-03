@@ -70,7 +70,7 @@ export class PreguntaServiceService {
         preguntaDetailDto.nombreCultivo = pregunta.nombreCultivo;
         preguntaDetailDto.fechaHora = pregunta.fechaHora;
         preguntaDetailDto.username = pregunta.idUsuario.username;
-        preguntaDetailDto.nombreFoto = pregunta.fotos.length > 0 ? `https://greenly.ddns.net:3000/uploads/${pregunta.fotos[0].nombreFoto}` : null;
+        preguntaDetailDto.nombreFoto = pregunta.fotos.length > 0 ? `http://greenly.ddns.net:3000/uploads/${pregunta.fotos[0].nombreFoto}` : null;
 
         return preguntaDetailDto;
     }
