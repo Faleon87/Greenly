@@ -36,8 +36,8 @@
 
 
 ## Tecnologias usadas
-![react](images/react.png)
-![nestjs](images/nestjs.png)
+<img src="images/react.png" alt="react" width="300"/>
+<img src="images/nestjs.png" alt="nestjs" width="300"/>
 
 
 
