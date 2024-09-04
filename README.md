@@ -37,7 +37,7 @@
 
 ## Tecnologias usadas
 <div style="display: flex;">
-  <img src="images/react.png" alt="react" width="300" style="margin-right: 10px;"/>
+  <img src="images/react.png" alt="react" width="300" style="margin-right: 50px;"/>
   <img src="images/nestjs.png" alt="nestjs" width="300"/>
 </div>
 
