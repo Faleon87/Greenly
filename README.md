@@ -1,3 +1,4 @@
+![Logo](images/Logo.png)
 
 
 ## Descripción
@@ -32,6 +33,12 @@
 ### iOS
 
 1. **De momento no se encuentra disponible
+
+
+## Tecnologias usadas
+![react](react/.png)
+![nestjs](images/nestjs.png)
+
 
 
 
