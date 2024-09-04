@@ -36,7 +36,7 @@
 
 
 ## Tecnologias usadas
-![react](react/.png)
+![react](images/react.png)
 ![nestjs](images/nestjs.png)
 
 
