@@ -1,4 +1,6 @@
-![Logo](images/Logo.png)
+<div style="display: flex;">
+  <img src="images/Logo.png" alt="react" width="300"/>
+</div>
 
 
 ## Descripción
