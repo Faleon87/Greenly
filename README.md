@@ -1,4 +1,4 @@
-<div style="display: flex;">
+<div style="display: flex; justify-content: center;">
   <img src="images/Logo.png" alt="react" width="300"/>
 </div>
 
