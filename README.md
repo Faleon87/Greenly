@@ -5,8 +5,7 @@
 
 ## Descripción
 
-[Greenly] es una aplicación móvil innovadora diseñada para [breve descripción del propósito de la app, e.g., simplificar la gestión de tareas diarias y mejorar la productividad personal]. La app ofrece una interfaz intuitiva y una serie de funcionalidades avanzadas para [objetivo de la app, e.g., organizar y priorizar tareas de manera eficiente].
-
+[Greenly] es una aplicación móvil innovadora diseñada para  simplificar la gestión de tareas diarias y mejorar la productividad personal.
 ## Características
 
 - **Información Completa y Actualizada**: Obtén información exhaustiva y siempre actualizada sobre plantas, fertilizantes y plagas. Nuestra app se distingue por ofrecer datos precisos y detallados, convirtiéndola en una herramienta indispensable para los entusiastas del cultivo ecológico.
